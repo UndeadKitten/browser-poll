@@ -160,32 +160,64 @@
 
     <script>
         // 1. Core Data (Includes clean 'id' tokens for file paths)
-        let masterBrowsers = [
-            { id: "firefox", name: "Mozilla Firefox", elo: 1200, matches: 0 },
-            { id: "librewolf", name: "Librewolf", elo: 1200, matches: 0 },
-            { id: "floorp", name: "Floorp", elo: 1200, matches: 0 },
-            { id: "waterfox", name: "Waterfox", elo: 1200, matches: 0 },
-            { id: "mullvad", name: "Mullvad Browser", elo: 1200, matches: 0 },
-            { id: "palemoon", name: "Pale Moon", elo: 1200, matches: 0 },
-            { id: "zen", name: "Zen Browser", elo: 1200, matches: 0 },
-            { id: "tor", name: "Tor Browser", elo: 1200, matches: 0 },
-            { id: "chrome", name: "Google Chrome", elo: 1200, matches: 0 },
-            { id: "chromium", name: "Ungoogled Chromium", elo: 1200, matches: 0 },
-            { id: "brave", name: "Brave", elo: 1200, matches: 0 },
-            { id: "vivaldi", name: "Vivaldi", elo: 1200, matches: 0 },
-            { id: "thorium", name: "Thorium", elo: 1200, matches: 0 },
-            { id: "edge", name: "Microsoft Edge", elo: 1200, matches: 0 },
-            { id: "opera", name: "Opera", elo: 1200, matches: 0 },
-            { id: "operagx", name: "Opera GX", elo: 1200, matches: 0 },
-            { id: "arc", name: "Arc", elo: 1200, matches: 0 },
-            { id: "safari", name: "Apple Safari", elo: 1200, matches: 0 },
-            { id: "duckduckgo", name: "DuckDuckGo Browser", elo: 1200, matches: 0 },
-            { id: "qutebrowser", name: "qutebrowser", elo: 1200, matches: 0 },
-            { id: "ladybird", name: "Ladybird", elo: 1200, matches: 0 },
-            { id: "midori", name: "Midori", elo: 1200, matches: 0 },
-            { id: "falkon", name: "Falkon", elo: 1200, matches: 0 },
-            { id: "orion", name: "Orion", elo: 1200, matches: 0 }
-        ];
+        // 1. Updated Core Data with website domains
+let masterBrowsers = [
+    { domain: "mozilla.org", name: "Mozilla Firefox", elo: 1200, matches: 0 },
+    { domain: "librewolf.net", name: "Librewolf", elo: 1200, matches: 0 },
+    { domain: "floorp.app", name: "Floorp", elo: 1200, matches: 0 },
+    { domain: "waterfox.net", name: "Waterfox", elo: 1200, matches: 0 },
+    { domain: "mullvad.net", name: "Mullvad Browser", elo: 1200, matches: 0 },
+    { domain: "palemoon.org", name: "Pale Moon", elo: 1200, matches: 0 },
+    { domain: "zen-browser.app", name: "Zen Browser", elo: 1200, matches: 0 },
+    { domain: "torproject.org", name: "Tor Browser", elo: 1200, matches: 0 },
+    { domain: "google.com/chrome", name: "Google Chrome", elo: 1200, matches: 0 },
+    { domain: "chromium.org", name: "Ungoogled Chromium", elo: 1200, matches: 0 },
+    { domain: "brave.com", name: "Brave", elo: 1200, matches: 0 },
+    { domain: "vivaldi.com", name: "Vivaldi", elo: 1200, matches: 0 },
+    { domain: "github.com/Alex313031/thorium", name: "Thorium", elo: 1200, matches: 0 },
+    { domain: "microsoft.com/edge", name: "Microsoft Edge", elo: 1200, matches: 0 },
+    { domain: "opera.com", name: "Opera", elo: 1200, matches: 0 },
+    { domain: "opera.com/gx", name: "Opera GX", elo: 1200, matches: 0 },
+    { domain: "arc.net", name: "Arc", elo: 1200, matches: 0 },
+    { domain: "apple.com/safari", name: "Apple Safari", elo: 1200, matches: 0 },
+    { domain: "duckduckgo.com", name: "DuckDuckGo Browser", elo: 1200, matches: 0 },
+    { domain: "qutebrowser.org", name: "qutebrowser", elo: 1200, matches: 0 },
+    { domain: "ladybird.org", name: "Ladybird", elo: 1200, matches: 0 },
+    { domain: "astian.org/midori-browser", name: "Midori", elo: 1200, matches: 0 },
+    { domain: "falkon.org", name: "Falkon", elo: 1200, matches: 0 },
+    { domain: "browser.kagi.com", name: "Orion", elo: 1200, matches: 0 }
+];
+
+// ... (Keep your existing state variables, Elo math, and shuffle functions) ...
+
+// 4. Update the UI rendering function to pull from Google's Favicon API
+function updateUI() {
+    document.getElementById('round-title').innerText = "Round " + roundNumber;
+    document.getElementById('match-progress').innerText = "Match " + (currentMatchIndex + 1) + " of " + currentMatchups.length;
+
+    let currentPair = currentMatchups[currentMatchIndex];
+    
+    // Set Names
+    document.getElementById('nameA').innerText = currentPair[0].name;
+    document.getElementById('nameB').innerText = currentPair[1].name;
+
+    // Dynamically grab the highest quality favicon from Google's service
+    document.getElementById('logoA').src = "https://www.google.com/s2/favicons?sz=128&domain=" + currentPair[0].domain;
+    document.getElementById('logoB').src = "https://www.google.com/s2/favicons?sz=128&domain=" + currentPair[1].domain;
+}
+
+// 5. Update the Winner screen image source logic too
+function showWinnerAndLeaderboard(winnerObj) {
+    document.getElementById('tournament-view').style.display = 'none';
+    document.getElementById('winner-view').style.display = 'block';
+    
+    document.getElementById('winner-name').innerText = winnerObj.name;
+    document.getElementById('winner-logo').src = "https://www.google.com/s2/favicons?sz=128&domain=" + winnerObj.domain;
+    
+    logEvent("🏆 TOURNAMENT CHAMPION: " + winnerObj.name);
+
+    renderLeaderboard();
+}
 
         // Tournament State Variables
         let activePool = [];
