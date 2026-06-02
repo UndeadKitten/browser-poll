@@ -190,27 +190,34 @@
 
         // 3. UI Logic
         function loadNewMatchup() {
-            // Pick two distinct random browsers
+            // 1. Pick the first browser completely at random
             let idxA = Math.floor(Math.random() * browsers.length);
-            let idxB = Math.floor(Math.random() * browsers.length);
-            while (idxA === idxB) {
-                idxB = Math.floor(Math.random() * browsers.length);
+            let browserA = browsers[idxA];
+        
+            // 2. Map all other browsers and calculate how close their Elo is to Browser A
+            let candidates = [];
+            for (let i = 0; i < browsers.length; i++) {
+                if (i !== idxA) {
+                    candidates.push({
+                        idx: i,
+                        eloDifference: Math.abs(browsers[i].elo - browserA.elo)
+                    });
+                }
             }
-
+        
+            // 3. Sort candidates so the closest matching Elo ratings are at the front
+            candidates.sort((a, b) => a.eloDifference - b.eloDifference);
+        
+            // 4. Take a small pool of the closest competitors (e.g., the top 4 closest)
+            // and pick one at random so the user doesn't get the exact same loop.
+            let poolSize = Math.min(4, candidates.length);
+            let randomPoolIdx = Math.floor(Math.random() * poolSize);
+            let idxB = candidates[randomPoolIdx].idx;
+        
+            // Set the pair and update the UI
             currentPair = [idxA, idxB];
-
             document.getElementById('nameA').innerText = browsers[idxA].name;
             document.getElementById('nameB').innerText = browsers[idxB].name;
-        }
-
-        function handleVote(choice) {
-            let winnerIdx = choice === 'A' ? currentPair[0] : currentPair[1];
-            let loserIdx = choice === 'A' ? currentPair[1] : currentPair[0];
-
-            updateRatings(winnerIdx, loserIdx);
-            
-            renderLeaderboard();
-            loadNewMatchup();
         }
 
         function renderLeaderboard() {
