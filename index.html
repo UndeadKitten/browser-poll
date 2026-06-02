@@ -43,12 +43,21 @@
         }
         .browser-card {
             background-color: var(--surface-color); border: 2px solid var(--border);
-            border-radius: 12px; padding: 50px 20px; flex: 1; text-align: center;
+            border-radius: 12px; padding: 40px 20px; flex: 1; text-align: center;
             cursor: pointer; transition: all 0.2s ease; display: flex;
-            flex-direction: column; justify-content: center;
+            flex-direction: column; justify-content: center; align-items: center;
         }
         .browser-card:hover { border-color: var(--accent); background-color: #2a2a2a; transform: translateY(-2px); }
         .browser-name { font-size: 26px; font-weight: bold; }
+        
+        /* Logo Styles */
+        .browser-logo {
+            width: 96px;
+            height: 96px;
+            margin-top: 20px;
+            object-fit: contain;
+        }
+        
         .vs-badge { display: flex; align-items: center; font-weight: bold; color: var(--text-muted); font-size: 20px; }
 
         /* Winner Screen & Leaderboard */
@@ -76,6 +85,18 @@
         }
         .btn:hover { background-color: var(--accent-hover); color: #fff; }
 
+        /* Elimination Log / Feed */
+        .log-container {
+            margin-top: 40px; text-align: left; background-color: #171717;
+            padding: 20px; border-radius: 8px; border: 1px solid var(--border);
+            max-height: 180px; overflow-y: auto; width: 100%; box-sizing: border-box;
+        }
+        .log-title {
+            font-size: 12px; color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px;
+        }
+        .log-entry { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; font-family: monospace; }
+
     </style>
 </head>
 <body>
@@ -90,10 +111,12 @@
             <div class="matchup-container">
                 <div class="browser-card" onclick="castVote(0)">
                     <div class="browser-name" id="nameA">Browser A</div>
+                    <img class="browser-logo" id="logoA" src="" alt="Browser A Logo">
                 </div>
                 <div class="vs-badge">VS</div>
                 <div class="browser-card" onclick="castVote(1)">
                     <div class="browser-name" id="nameB">Browser B</div>
+                    <img class="browser-logo" id="logoB" src="" alt="Browser B Logo">
                 </div>
             </div>
         </div>
@@ -102,7 +125,9 @@
             <div class="winner-screen">
                 <div style="font-size: 50px;">🏆</div>
                 <div class="winner-title">Your Ultimate Choice</div>
-                <div id="winner-name" style="font-size: 32px; font-weight: bold;">Mozilla Firefox</div>
+                <div id="winner-name" style="font-size: 32px; font-weight: bold; margin-bottom: 15px;">Mozilla Firefox</div>
+                <img class="browser-logo" id="winner-logo" src="" alt="Winner Logo" style="width: 128px; height: 128px; margin-top: 0;">
+                <br>
                 <button class="btn" onclick="resetTournament()">Play Another Bracket</button>
             </div>
 
@@ -126,35 +151,40 @@
             </div>
         </div>
 
+        <div class="log-container">
+            <div class="log-title">Tournament Feed</div>
+            <div id="log-feed"></div>
+        </div>
+
     </div>
 
     <script>
-        // 1. Core Data (Contains both name and Elo stats)
+        // 1. Core Data (Includes clean 'id' tokens for file paths)
         let masterBrowsers = [
-            { name: "Mozilla Firefox", elo: 1200, matches: 0 },
-            { name: "Librewolf", elo: 1200, matches: 0 },
-            { name: "Floorp", elo: 1200, matches: 0 },
-            { name: "Waterfox", elo: 1200, matches: 0 },
-            { name: "Mullvad Browser", elo: 1200, matches: 0 },
-            { name: "Pale Moon", elo: 1200, matches: 0 },
-            { name: "Zen Browser", elo: 1200, matches: 0 },
-            { name: "Tor Browser", elo: 1200, matches: 0 },
-            { name: "Google Chrome", elo: 1200, matches: 0 },
-            { name: "Ungoogled Chromium", elo: 1200, matches: 0 },
-            { name: "Brave", elo: 1200, matches: 0 },
-            { name: "Vivaldi", elo: 1200, matches: 0 },
-            { name: "Thorium", elo: 1200, matches: 0 },
-            { name: "Microsoft Edge", elo: 1200, matches: 0 },
-            { name: "Opera", elo: 1200, matches: 0 },
-            { name: "Opera GX", elo: 1200, matches: 0 },
-            { name: "Arc", elo: 1200, matches: 0 },
-            { name: "Apple Safari", elo: 1200, matches: 0 },
-            { name: "DuckDuckGo Browser", elo: 1200, matches: 0 },
-            { name: "qutebrowser", elo: 1200, matches: 0 },
-            { name: "Ladybird", elo: 1200, matches: 0 },
-            { name: "Midori", elo: 1200, matches: 0 },
-            { name: "Falkon", elo: 1200, matches: 0 },
-            { name: "Orion", elo: 1200, matches: 0 }
+            { id: "firefox", name: "Mozilla Firefox", elo: 1200, matches: 0 },
+            { id: "librewolf", name: "Librewolf", elo: 1200, matches: 0 },
+            { id: "floorp", name: "Floorp", elo: 1200, matches: 0 },
+            { id: "waterfox", name: "Waterfox", elo: 1200, matches: 0 },
+            { id: "mullvad", name: "Mullvad Browser", elo: 1200, matches: 0 },
+            { id: "palemoon", name: "Pale Moon", elo: 1200, matches: 0 },
+            { id: "zen", name: "Zen Browser", elo: 1200, matches: 0 },
+            { id: "tor", name: "Tor Browser", elo: 1200, matches: 0 },
+            { id: "chrome", name: "Google Chrome", elo: 1200, matches: 0 },
+            { id: "chromium", name: "Ungoogled Chromium", elo: 1200, matches: 0 },
+            { id: "brave", name: "Brave", elo: 1200, matches: 0 },
+            { id: "vivaldi", name: "Vivaldi", elo: 1200, matches: 0 },
+            { id: "thorium", name: "Thorium", elo: 1200, matches: 0 },
+            { id: "edge", name: "Microsoft Edge", elo: 1200, matches: 0 },
+            { id: "opera", name: "Opera", elo: 1200, matches: 0 },
+            { id: "operagx", name: "Opera GX", elo: 1200, matches: 0 },
+            { id: "arc", name: "Arc", elo: 1200, matches: 0 },
+            { id: "safari", name: "Apple Safari", elo: 1200, matches: 0 },
+            { id: "duckduckgo", name: "DuckDuckGo Browser", elo: 1200, matches: 0 },
+            { id: "qutebrowser", name: "qutebrowser", elo: 1200, matches: 0 },
+            { id: "ladybird", name: "Ladybird", elo: 1200, matches: 0 },
+            { id: "midori", name: "Midori", elo: 1200, matches: 0 },
+            { id: "falkon", name: "Falkon", elo: 1200, matches: 0 },
+            { id: "orion", name: "Orion", elo: 1200, matches: 0 }
         ];
 
         // Tournament State Variables
@@ -178,7 +208,16 @@
             loserObj.matches++;
         }
 
-        // 3. Tournament Logic
+        // 3. Logger Function
+        function logEvent(text) {
+            const feed = document.getElementById('log-feed');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerText = text;
+            feed.insertBefore(entry, feed.firstChild);
+        }
+
+        // 4. Tournament Logic
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -187,12 +226,13 @@
         }
 
         function initTournament() {
+            document.getElementById('log-feed').innerHTML = '';
             document.getElementById('tournament-view').style.display = 'block';
             document.getElementById('winner-view').style.display = 'none';
             
-            // We pass the actual objects into the pool so their Elo can be updated
             activePool = [...masterBrowsers];
             roundNumber = 1;
+            logEvent("⚔️ Tournament started with " + activePool.length + " browsers.");
             generateRoundMatchups();
         }
 
@@ -206,6 +246,7 @@
             if (activePool.length % 2 !== 0) {
                 let byeBrowser = activePool.pop();
                 nextRoundPool.push(byeBrowser);
+                logEvent("🎲 " + byeBrowser.name + " received a round bye and automatically advances.");
             }
 
             for (let i = 0; i < activePool.length; i += 2) {
@@ -220,8 +261,14 @@
             document.getElementById('match-progress').innerText = "Match " + (currentMatchIndex + 1) + " of " + currentMatchups.length;
 
             let currentPair = currentMatchups[currentMatchIndex];
+            
+            // Set Names
             document.getElementById('nameA').innerText = currentPair[0].name;
             document.getElementById('nameB').innerText = currentPair[1].name;
+
+            // Set Image Sources dynamically
+            document.getElementById('logoA').src = "images/" + currentPair[0].id + ".webp";
+            document.getElementById('logoB').src = "images/" + currentPair[1].id + ".webp";
         }
 
         function castVote(selectedIndex) {
@@ -229,10 +276,10 @@
             let winner = currentPair[selectedIndex];
             let loser = currentPair[selectedIndex === 0 ? 1 : 0];
 
-            // Run the secret Elo Math in the background
+            // Secret Elo adjustment
             updateRatings(winner, loser);
+            logEvent("❌ " + loser.name + " eliminated by " + winner.name);
 
-            // Advance the bracket
             nextRoundPool.push(winner);
             currentMatchIndex++;
 
@@ -244,16 +291,21 @@
                     showWinnerAndLeaderboard(activePool[0]);
                 } else {
                     roundNumber++;
+                    logEvent("🚀 Moving into Round " + roundNumber + " with " + activePool.length + " contenders.");
                     generateRoundMatchups();
                 }
             }
         }
 
-        // 4. Finale Logic
+        // 5. Finale Logic
         function showWinnerAndLeaderboard(winnerObj) {
             document.getElementById('tournament-view').style.display = 'none';
             document.getElementById('winner-view').style.display = 'block';
+            
             document.getElementById('winner-name').innerText = winnerObj.name;
+            document.getElementById('winner-logo').src = "images/" + winnerObj.id + ".webp";
+            
+            logEvent("🏆 TOURNAMENT CHAMPION: " + winnerObj.name);
 
             renderLeaderboard();
         }
@@ -262,7 +314,6 @@
             const tbody = document.getElementById('leaderboard-body');
             tbody.innerHTML = '';
 
-            // Sort a fresh copy of the master array by Elo descending
             let sortedBrowsers = [...masterBrowsers].sort((a, b) => b.elo - a.elo);
 
             sortedBrowsers.forEach((b, index) => {
