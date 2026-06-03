@@ -199,7 +199,7 @@
         }
 
         .survey-col-headers {
-            display: grid; grid-template-columns: 1fr 110px 130px; gap: 4px;
+            display: grid; grid-template-columns: 1fr 85px 105px 125px; gap: 4px;
             padding: 10px 4px 6px; position: sticky; top: 0;
             background: var(--surface-color); border-bottom: 1px solid var(--border);
             z-index: 2; font-size: 11px; color: var(--text-muted);
@@ -214,7 +214,7 @@
         }
 
         .survey-row {
-            display: grid; grid-template-columns: 1fr 110px 130px; gap: 4px;
+            display: grid; grid-template-columns: 1fr 85px 105px 125px; gap: 4px;
             align-items: center; padding: 6px 4px;
             border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.1s;
         }
@@ -227,7 +227,7 @@
 </head>
 <body>
 
-    <div class="version-badge">v1.11.0</div>
+    <div class="version-badge">v1.12.0</div>
     <button class="dev-reset-btn" onclick="devReset()">🛠 Reset LocalStorage</button>
 
     <!-- Survey Modal -->
@@ -494,7 +494,7 @@
 
             const colHeaders = document.createElement('div');
             colHeaders.className = 'survey-col-headers';
-            colHeaders.innerHTML = '<span>Browser</span><span>Used Before</span><span>Regularly Using</span>';
+            colHeaders.innerHTML = '<span>Browser</span><span>Heard Of</span><span>Used Before</span><span>Regularly Using</span>';
             body.appendChild(colHeaders);
 
             SURVEY_CATEGORIES.forEach(cat => {
@@ -507,16 +507,23 @@
                     const browser = masterBrowsers.find(b => b.id === id);
                     if (!browser) return; // Skip if currently commented out
 
-                    if (!surveyData[id]) surveyData[id] = { used: false, current: false };
+                    if (!surveyData[id]) surveyData[id] = { heard: false, used: false, current: false };
+
+                    let heardDisabled = (surveyData[id].used || surveyData[id].current) ? 'disabled style="opacity:0.35;cursor:not-allowed;"' : '';
+                    let usedDisabled = surveyData[id].current ? 'disabled style="opacity:0.35;cursor:not-allowed;"' : '';
 
                     const row = document.createElement('div');
                     row.className = 'survey-row';
                     row.innerHTML = `
                         <span class="survey-browser-name">${browser.name}</span>
                         <div class="survey-check-cell">
+                            <input type="checkbox" id="sv-heard-${id}"
+                                ${surveyData[id].heard ? 'checked' : ''} ${heardDisabled}
+                                onchange="onSurveyChange('${id}', 'heard', this.checked)">
+                        </div>
+                        <div class="survey-check-cell">
                             <input type="checkbox" id="sv-used-${id}"
-                                ${surveyData[id].used ? 'checked' : ''}
-                                ${surveyData[id].current ? 'disabled style="opacity:0.35;cursor:not-allowed;"' : ''}
+                                ${surveyData[id].used ? 'checked' : ''} ${usedDisabled}
                                 onchange="onSurveyChange('${id}', 'used', this.checked)">
                         </div>
                         <div class="survey-check-cell">
@@ -531,28 +538,42 @@
         }
 
         function onSurveyChange(id, field, value) {
-            if (!surveyData[id]) surveyData[id] = { used: false, current: false };
+            if (!surveyData[id]) surveyData[id] = { heard: false, used: false, current: false };
             surveyData[id][field] = value;
 
-            if (field === 'current') {
-                const usedBox = document.getElementById('sv-used-' + id);
-                if (value) {
-                    surveyData[id].used = true;
-                    usedBox.checked = true;
-                    usedBox.disabled = true;
-                    usedBox.style.opacity = '0.35';
-                    usedBox.style.cursor = 'not-allowed';
-                } else {
-                    usedBox.disabled = false;
-                    usedBox.style.opacity = '';
-                    usedBox.style.cursor = '';
-                }
+            // Cascade logic for checkboxes
+            if (field === 'current' && value) {
+                surveyData[id].used = true;
+                surveyData[id].heard = true;
+            } else if (field === 'used' && value) {
+                surveyData[id].heard = true;
             }
+
+            // Sync visual UI for this row immediately
+            const heardBox = document.getElementById('sv-heard-' + id);
+            const usedBox = document.getElementById('sv-used-' + id);
+            const currBox = document.getElementById('sv-curr-' + id);
+
+            if (heardBox) heardBox.checked = surveyData[id].heard;
+            if (usedBox) usedBox.checked = surveyData[id].used;
+            if (currBox) currBox.checked = surveyData[id].current;
+
+            if (surveyData[id].current) {
+                if (usedBox) { usedBox.disabled = true; usedBox.style.opacity = '0.35'; usedBox.style.cursor = 'not-allowed'; }
+                if (heardBox) { heardBox.disabled = true; heardBox.style.opacity = '0.35'; heardBox.style.cursor = 'not-allowed'; }
+            } else if (surveyData[id].used) {
+                if (usedBox) { usedBox.disabled = false; usedBox.style.opacity = ''; usedBox.style.cursor = ''; }
+                if (heardBox) { heardBox.disabled = true; heardBox.style.opacity = '0.35'; heardBox.style.cursor = 'not-allowed'; }
+            } else {
+                if (usedBox) { usedBox.disabled = false; usedBox.style.opacity = ''; usedBox.style.cursor = ''; }
+                if (heardBox) { heardBox.disabled = false; heardBox.style.opacity = ''; heardBox.style.cursor = ''; }
+            }
+
             checkSaveBtnState();
         }
 
         function checkSaveBtnState() {
-            const anyChecked = Object.values(surveyData).some(d => d.used || d.current);
+            const anyChecked = Object.values(surveyData).some(d => d.heard || d.used || d.current);
             const saveBtn = document.getElementById('survey-save-btn');
             if (surveyCompleted) {
                 saveBtn.disabled = false;
@@ -574,7 +595,7 @@
         }
 
         function saveSurvey() {
-            const anyChecked = Object.values(surveyData).some(d => d.used || d.current);
+            const anyChecked = Object.values(surveyData).some(d => d.heard || d.used || d.current);
             closeSurveyModal();
 
             if (anyChecked) {
