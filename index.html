@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browser Bracket & Global Leaderboard</title>
-    <!-- Firebase — check https://firebase.google.com/docs/web/setup for latest version -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
@@ -42,59 +41,6 @@
         }
         .progress-bar { color: var(--text-muted); margin-bottom: 30px; font-size: 14px; }
 
-        /* Mode Selection Screen */
-        .mode-selection-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin: 20px auto 40px;
-            max-width: 600px;
-        }
-        .mode-card {
-            background-color: var(--surface-color);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 25px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: left;
-        }
-        .mode-card:hover {
-            border-color: var(--accent);
-            background-color: #2a2a2a;
-            transform: translateY(-2px);
-        }
-        .mode-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: var(--accent);
-            margin-bottom: 8px;
-        }
-        .mode-desc {
-            font-size: 14px;
-            color: var(--text-main);
-            margin-bottom: 12px;
-            line-height: 1.4;
-        }
-        .mode-count {
-            font-size: 12px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-family: monospace;
-        }
-
-        /* Locked mode card state */
-        .mode-card.locked {
-            opacity: 0.38;
-            cursor: not-allowed;
-        }
-        .mode-card.locked:hover {
-            border-color: var(--border);
-            background-color: var(--surface-color);
-            transform: none;
-        }
-
         /* Matchup Arena */
         .matchup-container {
             display: flex; gap: 20px; margin-bottom: 15px; justify-content: center; align-items: stretch;
@@ -105,7 +51,9 @@
             cursor: pointer; transition: all 0.2s ease; display: flex;
             flex-direction: column; justify-content: center; align-items: center;
         }
-        .browser-card:hover { border-color: var(--accent); background-color: #2a2a2a; transform: translateY(-2px); }
+        .browser-card:hover:not(.locked-vote) { 
+            border-color: var(--accent); background-color: #2a2a2a; transform: translateY(-2px); 
+        }
         .browser-name { font-size: 26px; font-weight: bold; }
 
         .logo-wrapper {
@@ -113,10 +61,18 @@
             border-radius: 16px; display: flex; align-items: center; justify-content: center;
             margin-top: 20px; box-shadow: 0 8px 16px rgba(0,0,0,0.3); transition: transform 0.2s ease;
         }
-        .browser-card:hover .logo-wrapper { transform: scale(1.05); }
+        .browser-card:hover:not(.locked-vote) .logo-wrapper { transform: scale(1.05); }
         .browser-logo { width: 96px; height: 96px; object-fit: contain; border-radius: 12px; }
 
         .vs-badge { display: flex; align-items: center; font-weight: bold; color: var(--text-muted); font-size: 20px; }
+
+        /* Locked Voting State */
+        .locked-vote {
+            opacity: 0.25;
+            cursor: not-allowed;
+            pointer-events: none;
+            filter: grayscale(100%);
+        }
 
         /* Tournament Controls Area */
         .tournament-controls {
@@ -130,7 +86,7 @@
             font-size: 14px; font-weight: 600; border-radius: 6px;
             cursor: pointer; transition: all 0.2s ease;
         }
-        .btn-skip:hover, .btn-secondary:hover:not(:disabled) {
+        .btn-skip:hover:not(.locked-vote), .btn-secondary:hover:not(:disabled) {
             background-color: #2a2a2a; color: var(--text-main); border-color: var(--text-muted);
         }
         .btn-secondary:disabled { opacity: 0.3; cursor: not-allowed; }
@@ -167,7 +123,6 @@
             margin-top: 20px; transition: background-color 0.2s;
         }
         .btn:hover { background-color: var(--accent-hover); color: #fff; }
-        .btn:disabled { opacity: 0.4; cursor: not-allowed; background-color: var(--accent); color: #000; }
 
         /* Elimination Log / Feed */
         .log-container {
@@ -182,7 +137,6 @@
         }
         .log-entry { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; font-family: monospace; }
 
-        /* Version Badge */
         .version-badge {
             position: fixed; bottom: 12px; right: 12px; font-family: monospace;
             font-size: 11px; color: var(--text-muted); background-color: rgba(0,0,0,0.4);
@@ -194,7 +148,9 @@
 
         .survey-gate-area {
             display: flex; flex-direction: column;
-            align-items: center; gap: 8px; margin-bottom: 10px;
+            align-items: center; gap: 8px; margin-bottom: 30px;
+            padding: 20px; background-color: #171717; border-radius: 12px;
+            border: 1px solid var(--border);
         }
 
         .btn-survey {
@@ -207,9 +163,8 @@
         .btn-survey.completed { border-color: var(--success); color: var(--success); }
         .btn-survey.completed:hover { background: var(--success); color: #000; }
 
-        .survey-hint { font-size: 12px; color: var(--text-muted); }
+        .survey-hint { font-size: 13px; color: var(--text-muted); }
 
-        /* Survey Modal */
         #survey-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); z-index: 1000;
@@ -232,7 +187,6 @@
             display: flex; justify-content: flex-end; gap: 12px; flex-shrink: 0;
         }
 
-        /* Sticky column headers inside scroll area */
         .survey-col-headers {
             display: grid; grid-template-columns: 1fr 110px 130px; gap: 4px;
             padding: 10px 4px 6px; position: sticky; top: 0;
@@ -254,34 +208,25 @@
             border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.1s;
         }
         .survey-row:hover { background: #252525; }
-
         .survey-browser-name { font-size: 13px; color: var(--text-main); }
-
-        .survey-check-cell {
-            display: flex; align-items: center; justify-content: center;
-        }
-        .survey-check-cell input[type="checkbox"] {
-            cursor: pointer; accent-color: var(--accent); width: 15px; height: 15px;
-        }
+        .survey-check-cell { display: flex; align-items: center; justify-content: center; }
+        .survey-check-cell input[type="checkbox"] { cursor: pointer; accent-color: var(--accent); width: 15px; height: 15px; }
 
     </style>
 </head>
 <body>
 
-    <div class="version-badge">v1.8.0</div>
+    <div class="version-badge">v1.9.0</div>
 
-    <!-- Survey Modal (fixed overlay, outside .container) -->
     <div id="survey-modal" style="display: none;">
         <div id="survey-modal-content">
             <div class="survey-modal-header">
                 <h2 style="margin: 0 0 6px; font-size: 20px;">Browser Experience Survey</h2>
                 <p style="margin: 0; color: var(--text-muted); font-size: 13px; line-height: 1.4;">
-                    Mark any browsers you've used or are regularly using. At least one selection required to unlock game modes.
+                    Mark any browsers you've used or are regularly using. At least one selection required to unlock voting.
                 </p>
             </div>
-            <div class="survey-modal-body" id="survey-modal-body">
-                <!-- Rows injected by JS -->
-            </div>
+            <div class="survey-modal-body" id="survey-modal-body"></div>
             <div class="survey-modal-footer">
                 <button class="btn-secondary" onclick="closeSurveyModal()">Cancel</button>
                 <button class="btn" id="survey-save-btn" onclick="saveSurvey()" style="margin-top: 0;" disabled>Save &amp; Unlock</button>
@@ -291,53 +236,26 @@
 
     <div class="container">
 
-        <!-- Game Mode Selection Interface -->
-        <div id="mode-select-view">
-            <h1>Select Bracket Game Mode</h1>
-            <div style="color: var(--text-muted); margin-bottom: 30px;">Choose the pool of browsers you'd like to pit against each other.</div>
-
-            <!-- Survey Gate -->
-            <div class="survey-gate-area">
-                <button class="btn-survey" id="survey-btn" onclick="openSurveyModal()">📋 Take Browser Survey</button>
-                <div class="survey-hint" id="survey-hint">Complete the survey once to unlock all game modes.</div>
-            </div>
-
-            <div class="mode-selection-container">
-                <div class="mode-card locked" id="card-mainstream" onclick="handleModeClick('mainstream')">
-                    <div class="mode-title">Mainstream Giants</div>
-                    <div class="mode-desc">The long-time classics and major industry giants that rule default desktop and mobile installations.</div>
-                    <div class="mode-count" id="count-mainstream">5 Browsers</div>
-                </div>
-
-                <div class="mode-card locked" id="card-enthusiast" onclick="handleModeClick('enthusiast')">
-                    <div class="mode-title">The Reddit Enthusiast Pack</div>
-                    <div class="mode-desc">All the mainstream giants plus the forks, privacy tools, and alternative concepts people actually talk about on Reddit, GitHub, and community forums.</div>
-                    <div class="mode-count" id="count-enthusiast">23 Browsers</div>
-                </div>
-
-                <div class="mode-card locked" id="card-all" onclick="handleModeClick('all')">
-                    <div class="mode-title">The Mega Gauntlet</div>
-                    <div class="mode-desc">Every browser in the database. Mainstream giants, active forks, regional portals, terminal environments, retro recreation ports, and legacy classics.</div>
-                    <div class="mode-count" id="count-all">67 Browsers</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tournament Voting Interface -->
         <div id="tournament-view" style="display: none;">
             <h1>Browser Bracket</h1>
+            
+            <div class="survey-gate-area">
+                <div class="survey-hint" id="survey-hint">Complete the survey once to unlock voting.</div>
+                <button class="btn-survey" id="survey-btn" onclick="openSurveyModal()">📋 Take Browser Survey</button>
+            </div>
+
             <div class="status-bar" id="round-title">Round 1</div>
             <div class="progress-bar" id="match-progress">Match 1 of 12</div>
 
             <div class="matchup-container">
-                <div class="browser-card" onclick="castVote(0)">
+                <div class="browser-card locked-vote" id="cardA" onclick="castVote(0)">
                     <div class="browser-name" id="nameA">Browser A</div>
                     <div class="logo-wrapper">
                         <img class="browser-logo" id="logoA" src="" alt="Browser A Logo">
                     </div>
                 </div>
                 <div class="vs-badge">VS</div>
-                <div class="browser-card" onclick="castVote(1)">
+                <div class="browser-card locked-vote" id="cardB" onclick="castVote(1)">
                     <div class="browser-name" id="nameB">Browser B</div>
                     <div class="logo-wrapper">
                         <img class="browser-logo" id="logoB" src="" alt="Browser B Logo">
@@ -347,12 +265,10 @@
 
             <div class="tournament-controls">
                 <button class="btn-secondary" id="btn-undo" onclick="undoMatchup()" disabled>↩ Undo</button>
-                <button class="btn-skip" onclick="skipMatchup()">Eliminate Both (I've never heard of either)</button>
-                <button class="btn-secondary" onclick="quitTournament()">🏠 Main Menu</button>
+                <button class="btn-skip locked-vote" id="btn-skip" onclick="skipMatchup()">Eliminate Both (I've never heard of either)</button>
             </div>
         </div>
 
-        <!-- End Screen: Winner & Leaderboard -->
         <div id="winner-view" style="display: none;">
             <div class="winner-screen">
                 <div style="font-size: 50px;">🏆</div>
@@ -363,7 +279,7 @@
                     <img class="winner-logo" id="winner-logo" src="" alt="Winner Logo">
                 </div>
 
-                <button class="btn" onclick="returnToMenu()">Main Menu</button>
+                <button class="btn" onclick="restartBracket()">Restart Bracket</button>
             </div>
 
             <div class="leaderboard-container">
@@ -385,7 +301,6 @@
             </div>
         </div>
 
-        <!-- Tournament Feed Log -->
         <div class="log-container" id="feed-container" style="display: none;">
             <div class="log-title">Tournament Feed</div>
             <div id="log-feed"></div>
@@ -396,8 +311,6 @@
     <script>
         // ══════════════════════════════════════════════════════════════
         // 0. Firebase Setup
-        //    Paste your firebaseConfig from the Firebase Console here.
-        //    Project Settings → General → Your apps → SDK setup
         // ══════════════════════════════════════════════════════════════
         const firebaseConfig = {
             apiKey:            "AIzaSyAJPMqyXSHtkOZfVXhPiyY_gGdD7jj1VLk",
@@ -407,71 +320,50 @@
             messagingSenderId: "309916905891",
             appId:             "1:309916905891:web:e712ec567af24a7e3f6a16"
         };
-
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Check if they have already completed a bracket session
-        (async function checkExistingCompletion() {
-            if (localStorage.getItem('bracketCompleted') === 'true') {
-                // Ensure the view switches immediately before they see the main menu
-                window.addEventListener('DOMContentLoaded', async () => {
-                    document.getElementById('mode-select-view').style.display = 'none';
-                    document.getElementById('winner-view').style.display = 'flex';
-                    
-                    // Show generic placeholder text instead of a specific winner
-                    document.getElementById('winner-name').innerText = "Bracket Completed!";
-                    document.getElementById('winner-logo-wrapper').style.display = 'none';
-                    
-                    // Load the up-to-date global board
-                    await renderLeaderboard();
-                });
-            }
-        })();
-
         // ══════════════════════════════════════════════════════════════
-        // 1. Master Pool — 67 browsers, grouped by engine family,
-        //    sorted roughly by popularity within each group.
+        // 1. Master Pool — Testing Pool (Non-enthusiast options commented out)
         // ══════════════════════════════════════════════════════════════
         let masterBrowsers = [
-
             // ── CHROMIUM FORKS ──────────────────────────────────────
             { id: "chrome",               name: "Google Chrome",        elo: 1200, matches: 0 },
             { id: "edge",                 name: "Microsoft Edge",       elo: 1200, matches: 0 },
-            { id: "samsung-internet",     name: "Samsung Internet",     elo: 1200, matches: 0 },
+            // { id: "samsung-internet",     name: "Samsung Internet",     elo: 1200, matches: 0 },
             { id: "brave",                name: "Brave",                elo: 1200, matches: 0 },
             { id: "opera",                name: "Opera",                elo: 1200, matches: 0 },
             { id: "vivaldi",              name: "Vivaldi",              elo: 1200, matches: 0 },
             { id: "arc-browser",          name: "Arc",                  elo: 1200, matches: 0 },
             { id: "opera-gx",             name: "Opera GX",             elo: 1200, matches: 0 },
-            { id: "yandex-browser",       name: "Yandex",               elo: 1200, matches: 0 },
-            { id: "uc-browser",           name: "UC Browser",           elo: 1200, matches: 0 },
-            { id: "naver-whale-browser",  name: "Naver Whale",          elo: 1200, matches: 0 },
+            // { id: "yandex-browser",       name: "Yandex",               elo: 1200, matches: 0 },
+            // { id: "uc-browser",           name: "UC Browser",           elo: 1200, matches: 0 },
+            // { id: "naver-whale-browser",  name: "Naver Whale",          elo: 1200, matches: 0 },
             { id: "duckduckgo-browser",   name: "DuckDuckGo Browser",   elo: 1200, matches: 0 },
-            { id: "kiwi-browser",         name: "Kiwi Browser",         elo: 1200, matches: 0 },
+            // { id: "kiwi-browser",         name: "Kiwi Browser",         elo: 1200, matches: 0 },
             { id: "chromium",             name: "Ungoogled Chromium",   elo: 1200, matches: 0 },
             { id: "thorium",              name: "Thorium",              elo: 1200, matches: 0 },
             { id: "cromite",              name: "Cromite",              elo: 1200, matches: 0 },
-            { id: "wavebox",              name: "Wavebox",              elo: 1200, matches: 0 },
-            { id: "sigmaos",              name: "SigmaOS",              elo: 1200, matches: 0 },
+            // { id: "wavebox",              name: "Wavebox",              elo: 1200, matches: 0 },
+            // { id: "sigmaos",              name: "SigmaOS",              elo: 1200, matches: 0 },
             { id: "helium",               name: "Helium",               elo: 1200, matches: 0 },
-            { id: "iridium-browser",      name: "Iridium",              elo: 1200, matches: 0 },
-            { id: "epic-privacy-browser", name: "Epic Privacy Browser", elo: 1200, matches: 0 },
-            { id: "srware-iron",          name: "SRWare Iron",          elo: 1200, matches: 0 },
-            { id: "flow-browser",         name: "Flow Browser",         elo: 1200, matches: 0 },
-            { id: "min-browser",          name: "Min Browser",          elo: 1200, matches: 0 },
-            { id: "coc-coc",              name: "Coc Coc",              elo: 1200, matches: 0 },
-            { id: "sogou",                name: "Sogou Browser",        elo: 1200, matches: 0 },
-            { id: "amazon-silk-browser",  name: "Amazon Silk",          elo: 1200, matches: 0 },
-            { id: "puffin-browser",       name: "Puffin Browser",       elo: 1200, matches: 0 },
-            { id: "dolphin-browser",      name: "Dolphin Browser",      elo: 1200, matches: 0 },
-            { id: "vanadium",             name: "Vanadium",             elo: 1200, matches: 0 },
-            { id: "maxthon",              name: "Maxthon",              elo: 1200, matches: 0 },
-            { id: "falkon",               name: "Falkon",               elo: 1200, matches: 0 },
+            // { id: "iridium-browser",      name: "Iridium",              elo: 1200, matches: 0 },
+            // { id: "epic-privacy-browser", name: "Epic Privacy Browser", elo: 1200, matches: 0 },
+            // { id: "srware-iron",          name: "SRWare Iron",          elo: 1200, matches: 0 },
+            // { id: "flow-browser",         name: "Flow Browser",         elo: 1200, matches: 0 },
+            // { id: "min-browser",          name: "Min Browser",          elo: 1200, matches: 0 },
+            // { id: "coc-coc",              name: "Coc Coc",              elo: 1200, matches: 0 },
+            // { id: "sogou",                name: "Sogou Browser",        elo: 1200, matches: 0 },
+            // { id: "amazon-silk-browser",  name: "Amazon Silk",          elo: 1200, matches: 0 },
+            // { id: "puffin-browser",       name: "Puffin Browser",       elo: 1200, matches: 0 },
+            // { id: "dolphin-browser",      name: "Dolphin Browser",      elo: 1200, matches: 0 },
+            // { id: "vanadium",             name: "Vanadium",             elo: 1200, matches: 0 },
+            // { id: "maxthon",              name: "Maxthon",              elo: 1200, matches: 0 },
+            // { id: "falkon",               name: "Falkon",               elo: 1200, matches: 0 },
             { id: "qutebrowser",          name: "qutebrowser",          elo: 1200, matches: 0 },
-            { id: "opera-mini",           name: "Opera Mini",           elo: 1200, matches: 0 },
-            { id: "opera-neon",           name: "Opera Neon",           elo: 1200, matches: 0 },
-            { id: "opera-touch",          name: "Opera Touch",          elo: 1200, matches: 0 },
+            // { id: "opera-mini",           name: "Opera Mini",           elo: 1200, matches: 0 },
+            // { id: "opera-neon",           name: "Opera Neon",           elo: 1200, matches: 0 },
+            // { id: "opera-touch",          name: "Opera Touch",          elo: 1200, matches: 0 },
 
             // ── FIREFOX FORKS ───────────────────────────────────────
             { id: "firefox",              name: "Mozilla Firefox",      elo: 1200, matches: 0 },
@@ -481,47 +373,43 @@
             { id: "waterfox",             name: "Waterfox",             elo: 1200, matches: 0 },
             { id: "floorp",               name: "Floorp",               elo: 1200, matches: 0 },
             { id: "mullvad",              name: "Mullvad Browser",      elo: 1200, matches: 0 },
-            { id: "gnu-icecat",           name: "GNU IceCat",           elo: 1200, matches: 0 },
-            { id: "seamonkey",            name: "SeaMonkey",            elo: 1200, matches: 0 },
+            // { id: "gnu-icecat",           name: "GNU IceCat",           elo: 1200, matches: 0 },
+            // { id: "seamonkey",            name: "SeaMonkey",            elo: 1200, matches: 0 },
             { id: "mercury",              name: "Mercury",              elo: 1200, matches: 0 },
-            { id: "palemoon",             name: "Pale Moon",            elo: 1200, matches: 0 },
-            { id: "basilisk",             name: "Basilisk",             elo: 1200, matches: 0 },
-            { id: "k-meleon",             name: "K-Meleon Browser",     elo: 1200, matches: 0 },
+            // { id: "palemoon",             name: "Pale Moon",            elo: 1200, matches: 0 },
+            // { id: "basilisk",             name: "Basilisk",             elo: 1200, matches: 0 },
+            // { id: "k-meleon",             name: "K-Meleon Browser",     elo: 1200, matches: 0 },
 
             // ── MISC ────────────────────────────────────────────────
             { id: "safari",               name: "Apple Safari",         elo: 1200, matches: 0 },
             { id: "orion",                name: "Orion",                elo: 1200, matches: 0 },
-            { id: "ladybird",             name: "Ladybird",             elo: 1200, matches: 0 },
-            { id: "midori",               name: "Midori",               elo: 1200, matches: 0 },
-            { id: "konqueror",            name: "Konqueror",            elo: 1200, matches: 0 },
-            { id: "netsurf",              name: "Netsurf Browser",      elo: 1200, matches: 0 },
-            { id: "dillo-browser",        name: "Dillo Browser",        elo: 1200, matches: 0 },
-            { id: "nyxt",                 name: "Nyxt Browser",         elo: 1200, matches: 0 },
-            { id: "otter-browser",        name: "Otter Browser",        elo: 1200, matches: 0 },
-            { id: "sleipnir-browser",     name: "Sleipnir",             elo: 1200, matches: 0 },
-            { id: "lunascape",            name: "Lunascape",            elo: 1200, matches: 0 },
-            { id: "internet-explorer",    name: "Internet Explorer",    elo: 1200, matches: 0 },
-            { id: "netscape",             name: "Netscape",             elo: 1200, matches: 0 },
-            { id: "avant-browser",        name: "Avant Browser",        elo: 1200, matches: 0 },
-            { id: "lynx-browser",         name: "Lynx",                 elo: 1200, matches: 0 },
-            { id: "browsh",               name: "Browsh",               elo: 1200, matches: 0 },
-            { id: "dia-browser",          name: "Dia",                  elo: 1200, matches: 0 },
-            { id: "tempest-browser",      name: "Tempest",              elo: 1200, matches: 0 },
+            // { id: "ladybird",             name: "Ladybird",             elo: 1200, matches: 0 },
+            // { id: "midori",               name: "Midori",               elo: 1200, matches: 0 },
+            // { id: "konqueror",            name: "Konqueror",            elo: 1200, matches: 0 },
+            // { id: "netsurf",              name: "Netsurf Browser",      elo: 1200, matches: 0 },
+            // { id: "dillo-browser",        name: "Dillo Browser",        elo: 1200, matches: 0 },
+            // { id: "nyxt",                 name: "Nyxt Browser",         elo: 1200, matches: 0 },
+            // { id: "otter-browser",        name: "Otter Browser",        elo: 1200, matches: 0 },
+            // { id: "sleipnir-browser",     name: "Sleipnir",             elo: 1200, matches: 0 },
+            // { id: "lunascape",            name: "Lunascape",            elo: 1200, matches: 0 },
+            // { id: "internet-explorer",    name: "Internet Explorer",    elo: 1200, matches: 0 },
+            // { id: "netscape",             name: "Netscape",             elo: 1200, matches: 0 },
+            // { id: "avant-browser",        name: "Avant Browser",        elo: 1200, matches: 0 },
+            // { id: "lynx-browser",         name: "Lynx",                 elo: 1200, matches: 0 },
+            // { id: "browsh",               name: "Browsh",               elo: 1200, matches: 0 },
+            // { id: "dia-browser",          name: "Dia",                  elo: 1200, matches: 0 },
+            // { id: "tempest-browser",      name: "Tempest",              elo: 1200, matches: 0 },
         ];
 
         // ══════════════════════════════════════════════════════════════
-        // 2. Survey Category Definitions (mirrors masterBrowsers order)
+        // 2. Survey Categories
         // ══════════════════════════════════════════════════════════════
         const SURVEY_CATEGORIES = [
             {
-                // Mirrors "Mainstream Giants" game mode
                 label: "Mainstream Giants",
-                ids: [
-                    "chrome", "firefox", "safari", "opera", "edge"
-                ]
+                ids: ["chrome", "firefox", "safari", "opera", "edge"]
             },
             {
-                // Mirrors "Reddit Enthusiast Pack" — mainstream excluded
                 label: "Popular Forks & Enthusiast Picks",
                 ids: [
                     "brave", "vivaldi", "arc-browser", "opera-gx",
@@ -529,55 +417,63 @@
                     "librewolf", "zen-browser", "waterfox", "floorp", "mullvad", "tor-browser",
                     "duckduckgo-browser", "qutebrowser", "orion", "helium", "mercury"
                 ]
-            },
-            {
-                // Everyone else — mirrors "Mega Gauntlet" extras
-                label: "Everything Else",
-                ids: [
-                    "samsung-internet", "yandex-browser", "uc-browser", "naver-whale-browser",
-                    "kiwi-browser", "wavebox", "sigmaos", "iridium-browser",
-                    "epic-privacy-browser", "srware-iron", "flow-browser", "min-browser",
-                    "coc-coc", "sogou", "amazon-silk-browser", "puffin-browser",
-                    "dolphin-browser", "vanadium", "maxthon", "falkon",
-                    "opera-mini", "opera-neon", "opera-touch",
-                    "gnu-icecat", "seamonkey", "palemoon", "basilisk", "k-meleon",
-                    "ladybird", "midori", "konqueror", "netsurf", "dillo-browser",
-                    "nyxt", "otter-browser", "sleipnir-browser", "lunascape",
-                    "internet-explorer", "netscape", "avant-browser",
-                    "lynx-browser", "browsh", "dia-browser", "tempest-browser"
-                ]
             }
         ];
 
         // ══════════════════════════════════════════════════════════════
-        // 3. Filter Lists for Game Modes
-        // ══════════════════════════════════════════════════════════════
-        const MODES = {
-            mainstream: ["chrome", "firefox", "safari", "opera", "edge"],
-            enthusiast: [
-                "chrome", "firefox", "safari", "opera", "edge",
-                "librewolf", "waterfox", "floorp", "mullvad", "zen-browser", "tor-browser",
-                "chromium", "brave", "vivaldi", "thorium", "opera-gx",
-                "duckduckgo-browser", "qutebrowser", "arc-browser", "orion", "helium",
-                "cromite", "mercury"
-            ]
-        };
-
-        document.getElementById("count-mainstream").innerText = MODES.mainstream.length + " Browsers";
-        document.getElementById("count-enthusiast").innerText = MODES.enthusiast.length + " Browsers";
-        document.getElementById("count-all").innerText = masterBrowsers.length + " Browsers";
-
-        // ══════════════════════════════════════════════════════════════
-        // 4. Survey State & Logic
+        // 3. Application State
         // ══════════════════════════════════════════════════════════════
         let surveyCompleted = false;
-        let surveyData = {}; // { browserId: { used: bool, current: bool } }
+        let surveyData = {}; 
+        let activePool = [];
+        let nextRoundPool = [];
+        let currentMatchups = [];
+        let currentMatchIndex = 0;
+        let roundNumber = 1;
+        let historyStack = [];
+        let roundStartElos = {};
 
+        // ══════════════════════════════════════════════════════════════
+        // 4. Initialization & LocalStorage Boot
+        // ══════════════════════════════════════════════════════════════
+        window.addEventListener('DOMContentLoaded', async () => {
+            loadSurveyState();
+
+            if (localStorage.getItem('bracketCompleted') === 'true') {
+                document.getElementById('tournament-view').style.display = 'none';
+                document.getElementById('winner-view').style.display = 'flex';
+                document.getElementById('winner-name').innerText = "Bracket Completed!";
+                document.getElementById('winner-logo-wrapper').style.display = 'none';
+                await renderLeaderboard();
+            } else {
+                document.getElementById('tournament-view').style.display = 'block';
+                document.getElementById('feed-container').style.display = 'block';
+                
+                // Directly start tournament logic
+                activePool = [...masterBrowsers];
+                initFirestoreData();
+                initTournament();
+            }
+        });
+
+        function loadSurveyState() {
+            const storedCompleted = localStorage.getItem('surveyCompleted');
+            const storedData = localStorage.getItem('surveyData');
+            
+            if (storedCompleted === 'true' && storedData) {
+                surveyCompleted = true;
+                surveyData = JSON.parse(storedData);
+                unlockVotingCards();
+            }
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // 5. Survey Logic
+        // ══════════════════════════════════════════════════════════════
         function buildSurveyModal() {
             const body = document.getElementById('survey-modal-body');
             body.innerHTML = '';
 
-            // Sticky column headers
             const colHeaders = document.createElement('div');
             colHeaders.className = 'survey-col-headers';
             colHeaders.innerHTML = '<span>Browser</span><span>Used Before</span><span>Regularly Using</span>';
@@ -591,7 +487,7 @@
 
                 cat.ids.forEach(id => {
                     const browser = masterBrowsers.find(b => b.id === id);
-                    if (!browser) return;
+                    if (!browser) return; // Skip if currently commented out
 
                     if (!surveyData[id]) surveyData[id] = { used: false, current: false };
 
@@ -634,7 +530,6 @@
                     usedBox.style.cursor = '';
                 }
             }
-
             checkSaveBtnState();
         }
 
@@ -642,11 +537,9 @@
             const anyChecked = Object.values(surveyData).some(d => d.used || d.current);
             const saveBtn = document.getElementById('survey-save-btn');
             if (surveyCompleted) {
-                // Already unlocked — always allow updating (unchecking all re-locks)
                 saveBtn.disabled = false;
                 saveBtn.textContent = anyChecked ? 'Update Survey' : 'Unsubmit & Lock';
             } else {
-                // Not yet unlocked — require at least one box
                 saveBtn.disabled = !anyChecked;
                 saveBtn.textContent = 'Save & Unlock';
             }
@@ -666,52 +559,46 @@
             const anyChecked = Object.values(surveyData).some(d => d.used || d.current);
             closeSurveyModal();
 
+            if (anyChecked) {
+                surveyCompleted = true;
+                localStorage.setItem('surveyCompleted', 'true');
+                localStorage.setItem('surveyData', JSON.stringify(surveyData));
+                unlockVotingCards();
+            } else {
+                surveyCompleted = false;
+                localStorage.removeItem('surveyCompleted');
+                localStorage.removeItem('surveyData');
+                lockVotingCards();
+            }
+        }
+
+        function unlockVotingCards() {
             const btn = document.getElementById('survey-btn');
             const hint = document.getElementById('survey-hint');
+            btn.textContent = '✓ Survey Complete (Edit)';
+            btn.classList.add('completed');
+            hint.style.display = 'none';
 
-            if (anyChecked) {
-                // Unlock
-                surveyCompleted = true;
-                btn.textContent = '✓ Survey Complete';
-                btn.classList.add('completed');
-                hint.style.display = 'none';
-                document.querySelectorAll('.mode-card').forEach(el => el.classList.remove('locked'));
-            } else {
-                // Re-lock
-                surveyCompleted = false;
-                btn.textContent = '📋 Take Browser Survey';
-                btn.classList.remove('completed');
-                hint.style.display = '';
-                document.querySelectorAll('.mode-card').forEach(el => el.classList.add('locked'));
-            }
+            document.getElementById('cardA').classList.remove('locked-vote');
+            document.getElementById('cardB').classList.remove('locked-vote');
+            document.getElementById('btn-skip').classList.remove('locked-vote');
         }
 
-        function handleModeClick(mode) {
-            if (!surveyCompleted) {
-                openSurveyModal();
-                return;
-            }
-            selectMode(mode);
+        function lockVotingCards() {
+            const btn = document.getElementById('survey-btn');
+            const hint = document.getElementById('survey-hint');
+            btn.textContent = '📋 Take Browser Survey';
+            btn.classList.remove('completed');
+            hint.style.display = '';
+
+            document.getElementById('cardA').classList.add('locked-vote');
+            document.getElementById('cardB').classList.add('locked-vote');
+            document.getElementById('btn-skip').classList.add('locked-vote');
         }
 
         // ══════════════════════════════════════════════════════════════
-        // 5. Tournament State Variables
+        // 6. Firestore & ELO Math
         // ══════════════════════════════════════════════════════════════
-        let activePool = [];
-        let nextRoundPool = [];
-        let currentMatchups = [];
-        let currentMatchIndex = 0;
-        let roundNumber = 1;
-        let currentSelectedMode = "all";
-        let historyStack = [];
-        let roundStartElos = {}; // ELO snapshot taken at start of each round
-
-        // ══════════════════════════════════════════════════════════════
-        // 6. Firebase / Firestore Functions
-        // ══════════════════════════════════════════════════════════════
-
-        // Initialize all browser docs in Firestore if the collection is empty.
-        // Only runs once ever (or if someone wipes the DB).
         async function initFirestoreData() {
             try {
                 const snapshot = await db.collection('browsers').limit(1).get();
@@ -720,30 +607,18 @@
                 logEvent("🗄️ First run — initialising database...");
                 const batch = db.batch();
                 masterBrowsers.forEach(b => {
-                    batch.set(db.collection('browsers').doc(b.id), {
-                        name: b.name,
-                        elo: 1200,
-                        matches: 0
-                    });
+                    batch.set(db.collection('browsers').doc(b.id), { name: b.name, elo: 1200, matches: 0 });
                 });
                 await batch.commit();
                 logEvent("✅ Database initialised with " + masterBrowsers.length + " browsers.");
-            } catch (err) {
-                console.error("Firestore init error:", err);
-            }
+            } catch (err) { console.error("Firestore init error:", err); }
         }
 
-        // Snapshot each browser's current local ELO at the start of a round
-        // so we can compute deltas when the round ends.
         function snapshotRoundElos() {
             roundStartElos = {};
-            masterBrowsers.forEach(b => {
-                roundStartElos[b.id] = { elo: b.elo, matches: b.matches };
-            });
+            masterBrowsers.forEach(b => { roundStartElos[b.id] = { elo: b.elo, matches: b.matches }; });
         }
 
-        // At the end of a round, compute deltas vs the snapshot and
-        // atomically increment the global Firestore values.
         async function uploadRoundDeltas() {
             try {
                 logEvent("☁️ Syncing round results to database...");
@@ -753,12 +628,12 @@
                 masterBrowsers.forEach(b => {
                     const start = roundStartElos[b.id];
                     if (!start) return;
-                    const eloDelta     = b.elo     - start.elo;
+                    const eloDelta = b.elo - start.elo;
                     const matchesDelta = b.matches - start.matches;
                     if (eloDelta === 0 && matchesDelta === 0) return;
 
                     batch.update(db.collection('browsers').doc(b.id), {
-                        elo:     firebase.firestore.FieldValue.increment(eloDelta),
+                        elo: firebase.firestore.FieldValue.increment(eloDelta),
                         matches: firebase.firestore.FieldValue.increment(matchesDelta)
                     });
                     hasChanges = true;
@@ -768,17 +643,10 @@
                     await batch.commit();
                     logEvent("✅ Round data synced.");
                 }
-            } catch (err) {
-                logEvent("⚠️ Sync failed — results saved locally only.");
-                console.error("Firestore upload error:", err);
-            }
+            } catch (err) { logEvent("⚠️ Sync failed — results saved locally only."); }
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // 6. Elo Math Logic
-        // ══════════════════════════════════════════════════════════════
         const K_FACTOR = 32;
-
         function updateRatings(winnerObj, loserObj) {
             let expectedWinner = 1 / (1 + Math.pow(10, (loserObj.elo - winnerObj.elo) / 400));
             let expectedLoser = 1 / (1 + Math.pow(10, (winnerObj.elo - loserObj.elo) / 400));
@@ -789,7 +657,7 @@
         }
 
         // ══════════════════════════════════════════════════════════════
-        // 7. Logger & Image Loader
+        // 7. Tournament Bracket Engine
         // ══════════════════════════════════════════════════════════════
         function logEvent(text) {
             const feed = document.getElementById('log-feed');
@@ -813,43 +681,9 @@
                     imgElement.onerror = null;
                 }
             };
-
             imgElement.src = "images/" + browserId + "." + extensions[0];
         }
 
-        // ══════════════════════════════════════════════════════════════
-        // 8. Game Loop Controls & Navigation
-        // ══════════════════════════════════════════════════════════════
-        function selectMode(mode) {
-            currentSelectedMode = mode;
-
-            if (mode === "all") {
-                activePool = [...masterBrowsers];
-            } else {
-                const allowedIds = MODES[mode];
-                activePool = masterBrowsers.filter(b => allowedIds.includes(b.id));
-            }
-
-            document.getElementById('mode-select-view').style.display = 'none';
-            document.getElementById('tournament-view').style.display = 'block';
-            document.getElementById('feed-container').style.display = 'block';
-
-            initFirestoreData(); // fire-and-forget: initialises DB on first ever run
-            initTournament();
-        }
-
-        function returnToMenu() {
-            // Optional: Un-comment the line below if you want "Main Menu" buttons to clear the block
-            // localStorage.removeItem('bracketCompleted');
-            document.getElementById('mode-select-view').style.display = 'block';
-            document.getElementById('tournament-view').style.display = 'none';
-            document.getElementById('winner-view').style.display = 'none';
-            document.getElementById('feed-container').style.display = 'none';
-        }
-
-        // ══════════════════════════════════════════════════════════════
-        // 9. Tournament Bracket Engine
-        // ══════════════════════════════════════════════════════════════
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -871,7 +705,7 @@
             currentMatchIndex = 0;
             nextRoundPool = [];
 
-            snapshotRoundElos(); // record ELOs before this round's votes
+            snapshotRoundElos(); 
             shuffleArray(activePool);
 
             if (activePool.length % 2 !== 0) {
@@ -892,7 +726,6 @@
             document.getElementById('match-progress').innerText = "Match " + (currentMatchIndex + 1) + " of " + currentMatchups.length;
 
             let currentPair = currentMatchups[currentMatchIndex];
-
             document.getElementById('nameA').innerText = currentPair[0].name;
             document.getElementById('nameB').innerText = currentPair[1].name;
 
@@ -937,18 +770,14 @@
             roundNumber = state.roundNumber;
             document.getElementById('log-feed').innerHTML = state.logHTML;
 
-            if (historyStack.length === 0) {
-                document.getElementById('btn-undo').disabled = true;
-            }
-
+            if (historyStack.length === 0) document.getElementById('btn-undo').disabled = true;
             updateUI();
         }
 
-        function quitTournament() { returnToMenu(); }
-
         function castVote(selectedIndex) {
-            saveState();
+            if (!surveyCompleted) return; // Prevent voting if survey is locked
 
+            saveState();
             let currentPair = currentMatchups[currentMatchIndex];
             let winner = currentPair[selectedIndex];
             let loser = currentPair[selectedIndex === 0 ? 1 : 0];
@@ -961,11 +790,11 @@
         }
 
         function skipMatchup() {
-            saveState();
+            if (!surveyCompleted) return; // Prevent skipping if survey is locked
 
+            saveState();
             let currentPair = currentMatchups[currentMatchIndex];
             logEvent("⏭️ Skipped: " + currentPair[0].name + " & " + currentPair[1].name + " (Both eliminated)");
-
             advanceBracket();
         }
 
@@ -975,7 +804,6 @@
             if (currentMatchIndex < currentMatchups.length) {
                 updateUI();
             } else {
-                // Round complete — upload deltas then reset undo history
                 await uploadRoundDeltas();
                 historyStack = [];
                 document.getElementById('btn-undo').disabled = true;
@@ -994,8 +822,13 @@
             }
         }
 
+        function restartBracket() {
+            localStorage.removeItem('bracketCompleted');
+            window.location.reload();
+        }
+
         // ══════════════════════════════════════════════════════════════
-        // 10. Finale & Global Leaderboard Render
+        // 8. Finale & Global Leaderboard Render
         // ══════════════════════════════════════════════════════════════
         async function showWinnerAndLeaderboard(winnerObj) {
             localStorage.setItem('bracketCompleted', 'true');
@@ -1030,7 +863,6 @@
                 logEvent("⚠️ Could not load global rankings — showing local results.");
             }
 
-            // Merge Firestore values over local; fall back to local if doc missing
             let sortedBrowsers = masterBrowsers.map(b => ({
                 ...b,
                 elo:     dbData[b.id] ? dbData[b.id].elo     : b.elo,
@@ -1040,21 +872,15 @@
             tbody.innerHTML = '';
             sortedBrowsers.forEach((b, index) => {
                 let tr = document.createElement('tr');
-
-                let isActiveInMode = currentSelectedMode === "all" || MODES[currentSelectedMode].includes(b.id);
-                let opacityStyle = isActiveInMode ? "" : "style='opacity: 0.45;'";
-                let activeBadge  = isActiveInMode ? "" : " <span style='font-size:10px; color:var(--text-muted);'>(Inactive)</span>";
-
                 tr.innerHTML = `
-                    <td class="rank" ${opacityStyle}>${index + 1}</td>
-                    <td ${opacityStyle}>${b.name}${activeBadge}</td>
-                    <td class="elo-score" ${opacityStyle}>${Math.round(b.elo)}</td>
-                    <td ${opacityStyle}>${b.matches}</td>
+                    <td class="rank">${index + 1}</td>
+                    <td>${b.name}</td>
+                    <td class="elo-score">${Math.round(b.elo)}</td>
+                    <td>${b.matches}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
-
     </script>
 </body>
 </html>
