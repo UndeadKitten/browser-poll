@@ -411,6 +411,24 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
+        // Check if they have already completed a bracket session
+        (async function checkExistingCompletion() {
+            if (localStorage.getItem('bracketCompleted') === 'true') {
+                // Ensure the view switches immediately before they see the main menu
+                window.addEventListener('DOMContentLoaded', async () => {
+                    document.getElementById('mode-select-view').style.display = 'none';
+                    document.getElementById('winner-view').style.display = 'flex';
+                    
+                    // Show generic placeholder text instead of a specific winner
+                    document.getElementById('winner-name').innerText = "Bracket Completed!";
+                    document.getElementById('winner-logo-wrapper').style.display = 'none';
+                    
+                    // Load the up-to-date global board
+                    await renderLeaderboard();
+                });
+            }
+        })();
+
         // ══════════════════════════════════════════════════════════════
         // 1. Master Pool — 67 browsers, grouped by engine family,
         //    sorted roughly by popularity within each group.
@@ -821,6 +839,8 @@
         }
 
         function returnToMenu() {
+            // Optional: Un-comment the line below if you want "Main Menu" buttons to clear the block
+            // localStorage.removeItem('bracketCompleted');
             document.getElementById('mode-select-view').style.display = 'block';
             document.getElementById('tournament-view').style.display = 'none';
             document.getElementById('winner-view').style.display = 'none';
@@ -978,6 +998,8 @@
         // 10. Finale & Global Leaderboard Render
         // ══════════════════════════════════════════════════════════════
         async function showWinnerAndLeaderboard(winnerObj) {
+            localStorage.setItem('bracketCompleted', 'true');
+            
             document.getElementById('tournament-view').style.display = 'none';
             document.getElementById('winner-view').style.display = 'flex';
 
