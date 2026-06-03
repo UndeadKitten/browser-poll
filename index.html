@@ -692,7 +692,8 @@
                     const matchesDelta = b.matches - start.matches;
                     const winsDelta = (b.wins || 0) - start.wins;
 
-                    let updates = {};
+                    let updates = { name: b.name }; // Included so missing docs get named on creation
+                    
                     if (eloDelta !== 0) updates.elo = firebase.firestore.FieldValue.increment(eloDelta);
                     if (matchesDelta !== 0) updates.matches = firebase.firestore.FieldValue.increment(matchesDelta);
                     if (winsDelta !== 0) updates.wins = firebase.firestore.FieldValue.increment(winsDelta);
@@ -708,8 +709,12 @@
                         const h2hWinsDelta = currentOppStats.wins - startOppStats.wins;
                         const h2hMatchesDelta = currentOppStats.matches - startOppStats.matches;
                         
-                        if (h2hWinsDelta !== 0) updates[`headToHead.${oppId}.wins`] = firebase.firestore.FieldValue.increment(h2hWinsDelta);
-                        if (h2hMatchesDelta !== 0) updates[`headToHead.${oppId}.matches`] = firebase.firestore.FieldValue.increment(h2hMatchesDelta);
+                        if (h2hWinsDelta !== 0 || h2hMatchesDelta !== 0) {
+                            if (!updates.headToHead) updates.headToHead = {};
+                            if (!updates.headToHead[oppId]) updates.headToHead[oppId] = {};
+                            if (h2hWinsDelta !== 0) updates.headToHead[oppId].wins = firebase.firestore.FieldValue.increment(h2hWinsDelta);
+                            if (h2hMatchesDelta !== 0) updates.headToHead[oppId].matches = firebase.firestore.FieldValue.increment(h2hMatchesDelta);
+                        }
                     });
 
                     // 2. Compute Voter Context (Demographic) differentials
@@ -723,12 +728,16 @@
                         const vcWinsDelta = currentVCStats.wins - startVCStats.wins;
                         const vcMatchesDelta = currentVCStats.matches - startVCStats.matches;
                         
-                        if (vcWinsDelta !== 0) updates[`voterContext.${contextKey}.wins`] = firebase.firestore.FieldValue.increment(vcWinsDelta);
-                        if (vcMatchesDelta !== 0) updates[`voterContext.${contextKey}.matches`] = firebase.firestore.FieldValue.increment(vcMatchesDelta);
+                        if (vcWinsDelta !== 0 || vcMatchesDelta !== 0) {
+                            if (!updates.voterContext) updates.voterContext = {};
+                            if (!updates.voterContext[contextKey]) updates.voterContext[contextKey] = {};
+                            if (vcWinsDelta !== 0) updates.voterContext[contextKey].wins = firebase.firestore.FieldValue.increment(vcWinsDelta);
+                            if (vcMatchesDelta !== 0) updates.voterContext[contextKey].matches = firebase.firestore.FieldValue.increment(vcMatchesDelta);
+                        }
                     });
 
-                    if (Object.keys(updates).length > 0) {
-                        batch.update(db.collection('browsers').doc(b.id), updates);
+                    if (Object.keys(updates).length > 1) {
+                        batch.set(db.collection('browsers').doc(b.id), updates, { merge: true });
                         hasChanges = true;
                     }
                 });
@@ -737,7 +746,10 @@
                     await batch.commit();
                     logEvent("✅ Round data synced.");
                 }
-            } catch (err) { logEvent("⚠️ Sync failed — results saved locally only."); }
+            } catch (err) { 
+                console.error("Firestore upload failed:", err);
+                logEvent("⚠️ Sync failed — results saved locally only. Check console."); 
+            }
         }
 
         const K_FACTOR = 32;
