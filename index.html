@@ -227,7 +227,7 @@
 </head>
 <body>
 
-    <div class="version-badge">v1.10.0</div>
+    <div class="version-badge">v1.11.0</div>
     <button class="dev-reset-btn" onclick="devReset()">🛠 Reset LocalStorage</button>
 
     <!-- Survey Modal -->
@@ -295,7 +295,7 @@
             <div class="leaderboard-container">
                 <h2>Global Master Leaderboard (Elo Rating)</h2>
                 <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
-                    Rankings and statistical matches are mathematically calculated behind the scenes. Win rate represents the average expected probability of defeating all other contestants in the roster.
+                    Rankings are mathematically calculated behind the scenes. Win rates and top rivals are based on actual tournament match history.
                 </div>
                 <table>
                     <thead>
@@ -341,77 +341,77 @@
         // ══════════════════════════════════════════════════════════════
         let masterBrowsers = [
             // ── CHROMIUM FORKS ──────────────────────────────────────
-            { id: "chrome",               name: "Google Chrome",        elo: 1200, matches: 0 },
-            { id: "edge",                 name: "Microsoft Edge",       elo: 1200, matches: 0 },
-            // { id: "samsung-internet",     name: "Samsung Internet",     elo: 1200, matches: 0 },
-            { id: "brave",                name: "Brave",                elo: 1200, matches: 0 },
-            { id: "opera",                name: "Opera",                elo: 1200, matches: 0 },
-            { id: "vivaldi",              name: "Vivaldi",              elo: 1200, matches: 0 },
-            { id: "arc-browser",          name: "Arc",                  elo: 1200, matches: 0 },
-            { id: "opera-gx",             name: "Opera GX",             elo: 1200, matches: 0 },
-            // { id: "yandex-browser",       name: "Yandex",               elo: 1200, matches: 0 },
-            // { id: "uc-browser",           name: "UC Browser",           elo: 1200, matches: 0 },
-            // { id: "naver-whale-browser",  name: "Naver Whale",          elo: 1200, matches: 0 },
-            { id: "duckduckgo-browser",   name: "DuckDuckGo Browser",   elo: 1200, matches: 0 },
-            // { id: "kiwi-browser",         name: "Kiwi Browser",         elo: 1200, matches: 0 },
-            { id: "chromium",             name: "Ungoogled Chromium",   elo: 1200, matches: 0 },
-            { id: "thorium",              name: "Thorium",              elo: 1200, matches: 0 },
-            { id: "cromite",              name: "Cromite",              elo: 1200, matches: 0 },
-            // { id: "wavebox",              name: "Wavebox",              elo: 1200, matches: 0 },
-            // { id: "sigmaos",              name: "SigmaOS",              elo: 1200, matches: 0 },
-            { id: "helium",               name: "Helium",               elo: 1200, matches: 0 },
-            // { id: "iridium-browser",      name: "Iridium",              elo: 1200, matches: 0 },
-            // { id: "epic-privacy-browser", name: "Epic Privacy Browser", elo: 1200, matches: 0 },
-            // { id: "srware-iron",          name: "SRWare Iron",          elo: 1200, matches: 0 },
-            // { id: "flow-browser",         name: "Flow Browser",         elo: 1200, matches: 0 },
-            // { id: "min-browser",          name: "Min Browser",          elo: 1200, matches: 0 },
-            // { id: "coc-coc",              name: "Coc Coc",              elo: 1200, matches: 0 },
-            // { id: "sogou",                name: "Sogou Browser",        elo: 1200, matches: 0 },
-            // { id: "amazon-silk-browser",  name: "Amazon Silk",          elo: 1200, matches: 0 },
-            // { id: "puffin-browser",       name: "Puffin Browser",       elo: 1200, matches: 0 },
-            // { id: "dolphin-browser",      name: "Dolphin Browser",      elo: 1200, matches: 0 },
-            // { id: "vanadium",             name: "Vanadium",             elo: 1200, matches: 0 },
-            // { id: "maxthon",              name: "Maxthon",              elo: 1200, matches: 0 },
-            // { id: "falkon",               name: "Falkon",               elo: 1200, matches: 0 },
-            { id: "qutebrowser",          name: "qutebrowser",          elo: 1200, matches: 0 },
-            // { id: "opera-mini",           name: "Opera Mini",           elo: 1200, matches: 0 },
-            // { id: "opera-neon",           name: "Opera Neon",           elo: 1200, matches: 0 },
-            // { id: "opera-touch",          name: "Opera Touch",          elo: 1200, matches: 0 },
+            { id: "chrome",               name: "Google Chrome",        elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "edge",                 name: "Microsoft Edge",       elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "samsung-internet",     name: "Samsung Internet",     elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "brave",                name: "Brave",                elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "opera",                name: "Opera",                elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "vivaldi",              name: "Vivaldi",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "arc-browser",          name: "Arc",                  elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "opera-gx",             name: "Opera GX",             elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "yandex-browser",       name: "Yandex",               elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "uc-browser",           name: "UC Browser",           elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "naver-whale-browser",  name: "Naver Whale",          elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "duckduckgo-browser",   name: "DuckDuckGo Browser",   elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "kiwi-browser",         name: "Kiwi Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "chromium",             name: "Ungoogled Chromium",   elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "thorium",              name: "Thorium",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "cromite",              name: "Cromite",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "wavebox",              name: "Wavebox",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "sigmaos",              name: "SigmaOS",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "helium",               name: "Helium",               elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "iridium-browser",      name: "Iridium",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "epic-privacy-browser", name: "Epic Privacy Browser", elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "srware-iron",          name: "SRWare Iron",          elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "flow-browser",         name: "Flow Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "min-browser",          name: "Min Browser",          elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "coc-coc",              name: "Coc Coc",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "sogou",                name: "Sogou Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "amazon-silk-browser",  name: "Amazon Silk",          elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "puffin-browser",       name: "Puffin Browser",       elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "dolphin-browser",      name: "Dolphin Browser",      elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "vanadium",             name: "Vanadium",             elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "maxthon",              name: "Maxthon",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "falkon",               name: "Falkon",               elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "qutebrowser",          name: "qutebrowser",          elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "opera-mini",           name: "Opera Mini",           elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "opera-neon",           name: "Opera Neon",           elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "opera-touch",          name: "Opera Touch",          elo: 1200, matches: 0, wins: 0, headToHead: {} },
 
             // ── FIREFOX FORKS ───────────────────────────────────────
-            { id: "firefox",              name: "Mozilla Firefox",      elo: 1200, matches: 0 },
-            { id: "tor-browser",          name: "Tor Browser",          elo: 1200, matches: 0 },
-            { id: "librewolf",            name: "Librewolf",            elo: 1200, matches: 0 },
-            { id: "zen-browser",          name: "Zen Browser",          elo: 1200, matches: 0 },
-            { id: "waterfox",             name: "Waterfox",             elo: 1200, matches: 0 },
-            { id: "floorp",               name: "Floorp",               elo: 1200, matches: 0 },
-            { id: "mullvad",              name: "Mullvad Browser",      elo: 1200, matches: 0 },
-            // { id: "gnu-icecat",           name: "GNU IceCat",           elo: 1200, matches: 0 },
-            // { id: "seamonkey",            name: "SeaMonkey",            elo: 1200, matches: 0 },
-            { id: "mercury",              name: "Mercury",              elo: 1200, matches: 0 },
-            // { id: "palemoon",             name: "Pale Moon",            elo: 1200, matches: 0 },
-            // { id: "basilisk",             name: "Basilisk",             elo: 1200, matches: 0 },
-            // { id: "k-meleon",             name: "K-Meleon Browser",     elo: 1200, matches: 0 },
+            { id: "firefox",              name: "Mozilla Firefox",      elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "tor-browser",          name: "Tor Browser",          elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "librewolf",            name: "Librewolf",            elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "zen-browser",          name: "Zen Browser",          elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "waterfox",             name: "Waterfox",             elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "floorp",               name: "Floorp",               elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "mullvad",              name: "Mullvad Browser",      elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "gnu-icecat",           name: "GNU IceCat",           elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "seamonkey",            name: "SeaMonkey",            elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "mercury",              name: "Mercury",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "palemoon",             name: "Pale Moon",            elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "basilisk",             name: "Basilisk",             elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "k-meleon",             name: "K-Meleon Browser",     elo: 1200, matches: 0, wins: 0, headToHead: {} },
 
             // ── MISC ────────────────────────────────────────────────
-            { id: "safari",               name: "Apple Safari",         elo: 1200, matches: 0 },
-            { id: "orion",                name: "Orion",                elo: 1200, matches: 0 },
-            // { id: "ladybird",             name: "Ladybird",             elo: 1200, matches: 0 },
-            // { id: "midori",               name: "Midori",               elo: 1200, matches: 0 },
-            // { id: "konqueror",            name: "Konqueror",            elo: 1200, matches: 0 },
-            // { id: "netsurf",              name: "Netsurf Browser",      elo: 1200, matches: 0 },
-            // { id: "dillo-browser",        name: "Dillo Browser",        elo: 1200, matches: 0 },
-            // { id: "nyxt",                 name: "Nyxt Browser",         elo: 1200, matches: 0 },
-            // { id: "otter-browser",        name: "Otter Browser",        elo: 1200, matches: 0 },
-            // { id: "sleipnir-browser",     name: "Sleipnir",             elo: 1200, matches: 0 },
-            // { id: "lunascape",            name: "Lunascape",            elo: 1200, matches: 0 },
-            // { id: "internet-explorer",    name: "Internet Explorer",    elo: 1200, matches: 0 },
-            // { id: "netscape",             name: "Netscape",             elo: 1200, matches: 0 },
-            // { id: "avant-browser",        name: "Avant Browser",        elo: 1200, matches: 0 },
-            // { id: "lynx-browser",         name: "Lynx",                 elo: 1200, matches: 0 },
-            // { id: "browsh",               name: "Browsh",               elo: 1200, matches: 0 },
-            // { id: "dia-browser",          name: "Dia",                  elo: 1200, matches: 0 },
-            // { id: "tempest-browser",      name: "Tempest",              elo: 1200, matches: 0 },
+            { id: "safari",               name: "Apple Safari",         elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "orion",                name: "Orion",                elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "ladybird",             name: "Ladybird",             elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "midori",               name: "Midori",               elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "konqueror",            name: "Konqueror",            elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "netsurf",              name: "Netsurf Browser",      elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "dillo-browser",        name: "Dillo Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "nyxt",                 name: "Nyxt Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "otter-browser",        name: "Otter Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "sleipnir-browser",     name: "Sleipnir",             elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "lunascape",            name: "Lunascape",            elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "internet-explorer",    name: "Internet Explorer",    elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "netscape",             name: "Netscape",             elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "avant-browser",        name: "Avant Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "lynx-browser",         name: "Lynx",                 elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "browsh",               name: "Browsh",               elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "dia-browser",          name: "Dia",                  elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            // { id: "tempest-browser",      name: "Tempest",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
         ];
 
         // ══════════════════════════════════════════════════════════════
@@ -444,7 +444,7 @@
         let currentMatchIndex = 0;
         let roundNumber = 1;
         let historyStack = [];
-        let roundStartElos = {};
+        let roundStartStats = {};
 
         // ══════════════════════════════════════════════════════════════
         // 4. Initialization & LocalStorage Boot
@@ -615,7 +615,7 @@
         }
 
         // ══════════════════════════════════════════════════════════════
-        // 6. Firestore & ELO Math
+        // 6. Firestore & Head-to-Head Stat Tracking
         // ══════════════════════════════════════════════════════════════
         async function initFirestoreData() {
             try {
@@ -625,20 +625,32 @@
                 logEvent("🗄️ First run — initialising database...");
                 const batch = db.batch();
                 masterBrowsers.forEach(b => {
-                    batch.set(db.collection('browsers').doc(b.id), { name: b.name, elo: 1200, matches: 0 });
+                    batch.set(db.collection('browsers').doc(b.id), { 
+                        name: b.name, 
+                        elo: 1200, 
+                        matches: 0,
+                        wins: 0,
+                        headToHead: {}
+                    });
                 });
                 await batch.commit();
                 logEvent("✅ Database initialised with " + masterBrowsers.length + " browsers.");
             } catch (err) { console.error("Firestore init error:", err); }
         }
 
-        function snapshotRoundElos() {
-            roundStartElos = {};
-            masterBrowsers.forEach(b => { roundStartElos[b.id] = { elo: b.elo, matches: b.matches }; });
+        function snapshotRoundStats() {
+            roundStartStats = {};
+            masterBrowsers.forEach(b => { 
+                roundStartStats[b.id] = { 
+                    elo: b.elo, 
+                    matches: b.matches, 
+                    wins: b.wins || 0,
+                    headToHead: JSON.parse(JSON.stringify(b.headToHead || {})) // Deep copy
+                }; 
+            });
         }
 
         async function uploadRoundDeltas() {
-            // Prevent multiple playthroughs from skewing the global leaderboard
             if (localStorage.getItem('hasFinishedBracketOnce') === 'true') {
                 logEvent("ℹ️ Replay mode active: Data not synced to global leaderboard.");
                 return;
@@ -650,17 +662,37 @@
                 let hasChanges = false;
 
                 masterBrowsers.forEach(b => {
-                    const start = roundStartElos[b.id];
+                    const start = roundStartStats[b.id];
                     if (!start) return;
+
                     const eloDelta = b.elo - start.elo;
                     const matchesDelta = b.matches - start.matches;
-                    if (eloDelta === 0 && matchesDelta === 0) return;
+                    const winsDelta = (b.wins || 0) - start.wins;
 
-                    batch.update(db.collection('browsers').doc(b.id), {
-                        elo: firebase.firestore.FieldValue.increment(eloDelta),
-                        matches: firebase.firestore.FieldValue.increment(matchesDelta)
+                    let updates = {};
+                    if (eloDelta !== 0) updates.elo = firebase.firestore.FieldValue.increment(eloDelta);
+                    if (matchesDelta !== 0) updates.matches = firebase.firestore.FieldValue.increment(matchesDelta);
+                    if (winsDelta !== 0) updates.wins = firebase.firestore.FieldValue.increment(winsDelta);
+
+                    // Compute head-to-head match differentials
+                    const currentH2H = b.headToHead || {};
+                    const startH2H = start.headToHead || {};
+
+                    Object.keys(currentH2H).forEach(oppId => {
+                        const currentOppStats = currentH2H[oppId];
+                        const startOppStats = startH2H[oppId] || { wins: 0, matches: 0 };
+                        
+                        const h2hWinsDelta = currentOppStats.wins - startOppStats.wins;
+                        const h2hMatchesDelta = currentOppStats.matches - startOppStats.matches;
+                        
+                        if (h2hWinsDelta !== 0) updates[`headToHead.${oppId}.wins`] = firebase.firestore.FieldValue.increment(h2hWinsDelta);
+                        if (h2hMatchesDelta !== 0) updates[`headToHead.${oppId}.matches`] = firebase.firestore.FieldValue.increment(h2hMatchesDelta);
                     });
-                    hasChanges = true;
+
+                    if (Object.keys(updates).length > 0) {
+                        batch.update(db.collection('browsers').doc(b.id), updates);
+                        hasChanges = true;
+                    }
                 });
 
                 if (hasChanges) {
@@ -672,17 +704,30 @@
 
         const K_FACTOR = 32;
         function updateRatings(winnerObj, loserObj) {
+            // ELO Calculation
             let expectedWinner = 1 / (1 + Math.pow(10, (loserObj.elo - winnerObj.elo) / 400));
             let expectedLoser = 1 / (1 + Math.pow(10, (winnerObj.elo - loserObj.elo) / 400));
             winnerObj.elo = winnerObj.elo + K_FACTOR * (1 - expectedWinner);
             loserObj.elo = loserObj.elo + K_FACTOR * (0 - expectedLoser);
+            
+            // Overall Win/Match Counts
             winnerObj.matches++;
             loserObj.matches++;
-        }
+            winnerObj.wins = (winnerObj.wins || 0) + 1;
+            loserObj.wins = (loserObj.wins || 0);
 
-        // Helper to compute standard ELO win expectancy
-        function getWinProbability(ratingA, ratingB) {
-            return 1 / (1 + Math.pow(10, (ratingB - ratingA) / 400));
+            // Head-to-Head Tracker
+            if (!winnerObj.headToHead) winnerObj.headToHead = {};
+            if (!loserObj.headToHead) loserObj.headToHead = {};
+            
+            if (!winnerObj.headToHead[loserObj.id]) winnerObj.headToHead[loserObj.id] = { wins: 0, matches: 0 };
+            if (!loserObj.headToHead[winnerObj.id]) loserObj.headToHead[winnerObj.id] = { wins: 0, matches: 0 };
+
+            winnerObj.headToHead[loserObj.id].matches++;
+            winnerObj.headToHead[loserObj.id].wins++;
+
+            loserObj.headToHead[winnerObj.id].matches++;
+            // Loser won 0 against winner in this specific iteration, so we don't increment their h2h wins here
         }
 
         // ══════════════════════════════════════════════════════════════
@@ -739,7 +784,7 @@
             currentMatchIndex = 0;
             nextRoundPool = [];
 
-            snapshotRoundElos(); 
+            snapshotRoundStats(); 
             shuffleArray(activePool);
 
             if (activePool.length % 2 !== 0) {
@@ -774,7 +819,10 @@
                 currentMatchupsIds: currentMatchups.map(pair => [pair[0].id, pair[1].id]),
                 currentMatchIndex: currentMatchIndex,
                 roundNumber: roundNumber,
-                masterStats: masterBrowsers.map(b => ({ id: b.id, elo: b.elo, matches: b.matches })),
+                // Deep copy all complex stat objects specifically
+                masterStats: JSON.parse(JSON.stringify(masterBrowsers.map(b => ({ 
+                    id: b.id, elo: b.elo, matches: b.matches, wins: b.wins || 0, headToHead: b.headToHead || {} 
+                })))),
                 logHTML: document.getElementById('log-feed').innerHTML
             });
             document.getElementById('btn-undo').disabled = false;
@@ -790,6 +838,8 @@
                 if (browser) {
                     browser.elo = savedStat.elo;
                     browser.matches = savedStat.matches;
+                    browser.wins = savedStat.wins;
+                    browser.headToHead = savedStat.headToHead;
                 }
             });
 
@@ -898,44 +948,46 @@
                 logEvent("⚠️ Could not load global rankings — showing local results.");
             }
 
-            // Populate up-to-date data list
+            // Populate up-to-date data list combining local backup and remote sync
             let sortedBrowsers = masterBrowsers.map(b => ({
                 ...b,
-                elo:     dbData[b.id] ? dbData[b.id].elo     : b.elo,
-                matches: dbData[b.id] ? dbData[b.id].matches : b.matches
+                elo:        dbData[b.id] ? dbData[b.id].elo     : b.elo,
+                matches:    dbData[b.id] ? dbData[b.id].matches : b.matches,
+                wins:       dbData[b.id] ? (dbData[b.id].wins || 0) : (b.wins || 0),
+                headToHead: dbData[b.id] ? (dbData[b.id].headToHead || {}) : (b.headToHead || {})
             })).sort((a, b) => b.elo - a.elo);
 
             tbody.innerHTML = '';
             sortedBrowsers.forEach((b, index) => {
-                // Calculate ELO metrics relative to everyone else currently in the testing pool
-                let totalWinProbabilitySum = 0;
+                // Actual Total Win Rate %
+                const actualWinRate = b.matches > 0 ? ((b.wins || 0) / b.matches) * 100 : 0.0;
+
+                // Identify True Top Rival Based on Actual Recorded Matches
                 let topRival = null;
                 let closestProbabilityDiff = Infinity;
-                let rivalWinProbabilityPercent = 50;
+                let rivalWinRatePercent = 0.0;
+                let rivalMatchesPlayed = 0;
 
-                sortedBrowsers.forEach(other => {
-                    if (other.id === b.id) return;
-                    
-                    const prob = getWinProbability(b.elo, other.elo);
-                    totalWinProbabilitySum += prob;
-
-                    // Rivalry: Find the browser whose head-to-head win probability is closest to 50% (0.50)
-                    const diff = Math.abs(prob - 0.50);
-                    if (diff < closestProbabilityDiff) {
-                        closestProbabilityDiff = diff;
-                        topRival = other;
-                        rivalWinProbabilityPercent = prob * 100;
+                const h2h = b.headToHead || {};
+                Object.keys(h2h).forEach(oppId => {
+                    const stats = h2h[oppId];
+                    if (stats.matches > 0) {
+                        const winRate = stats.wins / stats.matches;
+                        const diff = Math.abs(winRate - 0.50);
+                        
+                        // Pick the one closest to a 50% split. If there is a tie, favor the rival with a higher sample size.
+                        if (diff < closestProbabilityDiff || (diff === closestProbabilityDiff && stats.matches > rivalMatchesPlayed)) {
+                            closestProbabilityDiff = diff;
+                            topRival = masterBrowsers.find(x => x.id === oppId);
+                            rivalWinRatePercent = winRate * 100;
+                            rivalMatchesPlayed = stats.matches;
+                        }
                     }
                 });
 
-                // Win rate is the average probability of winning against all other contenders in the current roster
-                const averageWinRate = sortedBrowsers.length > 1 
-                    ? (totalWinProbabilitySum / (sortedBrowsers.length - 1)) * 100 
-                    : 50.0;
-
                 let rivalDisplay = "None";
                 if (topRival) {
-                    rivalDisplay = `${topRival.name} <span class="rival-pct">(${rivalWinProbabilityPercent.toFixed(1)}%)</span>`;
+                    rivalDisplay = `${topRival.name} <span class="rival-pct">(${rivalWinRatePercent.toFixed(1)}%)</span>`;
                 }
 
                 let tr = document.createElement('tr');
@@ -944,7 +996,7 @@
                     <td style="font-weight: 500;">${b.name}</td>
                     <td class="elo-score">${Math.round(b.elo)}</td>
                     <td class="stat-column">${b.matches}</td>
-                    <td class="stat-column" style="color: var(--success);">${averageWinRate.toFixed(1)}%</td>
+                    <td class="stat-column" style="color: var(--success);">${actualWinRate.toFixed(1)}%</td>
                     <td class="rival-cell">${rivalDisplay}</td>
                 `;
                 tbody.appendChild(tr);
