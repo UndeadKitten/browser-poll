@@ -227,7 +227,7 @@
 </head>
 <body>
 
-    <div class="version-badge">v1.12.0</div>
+    <div class="version-badge">v1.13.0</div>
     <button class="dev-reset-btn" onclick="devReset()">🛠 Reset LocalStorage</button>
 
     <!-- Survey Modal -->
@@ -341,77 +341,77 @@
         // ══════════════════════════════════════════════════════════════
         let masterBrowsers = [
             // ── CHROMIUM FORKS ──────────────────────────────────────
-            { id: "chrome",               name: "Google Chrome",        elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "edge",                 name: "Microsoft Edge",       elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "samsung-internet",     name: "Samsung Internet",     elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "brave",                name: "Brave",                elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "opera",                name: "Opera",                elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "vivaldi",              name: "Vivaldi",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "arc-browser",          name: "Arc",                  elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "opera-gx",             name: "Opera GX",             elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "yandex-browser",       name: "Yandex",               elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "uc-browser",           name: "UC Browser",           elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "naver-whale-browser",  name: "Naver Whale",          elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "duckduckgo-browser",   name: "DuckDuckGo Browser",   elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "kiwi-browser",         name: "Kiwi Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "chromium",             name: "Ungoogled Chromium",   elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "thorium",              name: "Thorium",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "cromite",              name: "Cromite",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "wavebox",              name: "Wavebox",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "sigmaos",              name: "SigmaOS",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "helium",               name: "Helium",               elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "iridium-browser",      name: "Iridium",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "epic-privacy-browser", name: "Epic Privacy Browser", elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "srware-iron",          name: "SRWare Iron",          elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "flow-browser",         name: "Flow Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "min-browser",          name: "Min Browser",          elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "coc-coc",              name: "Coc Coc",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "sogou",                name: "Sogou Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "amazon-silk-browser",  name: "Amazon Silk",          elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "puffin-browser",       name: "Puffin Browser",       elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "dolphin-browser",      name: "Dolphin Browser",      elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "vanadium",             name: "Vanadium",             elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "maxthon",              name: "Maxthon",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "falkon",               name: "Falkon",               elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "qutebrowser",          name: "qutebrowser",          elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "opera-mini",           name: "Opera Mini",           elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "opera-neon",           name: "Opera Neon",           elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "opera-touch",          name: "Opera Touch",          elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "chrome",               name: "Google Chrome",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "edge",                 name: "Microsoft Edge",       elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "samsung-internet",     name: "Samsung Internet",     elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "brave",                name: "Brave",                elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "opera",                name: "Opera",                elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "vivaldi",              name: "Vivaldi",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "arc-browser",          name: "Arc",                  elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "opera-gx",             name: "Opera GX",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "yandex-browser",       name: "Yandex",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "uc-browser",           name: "UC Browser",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "naver-whale-browser",  name: "Naver Whale",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "duckduckgo-browser",   name: "DuckDuckGo Browser",   elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "kiwi-browser",         name: "Kiwi Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "chromium",             name: "Ungoogled Chromium",   elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "thorium",              name: "Thorium",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "cromite",              name: "Cromite",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "wavebox",              name: "Wavebox",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "sigmaos",              name: "SigmaOS",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "helium",               name: "Helium",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "iridium-browser",      name: "Iridium",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "epic-privacy-browser", name: "Epic Privacy Browser", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "srware-iron",          name: "SRWare Iron",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "flow-browser",         name: "Flow Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "min-browser",          name: "Min Browser",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "coc-coc",              name: "Coc Coc",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "sogou",                name: "Sogou Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "amazon-silk-browser",  name: "Amazon Silk",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "puffin-browser",       name: "Puffin Browser",       elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "dolphin-browser",      name: "Dolphin Browser",      elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "vanadium",             name: "Vanadium",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "maxthon",              name: "Maxthon",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "falkon",               name: "Falkon",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "qutebrowser",          name: "qutebrowser",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "opera-mini",           name: "Opera Mini",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "opera-neon",           name: "Opera Neon",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "opera-touch",          name: "Opera Touch",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
 
             // ── FIREFOX FORKS ───────────────────────────────────────
-            { id: "firefox",              name: "Mozilla Firefox",      elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "tor-browser",          name: "Tor Browser",          elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "librewolf",            name: "Librewolf",            elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "zen-browser",          name: "Zen Browser",          elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "waterfox",             name: "Waterfox",             elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "floorp",               name: "Floorp",               elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "mullvad",              name: "Mullvad Browser",      elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "gnu-icecat",           name: "GNU IceCat",           elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "seamonkey",            name: "SeaMonkey",            elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "mercury",              name: "Mercury",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "palemoon",             name: "Pale Moon",            elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "basilisk",             name: "Basilisk",             elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "k-meleon",             name: "K-Meleon Browser",     elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "firefox",              name: "Mozilla Firefox",      elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "tor-browser",          name: "Tor Browser",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "librewolf",            name: "Librewolf",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "zen-browser",          name: "Zen Browser",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "waterfox",             name: "Waterfox",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "floorp",               name: "Floorp",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "mullvad",              name: "Mullvad Browser",      elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "gnu-icecat",           name: "GNU IceCat",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "seamonkey",            name: "SeaMonkey",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "mercury",              name: "Mercury",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "palemoon",             name: "Pale Moon",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "basilisk",             name: "Basilisk",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "k-meleon",             name: "K-Meleon Browser",     elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
 
             // ── MISC ────────────────────────────────────────────────
-            { id: "safari",               name: "Apple Safari",         elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            { id: "orion",                name: "Orion",                elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "ladybird",             name: "Ladybird",             elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "midori",               name: "Midori",               elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "konqueror",            name: "Konqueror",            elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "netsurf",              name: "Netsurf Browser",      elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "dillo-browser",        name: "Dillo Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "nyxt",                 name: "Nyxt Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "otter-browser",        name: "Otter Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "sleipnir-browser",     name: "Sleipnir",             elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "lunascape",            name: "Lunascape",            elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "internet-explorer",    name: "Internet Explorer",    elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "netscape",             name: "Netscape",             elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "avant-browser",        name: "Avant Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "lynx-browser",         name: "Lynx",                 elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "browsh",               name: "Browsh",               elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "dia-browser",          name: "Dia",                  elo: 1200, matches: 0, wins: 0, headToHead: {} },
-            // { id: "tempest-browser",      name: "Tempest",              elo: 1200, matches: 0, wins: 0, headToHead: {} },
+            { id: "safari",               name: "Apple Safari",         elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "orion",                name: "Orion",                elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "ladybird",             name: "Ladybird",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "midori",               name: "Midori",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "konqueror",            name: "Konqueror",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "netsurf",              name: "Netsurf Browser",      elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "dillo-browser",        name: "Dillo Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "nyxt",                 name: "Nyxt Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "otter-browser",        name: "Otter Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "sleipnir-browser",     name: "Sleipnir",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "lunascape",            name: "Lunascape",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "internet-explorer",    name: "Internet Explorer",    elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "netscape",             name: "Netscape",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "avant-browser",        name: "Avant Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "lynx-browser",         name: "Lynx",                 elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "browsh",               name: "Browsh",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "dia-browser",          name: "Dia",                  elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // { id: "tempest-browser",      name: "Tempest",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
         ];
 
         // ══════════════════════════════════════════════════════════════
@@ -636,7 +636,7 @@
         }
 
         // ══════════════════════════════════════════════════════════════
-        // 6. Firestore & Head-to-Head Stat Tracking
+        // 6. Firestore & Head-to-Head / Contextual Stat Tracking
         // ══════════════════════════════════════════════════════════════
         async function initFirestoreData() {
             try {
@@ -651,7 +651,8 @@
                         elo: 1200, 
                         matches: 0,
                         wins: 0,
-                        headToHead: {}
+                        headToHead: {},
+                        voterContext: {} // Initialize the flattened context tracker
                     });
                 });
                 await batch.commit();
@@ -666,7 +667,8 @@
                     elo: b.elo, 
                     matches: b.matches, 
                     wins: b.wins || 0,
-                    headToHead: JSON.parse(JSON.stringify(b.headToHead || {})) // Deep copy
+                    headToHead: JSON.parse(JSON.stringify(b.headToHead || {})),
+                    voterContext: JSON.parse(JSON.stringify(b.voterContext || {})) 
                 }; 
             });
         }
@@ -695,7 +697,7 @@
                     if (matchesDelta !== 0) updates.matches = firebase.firestore.FieldValue.increment(matchesDelta);
                     if (winsDelta !== 0) updates.wins = firebase.firestore.FieldValue.increment(winsDelta);
 
-                    // Compute head-to-head match differentials
+                    // 1. Compute head-to-head match differentials
                     const currentH2H = b.headToHead || {};
                     const startH2H = start.headToHead || {};
 
@@ -708,6 +710,21 @@
                         
                         if (h2hWinsDelta !== 0) updates[`headToHead.${oppId}.wins`] = firebase.firestore.FieldValue.increment(h2hWinsDelta);
                         if (h2hMatchesDelta !== 0) updates[`headToHead.${oppId}.matches`] = firebase.firestore.FieldValue.increment(h2hMatchesDelta);
+                    });
+
+                    // 2. Compute Voter Context (Demographic) differentials
+                    const currentVC = b.voterContext || {};
+                    const startVC = start.voterContext || {};
+
+                    Object.keys(currentVC).forEach(contextKey => {
+                        const currentVCStats = currentVC[contextKey];
+                        const startVCStats = startVC[contextKey] || { wins: 0, matches: 0 };
+                        
+                        const vcWinsDelta = currentVCStats.wins - startVCStats.wins;
+                        const vcMatchesDelta = currentVCStats.matches - startVCStats.matches;
+                        
+                        if (vcWinsDelta !== 0) updates[`voterContext.${contextKey}.wins`] = firebase.firestore.FieldValue.increment(vcWinsDelta);
+                        if (vcMatchesDelta !== 0) updates[`voterContext.${contextKey}.matches`] = firebase.firestore.FieldValue.increment(vcMatchesDelta);
                     });
 
                     if (Object.keys(updates).length > 0) {
@@ -725,19 +742,19 @@
 
         const K_FACTOR = 32;
         function updateRatings(winnerObj, loserObj) {
-            // ELO Calculation
+            // --- ELO Calculation ---
             let expectedWinner = 1 / (1 + Math.pow(10, (loserObj.elo - winnerObj.elo) / 400));
             let expectedLoser = 1 / (1 + Math.pow(10, (winnerObj.elo - loserObj.elo) / 400));
             winnerObj.elo = winnerObj.elo + K_FACTOR * (1 - expectedWinner);
             loserObj.elo = loserObj.elo + K_FACTOR * (0 - expectedLoser);
             
-            // Overall Win/Match Counts
+            // --- Overall Win/Match Counts ---
             winnerObj.matches++;
             loserObj.matches++;
             winnerObj.wins = (winnerObj.wins || 0) + 1;
             loserObj.wins = (loserObj.wins || 0);
 
-            // Head-to-Head Tracker
+            // --- Head-to-Head Tracker ---
             if (!winnerObj.headToHead) winnerObj.headToHead = {};
             if (!loserObj.headToHead) loserObj.headToHead = {};
             
@@ -746,9 +763,33 @@
 
             winnerObj.headToHead[loserObj.id].matches++;
             winnerObj.headToHead[loserObj.id].wins++;
-
             loserObj.headToHead[winnerObj.id].matches++;
-            // Loser won 0 against winner in this specific iteration, so we don't increment their h2h wins here
+
+            // --- Voter Context (Demographics) Tracker ---
+            if (!winnerObj.voterContext) winnerObj.voterContext = {};
+            if (!loserObj.voterContext) loserObj.voterContext = {};
+
+            // Loop through ALL possible browsers to see the user's background relationship with them
+            masterBrowsers.forEach(b => {
+                let state = 'none'; // Default to blind/none
+                if (surveyData[b.id]) {
+                    if (surveyData[b.id].current) state = 'current';
+                    else if (surveyData[b.id].used) state = 'used';
+                    else if (surveyData[b.id].heard) state = 'heard';
+                }
+                
+                // Construct the flattened key e.g., "chrome_current" or "brave_none"
+                let key = `${b.id}_${state}`;
+
+                // Apply +1 win and +1 match to winner's context tracking
+                if (!winnerObj.voterContext[key]) winnerObj.voterContext[key] = { matches: 0, wins: 0 };
+                winnerObj.voterContext[key].matches++;
+                winnerObj.voterContext[key].wins++;
+
+                // Apply +1 match to loser's context tracking
+                if (!loserObj.voterContext[key]) loserObj.voterContext[key] = { matches: 0, wins: 0 };
+                loserObj.voterContext[key].matches++;
+            });
         }
 
         // ══════════════════════════════════════════════════════════════
@@ -840,9 +881,13 @@
                 currentMatchupsIds: currentMatchups.map(pair => [pair[0].id, pair[1].id]),
                 currentMatchIndex: currentMatchIndex,
                 roundNumber: roundNumber,
-                // Deep copy all complex stat objects specifically
                 masterStats: JSON.parse(JSON.stringify(masterBrowsers.map(b => ({ 
-                    id: b.id, elo: b.elo, matches: b.matches, wins: b.wins || 0, headToHead: b.headToHead || {} 
+                    id: b.id, 
+                    elo: b.elo, 
+                    matches: b.matches, 
+                    wins: b.wins || 0, 
+                    headToHead: b.headToHead || {},
+                    voterContext: b.voterContext || {}
                 })))),
                 logHTML: document.getElementById('log-feed').innerHTML
             });
@@ -861,6 +906,7 @@
                     browser.matches = savedStat.matches;
                     browser.wins = savedStat.wins;
                     browser.headToHead = savedStat.headToHead;
+                    browser.voterContext = savedStat.voterContext;
                 }
             });
 
@@ -899,7 +945,44 @@
 
             saveState();
             let currentPair = currentMatchups[currentMatchIndex];
-            logEvent("⏭️ Skipped: " + currentPair[0].name + " & " + currentPair[1].name + " (Both eliminated)");
+            
+            // Advance matches for both without incrementing wins to affect their winrates correctly
+            let loserA = currentPair[0];
+            let loserB = currentPair[1];
+            
+            // Update match counts
+            loserA.matches++;
+            loserB.matches++;
+            
+            // Update head to head match counts
+            if (!loserA.headToHead) loserA.headToHead = {};
+            if (!loserB.headToHead) loserB.headToHead = {};
+            if (!loserA.headToHead[loserB.id]) loserA.headToHead[loserB.id] = { wins: 0, matches: 0 };
+            if (!loserB.headToHead[loserA.id]) loserB.headToHead[loserA.id] = { wins: 0, matches: 0 };
+            loserA.headToHead[loserB.id].matches++;
+            loserB.headToHead[loserA.id].matches++;
+            
+            // Update Context Tracker Matches
+            if (!loserA.voterContext) loserA.voterContext = {};
+            if (!loserB.voterContext) loserB.voterContext = {};
+            
+            masterBrowsers.forEach(b => {
+                let state = 'none'; 
+                if (surveyData[b.id]) {
+                    if (surveyData[b.id].current) state = 'current';
+                    else if (surveyData[b.id].used) state = 'used';
+                    else if (surveyData[b.id].heard) state = 'heard';
+                }
+                let key = `${b.id}_${state}`;
+
+                if (!loserA.voterContext[key]) loserA.voterContext[key] = { matches: 0, wins: 0 };
+                loserA.voterContext[key].matches++;
+
+                if (!loserB.voterContext[key]) loserB.voterContext[key] = { matches: 0, wins: 0 };
+                loserB.voterContext[key].matches++;
+            });
+
+            logEvent("⏭️ Skipped: " + loserA.name + " & " + loserB.name + " (Both eliminated)");
             advanceBracket();
         }
 
@@ -972,18 +1055,17 @@
             // Populate up-to-date data list combining local backup and remote sync
             let sortedBrowsers = masterBrowsers.map(b => ({
                 ...b,
-                elo:        dbData[b.id] ? dbData[b.id].elo     : b.elo,
-                matches:    dbData[b.id] ? dbData[b.id].matches : b.matches,
-                wins:       dbData[b.id] ? (dbData[b.id].wins || 0) : (b.wins || 0),
-                headToHead: dbData[b.id] ? (dbData[b.id].headToHead || {}) : (b.headToHead || {})
+                elo:          dbData[b.id] ? dbData[b.id].elo     : b.elo,
+                matches:      dbData[b.id] ? dbData[b.id].matches : b.matches,
+                wins:         dbData[b.id] ? (dbData[b.id].wins || 0) : (b.wins || 0),
+                headToHead:   dbData[b.id] ? (dbData[b.id].headToHead || {}) : (b.headToHead || {}),
+                voterContext: dbData[b.id] ? (dbData[b.id].voterContext || {}) : (b.voterContext || {})
             })).sort((a, b) => b.elo - a.elo);
 
             tbody.innerHTML = '';
             sortedBrowsers.forEach((b, index) => {
-                // Actual Total Win Rate %
                 const actualWinRate = b.matches > 0 ? ((b.wins || 0) / b.matches) * 100 : 0.0;
 
-                // Identify True Top Rival Based on Actual Recorded Matches
                 let topRival = null;
                 let closestProbabilityDiff = Infinity;
                 let rivalWinRatePercent = 0.0;
@@ -996,7 +1078,6 @@
                         const winRate = stats.wins / stats.matches;
                         const diff = Math.abs(winRate - 0.50);
                         
-                        // Pick the one closest to a 50% split. If there is a tie, favor the rival with a higher sample size.
                         if (diff < closestProbabilityDiff || (diff === closestProbabilityDiff && stats.matches > rivalMatchesPlayed)) {
                             closestProbabilityDiff = diff;
                             topRival = masterBrowsers.find(x => x.id === oppId);
