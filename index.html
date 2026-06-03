@@ -33,7 +33,7 @@
             box-sizing: border-box;
         }
 
-        .container { width: 100%; max-width: 800px; text-align: center; }
+        .container { width: 100%; max-width: 850px; text-align: center; }
         h1 { margin-bottom: 5px; }
 
         .status-bar {
@@ -107,13 +107,17 @@
         .leaderboard-container {
             margin-top: 40px; background-color: var(--surface-color);
             border-radius: 12px; padding: 20px; border: 1px solid var(--border); text-align: left;
+            overflow-x: auto;
         }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; border-bottom: 1px solid var(--border); }
-        th { color: var(--text-muted); text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 600px; }
+        th, td { padding: 12px; border-bottom: 1px solid var(--border); text-align: left; }
+        th { color: var(--text-muted); text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
         tr:last-child td { border-bottom: none; }
         .rank { font-weight: bold; color: var(--accent); width: 40px; }
-        .elo-score { font-family: monospace; font-size: 16px; color: var(--success); }
+        .elo-score { font-family: monospace; font-size: 15px; color: var(--success); }
+        .stat-column { font-family: monospace; font-size: 15px; }
+        .rival-cell { font-size: 13px; color: var(--text-main); }
+        .rival-pct { font-family: monospace; font-size: 12px; color: var(--accent); margin-left: 4px; }
 
         .btn {
             background-color: var(--accent); color: #000; border: none; padding: 12px 30px;
@@ -223,7 +227,7 @@
 </head>
 <body>
 
-    <div class="version-badge">v1.9.1</div>
+    <div class="version-badge">v1.10.0</div>
     <button class="dev-reset-btn" onclick="devReset()">🛠 Reset LocalStorage</button>
 
     <!-- Survey Modal -->
@@ -291,7 +295,7 @@
             <div class="leaderboard-container">
                 <h2>Global Master Leaderboard (Elo Rating)</h2>
                 <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
-                    Rankings are mathematically calculated behind the scenes based on all tournament matchups. Skipped matchups do not affect Elo.
+                    Rankings and statistical matches are mathematically calculated behind the scenes. Win rate represents the average expected probability of defeating all other contestants in the roster.
                 </div>
                 <table>
                     <thead>
@@ -300,6 +304,8 @@
                             <th>Browser</th>
                             <th>Elo Rating</th>
                             <th>Total Matches</th>
+                            <th>Win Rate %</th>
+                            <th>Top Rival (Matchup Closest to 50%)</th>
                         </tr>
                     </thead>
                     <tbody id="leaderboard-body"></tbody>
@@ -674,6 +680,11 @@
             loserObj.matches++;
         }
 
+        // Helper to compute standard ELO win expectancy
+        function getWinProbability(ratingA, ratingB) {
+            return 1 / (1 + Math.pow(10, (ratingB - ratingA) / 400));
+        }
+
         // ══════════════════════════════════════════════════════════════
         // 7. Tournament Bracket Engine
         // ══════════════════════════════════════════════════════════════
@@ -847,7 +858,6 @@
 
         function restartBracket() {
             localStorage.removeItem('bracketCompleted'); // removes 'active block' so they can play again
-            // deliberately NOT removing 'hasFinishedBracketOnce' or survey data!
             window.location.reload();
         }
 
@@ -877,7 +887,7 @@
 
         async function renderLeaderboard() {
             const tbody = document.getElementById('leaderboard-body');
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:20px;">Loading global rankings...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">Loading global rankings...</td></tr>';
 
             let dbData = {};
             try {
@@ -888,6 +898,7 @@
                 logEvent("⚠️ Could not load global rankings — showing local results.");
             }
 
+            // Populate up-to-date data list
             let sortedBrowsers = masterBrowsers.map(b => ({
                 ...b,
                 elo:     dbData[b.id] ? dbData[b.id].elo     : b.elo,
@@ -896,12 +907,45 @@
 
             tbody.innerHTML = '';
             sortedBrowsers.forEach((b, index) => {
+                // Calculate ELO metrics relative to everyone else currently in the testing pool
+                let totalWinProbabilitySum = 0;
+                let topRival = null;
+                let closestProbabilityDiff = Infinity;
+                let rivalWinProbabilityPercent = 50;
+
+                sortedBrowsers.forEach(other => {
+                    if (other.id === b.id) return;
+                    
+                    const prob = getWinProbability(b.elo, other.elo);
+                    totalWinProbabilitySum += prob;
+
+                    // Rivalry: Find the browser whose head-to-head win probability is closest to 50% (0.50)
+                    const diff = Math.abs(prob - 0.50);
+                    if (diff < closestProbabilityDiff) {
+                        closestProbabilityDiff = diff;
+                        topRival = other;
+                        rivalWinProbabilityPercent = prob * 100;
+                    }
+                });
+
+                // Win rate is the average probability of winning against all other contenders in the current roster
+                const averageWinRate = sortedBrowsers.length > 1 
+                    ? (totalWinProbabilitySum / (sortedBrowsers.length - 1)) * 100 
+                    : 50.0;
+
+                let rivalDisplay = "None";
+                if (topRival) {
+                    rivalDisplay = `${topRival.name} <span class="rival-pct">(${rivalWinProbabilityPercent.toFixed(1)}%)</span>`;
+                }
+
                 let tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="rank">${index + 1}</td>
-                    <td>${b.name}</td>
+                    <td style="font-weight: 500;">${b.name}</td>
                     <td class="elo-score">${Math.round(b.elo)}</td>
-                    <td>${b.matches}</td>
+                    <td class="stat-column">${b.matches}</td>
+                    <td class="stat-column" style="color: var(--success);">${averageWinRate.toFixed(1)}%</td>
+                    <td class="rival-cell">${rivalDisplay}</td>
                 `;
                 tbody.appendChild(tr);
             });
