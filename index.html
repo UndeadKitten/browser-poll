@@ -58,6 +58,7 @@
             flex-direction: column;
             align-items: center;
             min-height: 100dvh;
+            height: 100dvh;
             position: relative;
             box-sizing: border-box;
         }
@@ -67,7 +68,6 @@
             max-width: 850px;
             text-align: center;
             flex: 1;
-            min-height: 0;
             display: flex;
             flex-direction: column;
         }
@@ -317,7 +317,7 @@
             display: flex;
             flex-direction: column;
             flex: 1;
-            min-height: 130px;
+            min-height: 0;
         }
 
         .log-title {
@@ -579,7 +579,7 @@
 
 <body>
 
-    <div class="version-badge">v62</div>
+    <div class="version-badge">v60</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -632,7 +632,7 @@
     <div class="container" style="display: flex; flex-direction: column; flex: 1;">
 
         <!-- Tournament Voting Interface -->
-        <div id="tournament-view" style="display: none; flex-direction: column; flex: 1; min-height: 0;">
+        <div id="tournament-view" style="display: none; flex-direction: column; flex: 1;">
             <h1>Browser Bracket</h1>
 
             <div class="status-bar" id="round-title">Round 1</div>
