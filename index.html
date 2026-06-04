@@ -84,7 +84,7 @@
 
         .progress-bar {
             color: var(--text-muted);
-            margin-bottom: var(--page-pad);
+            margin-bottom: 16px;
             font-size: 13px;
         }
 
@@ -103,10 +103,7 @@
             border-radius: 12px;
             padding: 16px;
             flex: 1;
-            min-width: 0;
-            min-height: 0;
             aspect-ratio: 1 / 1;
-            overflow: hidden;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -114,25 +111,17 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            container-type: inline-size;
         }
 
-        @media (hover: hover) {
-            .browser-card:hover:not(.locked-vote) {
-                border-color: var(--accent);
-                background-color: #2a2a2a;
-                transform: translateY(-2px);
-            }
-
-            .browser-card:hover:not(.locked-vote) .browser-logo {
-                transform: scale(1.1);
-            }
+        .browser-card:hover:not(.locked-vote) {
+            border-color: var(--accent);
+            background-color: #2a2a2a;
+            transform: translateY(-2px);
         }
 
         .browser-name {
-            font-size: 9cqi;
+            font-size: 22px;
             font-weight: bold;
-            white-space: nowrap;
         }
 
         /* Logos directly on the card */
@@ -142,6 +131,10 @@
             object-fit: contain;
             margin-top: 10px;
             transition: transform 0.2s ease;
+        }
+
+        .browser-card:hover:not(.locked-vote) .browser-logo {
+            transform: scale(1.1);
         }
 
         .vs-badge {
@@ -167,23 +160,7 @@
             gap: 10px;
             justify-content: center;
             width: 100%;
-            container-type: inline-size;
-        }
-
-        .tournament-controls > * {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .tournament-controls > *:nth-child(2) {
-            flex: 0 0 auto;
-        }
-
-        @container (max-width: 500px) {
-            .tournament-controls > *,
-            .tournament-controls > *:nth-child(2) {
-                flex: 0 0 100%;
-            }
+            margin-bottom: 6px;
         }
 
         .btn-skip,
@@ -197,9 +174,6 @@
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s ease;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .btn-skip:hover:not(.locked-vote),
@@ -562,6 +536,10 @@
                 gap: 6px;
             }
 
+            .tournament-controls {
+                margin-bottom: 6px;
+            }
+
             .survey-col-headers,
             .survey-row {
                 grid-template-columns: 1fr 48px 58px 70px;
@@ -573,7 +551,7 @@
 
 <body>
 
-    <div class="version-badge">v55</div>
+    <div class="version-badge">v46</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -646,8 +624,10 @@
 
             <div class="tournament-controls">
                 <button class="btn-secondary" id="btn-undo" onclick="undoMatchup()" disabled>↩ Undo</button>
-                <button class="btn-skip locked-vote" id="btn-skip" onclick="skipMatchup()">Eliminate Both (Never heard of either)</button>
-                <button class="btn-skip" id="btn-skip-to-results" onclick="skipToResults()">Skip To Results →</button>
+                <button class="btn-skip locked-vote" id="btn-skip" onclick="skipMatchup()">Eliminate Both (I've never
+                    heard of either)</button>
+                <button class="btn-skip" id="btn-skip-to-results" onclick="skipToResults()">Skip → View Results
+                    Only</button>
             </div>
         </div>
 
