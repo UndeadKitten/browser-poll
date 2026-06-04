@@ -18,7 +18,7 @@
             --accent-hover: #9c27b0;
             --border: #333;
             --success: #03dac6;
-            --page-pad: clamp(8px, 1.5vw, 12px);
+            --page-pad: 12px;
             color-scheme: dark;
         }
 
@@ -540,12 +540,6 @@
                 margin-bottom: 6px;
             }
 
-            .btn-skip,
-            .btn-secondary {
-                width: 100%;
-                box-sizing: border-box;
-            }
-
             .survey-col-headers,
             .survey-row {
                 grid-template-columns: 1fr 48px 58px 70px;
@@ -557,7 +551,7 @@
 
 <body>
 
-    <div class="version-badge">v45</div>
+    <div class="version-badge">v46</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
