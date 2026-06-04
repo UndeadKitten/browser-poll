@@ -157,14 +157,15 @@
         .log-container {
             margin-top: 40px; text-align: left; background-color: #171717;
             padding: 20px; border-radius: 8px; border: 1px solid var(--border);
-            max-height: 180px; overflow-y: auto; width: 100%; box-sizing: border-box;
+            width: 100%; box-sizing: border-box;
             margin-bottom: 40px;
         }
         .log-title {
-            position: sticky; top: 0; z-index: 10;
             font-size: 12px; color: var(--text-muted); text-transform: uppercase;
-            letter-spacing: 1px; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px;
-            background-color: #171717; margin: -20px -20px 10px -20px; padding: 20px 20px 5px 20px;
+            letter-spacing: 1px; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px;
+        }
+        #log-feed {
+            max-height: 120px; overflow-y: auto;
         }
         .log-entry { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; font-family: monospace; }
 
