@@ -70,6 +70,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            min-height: 0; /* Allows container to shrink and not push page height beyond 100vh */
         }
 
         h1 {
@@ -317,6 +318,7 @@
             display: flex;
             flex-direction: column;
             flex: 1;
+            min-height: 0; /* Prevents container from stretching past flex bounds */
         }
 
         .log-title {
@@ -332,6 +334,7 @@
         #log-feed {
             flex: 1;
             overflow-y: auto;
+            min-height: 0; /* Fixes auto-expanding flex child issue */
         }
 
         .log-entry {
@@ -577,7 +580,7 @@
 
 <body>
 
-    <div class="version-badge">v59</div>
+    <div class="version-badge">v60</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -630,7 +633,7 @@
     <div class="container" style="display: flex; flex-direction: column; flex: 1;">
 
         <!-- Tournament Voting Interface -->
-        <div id="tournament-view" style="display: none; flex-direction: column; flex: 1;">
+        <div id="tournament-view" style="display: none; flex-direction: column; flex: 1; min-height: 0;">
             <h1>Browser Bracket</h1>
 
             <div class="status-bar" id="round-title">Round 1</div>
@@ -656,7 +659,7 @@
         </div>
 
         <!-- End Screen: Winner & Leaderboard -->
-        <div id="winner-view" style="display: none; flex-direction: column; width: 100%;">
+        <div id="winner-view" style="display: none; flex-direction: column; width: 100%; min-height: 0;">
             <div id="submit-results-area" style="display: none;"></div>
 
             <div class="leaderboard-container" id="leaderboard-section"
