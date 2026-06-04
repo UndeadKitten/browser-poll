@@ -171,10 +171,10 @@
         }
 
         .tournament-controls > * {
-            flex: 0 0 auto;
+            flex: 1;
         }
 
-        @container (max-width: 590px) {
+        @container (max-width: 460px) {
             .tournament-controls > * {
                 flex: 0 0 100%;
             }
@@ -191,6 +191,9 @@
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .btn-skip:hover:not(.locked-vote),
@@ -564,7 +567,7 @@
 
 <body>
 
-    <div class="version-badge">v52</div>
+    <div class="version-badge">v53</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
