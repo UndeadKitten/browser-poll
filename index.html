@@ -84,7 +84,7 @@
 
         .progress-bar {
             color: var(--text-muted);
-            margin-bottom: 16px;
+            margin-bottom: var(--page-pad);
             font-size: 13px;
         }
 
@@ -167,7 +167,6 @@
             gap: 10px;
             justify-content: center;
             width: 100%;
-            margin-bottom: 6px;
         }
 
         .tournament-controls > * {
@@ -548,10 +547,6 @@
                 gap: 6px;
             }
 
-            .tournament-controls {
-                margin-bottom: 6px;
-            }
-
             .survey-col-headers,
             .survey-row {
                 grid-template-columns: 1fr 48px 58px 70px;
@@ -563,7 +558,7 @@
 
 <body>
 
-    <div class="version-badge">v50</div>
+    <div class="version-badge">v51</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
