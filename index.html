@@ -170,6 +170,11 @@
             margin-bottom: 6px;
         }
 
+        .tournament-controls > * {
+            flex: 1 1 auto;
+            min-width: max-content;
+        }
+
         .btn-skip,
         .btn-secondary {
             background-color: transparent;
@@ -558,7 +563,7 @@
 
 <body>
 
-    <div class="version-badge">v49</div>
+    <div class="version-badge">v50</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -631,10 +636,8 @@
 
             <div class="tournament-controls">
                 <button class="btn-secondary" id="btn-undo" onclick="undoMatchup()" disabled>↩ Undo</button>
-                <button class="btn-skip locked-vote" id="btn-skip" onclick="skipMatchup()">Eliminate Both (I've never
-                    heard of either)</button>
-                <button class="btn-skip" id="btn-skip-to-results" onclick="skipToResults()">Skip → View Results
-                    Only</button>
+                <button class="btn-skip locked-vote" id="btn-skip" onclick="skipMatchup()">Eliminate Both (Never heard of either)</button>
+                <button class="btn-skip" id="btn-skip-to-results" onclick="skipToResults()">Skip To Results →</button>
             </div>
         </div>
 
