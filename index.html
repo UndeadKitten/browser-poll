@@ -56,7 +56,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
+            min-height: 100dvh;
+            height: 100dvh;
             position: relative;
             box-sizing: border-box;
         }
@@ -65,6 +66,9 @@
             width: 100%;
             max-width: 850px;
             text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         h1 {
@@ -311,6 +315,7 @@
             margin-bottom: 0;
             display: flex;
             flex-direction: column;
+            flex: 1;
         }
 
         .log-title {
@@ -324,7 +329,7 @@
         }
 
         #log-feed {
-            height: 130px;
+            flex: 1;
             overflow-y: auto;
         }
 
@@ -571,7 +576,7 @@
 
 <body>
 
-    <div class="version-badge">v57</div>
+    <div class="version-badge">v58</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -624,7 +629,7 @@
     <div class="container" style="display: flex; flex-direction: column; flex: 1;">
 
         <!-- Tournament Voting Interface -->
-        <div id="tournament-view" style="display: none;">
+        <div id="tournament-view" style="display: none; flex-direction: column; flex: 1;">
             <h1>Browser Bracket</h1>
 
             <div class="status-bar" id="round-title">Round 1</div>
@@ -826,7 +831,7 @@
                 document.getElementById('leaderboard-section').style.display = 'block';
                 await renderLeaderboard();
             } else {
-                document.getElementById('tournament-view').style.display = 'block';
+                document.getElementById('tournament-view').style.display = 'flex';
                 document.getElementById('feed-container').style.display = 'block';
 
                 // Directly start tournament logic
