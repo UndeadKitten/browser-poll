@@ -101,9 +101,8 @@
             background-color: var(--surface-color);
             border: 2px solid var(--border);
             border-radius: 12px;
-            padding: 16px;
+            padding: 36px 16px;
             flex: 1;
-            aspect-ratio: 1 / 1;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -126,10 +125,10 @@
 
         /* Logos directly on the card */
         .browser-logo {
-            width: 62%;
-            height: 62%;
+            width: 120px;
+            height: 120px;
             object-fit: contain;
-            margin-top: 10px;
+            margin-top: 16px;
             transition: transform 0.2s ease;
         }
 
@@ -160,7 +159,7 @@
             gap: 10px;
             justify-content: center;
             width: 100%;
-            margin-bottom: 6px;
+            margin-bottom: 12px;
         }
 
         .btn-skip,
@@ -190,7 +189,7 @@
 
         /* Leaderboard */
         .leaderboard-container {
-            margin-top: 0;
+            margin-top: var(--page-pad);
             background-color: var(--surface-color);
             border-radius: 12px;
             padding: var(--page-pad);
@@ -300,7 +299,7 @@
         #log-feed {
             flex: 1;
             min-height: 32px;
-            max-height: 130px;
+            max-height: 80px;
             overflow-y: auto;
         }
 
@@ -528,16 +527,125 @@
             height: 15px;
         }
 
-        /* ── Narrow screens: structural layout only, no size snapping ── */
-        @media (max-width: 600px) {
+        /* ── Tablet ─────────────────────────────────────────────── */
+        @media (max-width: 768px) {
+            :root {
+                --page-pad: 10px;
+            }
+
+            .browser-card {
+                padding: 20px 14px;
+            }
+
+            .browser-name {
+                font-size: 20px;
+            }
+
+            .browser-logo {
+                width: 76px;
+                height: 76px;
+                margin-top: 12px;
+            }
+
             .survey-gate-area {
                 flex-direction: column;
                 text-align: center;
+            }
+        }
+
+        /* ── Mobile ─────────────────────────────────────────────── */
+        @media (max-width: 600px) {
+            :root {
+                --page-pad: 8px;
+            }
+
+            h1 {
+                font-size: 20px;
+                margin-bottom: 4px;
+            }
+
+            .status-bar {
+                font-size: 14px;
+            }
+
+            .progress-bar {
+                font-size: 12px;
+                margin-bottom: 12px;
+            }
+
+            /* Matchup cards */
+            .matchup-container {
+                gap: 8px;
+                margin-bottom: 10px;
+            }
+
+            .browser-card {
+                padding: 16px 10px;
+                border-radius: 10px;
+            }
+
+            .browser-name {
+                font-size: 16px;
+            }
+
+            .browser-logo {
+                width: 60px;
+                height: 60px;
+                margin-top: 10px;
+            }
+
+            .vs-badge {
+                font-size: 14px;
+                flex-shrink: 0;
+            }
+
+            /* Tournament controls — stack buttons full-width */
+            .tournament-controls {
+                gap: 8px;
+                margin-bottom: 10px;
+            }
+
+            .btn-skip,
+            .btn-secondary {
+                width: 100%;
+                box-sizing: border-box;
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+
+            /* Survey gate */
+            .survey-gate-area {
+                flex-direction: column;
+                text-align: center;
+                padding: 8px 12px;
                 gap: 6px;
             }
 
-            .tournament-controls {
-                margin-bottom: 6px;
+            .btn-survey {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+
+            .survey-hint {
+                font-size: 11px;
+            }
+
+            /* Survey modal */
+            .survey-modal-header {
+                padding: 12px 12px 10px;
+            }
+
+            .survey-modal-header h2 {
+                font-size: 16px;
+            }
+
+            .survey-modal-body {
+                padding: 0 10px 8px;
+            }
+
+            .survey-modal-footer {
+                padding: 10px 12px;
+                gap: 8px;
             }
 
             .survey-col-headers,
@@ -545,13 +653,77 @@
                 grid-template-columns: 1fr 48px 58px 70px;
                 gap: 2px;
             }
+
+            .survey-col-headers span:not(:first-child) {
+                font-size: 9px;
+                letter-spacing: 0;
+            }
+
+            .survey-browser-name {
+                font-size: 12px;
+            }
+
+            /* Leaderboard */
+            .leaderboard-container h2 {
+                font-size: 16px;
+            }
+
+            table {
+                min-width: 600px;
+                width: 100%;
+            }
+
+            th,
+            td {
+                padding: 8px 6px;
+                font-size: 12px;
+            }
+
+            .elo-score,
+            .stat-column {
+                font-size: 12px;
+            }
+
+            /* Dev buttons — shrink a touch so they don't crowd the version badge */
+            .dev-btn-group {
+                gap: 4px;
+                bottom: 6px;
+                left: 6px;
+            }
+
+            .dev-reset-btn {
+                font-size: 10px;
+                padding: 4px 7px;
+            }
+
+            .version-badge {
+                font-size: 10px;
+                padding: 3px 6px;
+                bottom: 6px;
+                right: 6px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .browser-name {
+                font-size: 14px;
+            }
+
+            .browser-logo {
+                width: 48px;
+                height: 48px;
+            }
+
+            .browser-card {
+                padding: 12px 8px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="version-badge">v46</div>
+    <div class="version-badge">r37</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
