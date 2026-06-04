@@ -113,25 +113,7 @@
         }
         .btn-secondary:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        /* Winner Screen & Leaderboard */
-        .winner-screen {
-            position: fixed; top: 20px; right: 20px; z-index: 100;
-            background-color: rgba(30, 30, 30, 0.85);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid var(--success);
-            border-radius: 12px; padding: 10px 16px;
-            display: flex; align-items: center; justify-content: space-between; gap: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-            max-width: 380px;
-        }
-        .winner-title { font-size: 11px; color: var(--success); font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; }
-
-        .winner-logo { 
-            object-fit: contain; 
-        }
-
-        .leaderboard-container {
+        /* Leaderboard */        .leaderboard-container {
             margin-top: 40px; background-color: var(--surface-color);
             border-radius: 12px; padding: 20px; border: 1px solid var(--border); text-align: left;
             overflow-x: auto;
@@ -295,22 +277,12 @@
             .survey-col-headers span:not(:first-child) { font-size: 9px; letter-spacing: 0; }
             .survey-browser-name { font-size: 12px; }
 
-            /* Winner screen */
-            .winner-screen {
-                position: static;
-                width: 100%;
-                box-sizing: border-box;
-                margin-bottom: 16px;
-                padding: 10px 14px;
-            }
-
-            /* Leaderboard — hide less critical columns, tighten layout */
+            /* Leaderboard */
             .leaderboard-container { padding: 12px; margin-top: 20px; }
             .leaderboard-container h2 { font-size: 16px; }
-            table { min-width: unset; width: 100%; }
+            table { min-width: 600px; width: 100%; }
             th, td { padding: 9px 6px; font-size: 12px; }
             .elo-score, .stat-column { font-size: 12px; }
-            .col-matches, .col-rival { display: none; }
 
             /* Log feed */
             .log-container { padding: 12px; margin-top: 20px; }
@@ -389,25 +361,20 @@
         </div>
 
         <!-- End Screen: Winner & Leaderboard -->
-        <div id="winner-view" style="display: none;">
-            <div class="winner-screen">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                        <span id="winner-trophy" style="font-size: 24px;">🏆</span>
-                        <img class="winner-logo" id="winner-logo" src="" alt="Winner Logo" style="display: none; position: absolute; width: 22px; height: 22px; bottom: -4px; right: -4px; background: var(--surface-color); border-radius: 50%; padding: 1px; border: 1px solid var(--border);">
-                    </div>
-                    <div style="text-align: left;">
-                        <div class="winner-title">Your Choice</div>
-                        <div id="winner-name" style="font-size: 14px; font-weight: bold; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">Mozilla Firefox</div>
-                    </div>
-                </div>
-                <button class="btn-secondary" onclick="restartBracket()" style="padding: 6px 12px; font-size: 11px; margin-top: 0; border-color: var(--success); color: var(--success); flex-shrink: 0;">Play Again</button>
-            </div>
-
+        <div id="winner-view" style="display: none; flex-direction: column; width: 100%;">
             <div id="submit-results-area" style="display: none;"></div>
 
-            <div class="leaderboard-container" id="leaderboard-section" style="display: none;">
-                <h2>Global Master Leaderboard (Elo Rating)</h2>
+            <div class="leaderboard-container" id="leaderboard-section" style="display: none; width: 100%; box-sizing: border-box;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">Global Master Leaderboard (Elo Rating)</h2>
+                    
+                    <div style="display: flex; align-items: center; gap: 8px; background: rgba(3, 218, 198, 0.1); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--success);">
+                        <span id="winner-trophy" style="font-size: 16px;">🏆</span>
+                        <img class="winner-logo" id="winner-logo" src="" alt="Winner Logo" style="display: none; width: 18px; height: 18px; object-fit: contain;">
+                        <span id="winner-name" style="font-size: 13px; font-weight: bold; color: var(--success); white-space: nowrap; max-width: 150px; overflow: hidden; text-overflow: ellipsis;">Mozilla Firefox</span>
+                        <button class="btn-secondary" onclick="restartBracket()" style="padding: 4px 10px; font-size: 10px; margin-left: 4px; border-color: var(--success); color: var(--success); border-radius: 12px;">Play Again</button>
+                    </div>
+                </div>
                 <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
                     Rankings are mathematically calculated behind the scenes. Win rates and top rivals are based on actual tournament match history.
                 </div>
