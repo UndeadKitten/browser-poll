@@ -101,7 +101,7 @@
             background-color: var(--surface-color);
             border: 2px solid var(--border);
             border-radius: 12px;
-            padding: 4px;
+            padding: 16px;
             flex: 1;
             aspect-ratio: 1 / 1;
             text-align: center;
@@ -126,8 +126,8 @@
 
         /* Logos directly on the card */
         .browser-logo {
-            width: 85%;
-            height: 85%;
+            width: 62%;
+            height: 62%;
             object-fit: contain;
             margin-top: 10px;
             transition: transform 0.2s ease;
@@ -190,7 +190,7 @@
 
         /* Leaderboard */
         .leaderboard-container {
-            margin-top: var(--page-pad);
+            margin-top: 0;
             background-color: var(--surface-color);
             border-radius: 12px;
             padding: var(--page-pad);
@@ -274,7 +274,7 @@
 
         /* Elimination Log / Feed */
         .log-container {
-            margin-top: 6px;
+            margin-top: var(--page-pad);
             text-align: left;
             background-color: #171717;
             padding: var(--page-pad);
@@ -698,7 +698,7 @@
 
 <body>
 
-    <div class="version-badge">v43</div>
+    <div class="version-badge">v44</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
