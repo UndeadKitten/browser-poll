@@ -53,12 +53,10 @@
             color: var(--text-main);
             margin: 0;
             padding: var(--page-pad);
-            padding-bottom: 90px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100dvh;
-            height: 100dvh;
+            min-height: 100vh;
             position: relative;
             box-sizing: border-box;
         }
@@ -67,10 +65,6 @@
             width: 100%;
             max-width: 850px;
             text-align: center;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 0; /* Allows container to shrink and not push page height beyond 100vh */
         }
 
         h1 {
@@ -178,16 +172,10 @@
 
         .tournament-controls > * {
             flex: 1;
-            min-width: 0;
         }
 
-        .tournament-controls > *:nth-child(2) {
-            flex: 0 0 auto;
-        }
-
-        @container (max-width: 580px) {
-            .tournament-controls > *,
-            .tournament-controls > *:nth-child(2) {
+        @container (max-width: 460px) {
+            .tournament-controls > * {
                 flex: 0 0 100%;
             }
         }
@@ -317,8 +305,6 @@
             margin-bottom: 0;
             display: flex;
             flex-direction: column;
-            flex: 1;
-            min-height: 0; /* Prevents container from stretching past flex bounds */
         }
 
         .log-title {
@@ -333,8 +319,9 @@
 
         #log-feed {
             flex: 1;
+            min-height: 32px;
+            max-height: 130px;
             overflow-y: auto;
-            min-height: 0; /* Fixes auto-expanding flex child issue */
         }
 
         .log-entry {
@@ -580,7 +567,7 @@
 
 <body>
 
-    <div class="version-badge">v60</div>
+    <div class="version-badge">v53</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -633,7 +620,7 @@
     <div class="container" style="display: flex; flex-direction: column; flex: 1;">
 
         <!-- Tournament Voting Interface -->
-        <div id="tournament-view" style="display: none; flex-direction: column; flex: 1; min-height: 0;">
+        <div id="tournament-view" style="display: none;">
             <h1>Browser Bracket</h1>
 
             <div class="status-bar" id="round-title">Round 1</div>
@@ -659,7 +646,7 @@
         </div>
 
         <!-- End Screen: Winner & Leaderboard -->
-        <div id="winner-view" style="display: none; flex-direction: column; width: 100%; min-height: 0;">
+        <div id="winner-view" style="display: none; flex-direction: column; width: 100%;">
             <div id="submit-results-area" style="display: none;"></div>
 
             <div class="leaderboard-container" id="leaderboard-section"
@@ -835,7 +822,7 @@
                 document.getElementById('leaderboard-section').style.display = 'block';
                 await renderLeaderboard();
             } else {
-                document.getElementById('tournament-view').style.display = 'flex';
+                document.getElementById('tournament-view').style.display = 'block';
                 document.getElementById('feed-container').style.display = 'block';
 
                 // Directly start tournament logic
