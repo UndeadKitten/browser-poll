@@ -171,12 +171,16 @@
             pointer-events: none; z-index: 9999;
         }
 
-        /* Developer Reset Button */
+        /* Developer Buttons */
+        .dev-btn-group {
+            position: fixed; bottom: 12px; left: 12px;
+            display: flex; gap: 6px; z-index: 9999;
+        }
         .dev-reset-btn {
-            position: fixed; bottom: 12px; left: 12px; font-family: monospace;
+            font-family: monospace;
             font-size: 11px; color: var(--text-muted); background-color: rgba(0,0,0,0.6);
             padding: 6px 10px; border-radius: 4px; border: 1px solid #333;
-            cursor: pointer; z-index: 9999; transition: all 0.2s;
+            cursor: pointer; transition: all 0.2s;
         }
         .dev-reset-btn:hover { background-color: var(--accent); color: #000; }
 
@@ -248,12 +252,81 @@
         .survey-check-cell { display: flex; align-items: center; justify-content: center; }
         .survey-check-cell input[type="checkbox"] { cursor: pointer; accent-color: var(--accent); width: 15px; height: 15px; }
 
+        /* ── Mobile ─────────────────────────────────────────────── */
+        @media (max-width: 600px) {
+            body { padding: 12px 12px 70px; }
+
+            h1 { font-size: 22px; margin-bottom: 4px; }
+
+            /* Matchup cards */
+            .matchup-container { gap: 8px; margin-bottom: 12px; }
+            .browser-card { padding: 18px 10px; border-radius: 10px; }
+            .browser-name { font-size: 16px; }
+            .browser-logo { width: 64px; height: 64px; margin-top: 12px; }
+            .vs-badge { font-size: 14px; flex-shrink: 0; }
+
+            /* Tournament controls — stack buttons full-width */
+            .tournament-controls { gap: 8px; margin-bottom: 24px; }
+            .btn-skip, .btn-secondary {
+                width: 100%; box-sizing: border-box;
+                padding: 12px 16px; font-size: 13px;
+            }
+
+            /* Status / progress */
+            .status-bar { font-size: 15px; margin-bottom: 8px; }
+            .progress-bar { font-size: 13px; margin-bottom: 20px; }
+
+            /* Survey gate */
+            .survey-gate-area { padding: 14px; margin-bottom: 20px; gap: 6px; }
+            .btn-survey { padding: 10px 20px; font-size: 14px; }
+
+            /* Survey modal */
+            .survey-modal-header { padding: 14px 14px 10px; }
+            .survey-modal-header h2 { font-size: 16px; }
+            .survey-modal-body { padding: 0 10px 8px; }
+            .survey-modal-footer { padding: 10px 14px; gap: 8px; }
+            .survey-col-headers,
+            .survey-row { grid-template-columns: 1fr 48px 58px 70px; gap: 2px; }
+            .survey-col-headers span:not(:first-child) { font-size: 9px; letter-spacing: 0; }
+            .survey-browser-name { font-size: 12px; }
+
+            /* Winner screen */
+            .winner-screen { padding: 24px 16px; margin-top: 12px; }
+            .winner-title { font-size: 22px; }
+            .winner-logo { width: 88px; height: 88px; }
+
+            /* Leaderboard — hide less critical columns, tighten layout */
+            .leaderboard-container { padding: 12px; margin-top: 20px; }
+            .leaderboard-container h2 { font-size: 16px; }
+            table { min-width: unset; width: 100%; }
+            th, td { padding: 9px 6px; font-size: 12px; }
+            .elo-score, .stat-column { font-size: 12px; }
+            .col-matches, .col-rival { display: none; }
+
+            /* Log feed */
+            .log-container { padding: 12px; margin-top: 20px; }
+
+            /* Dev buttons — shrink a touch so they don't crowd the version badge */
+            .dev-btn-group { gap: 4px; bottom: 8px; left: 8px; }
+            .dev-reset-btn { font-size: 10px; padding: 5px 8px; }
+            .version-badge { font-size: 10px; padding: 3px 6px; bottom: 8px; right: 8px; }
+        }
+
+        @media (max-width: 380px) {
+            .browser-name { font-size: 13px; }
+            .browser-logo { width: 52px; height: 52px; }
+            .browser-card { padding: 14px 8px; }
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="version-badge">v1.13.0</div>
-    <button class="dev-reset-btn" onclick="devReset()">🛠 Reset LocalStorage</button>
+    <div class="version-badge">v1.14.0</div>
+    <div class="dev-btn-group">
+        <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
+        <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
+    </div>
 
     <!-- Survey Modal -->
     <div id="survey-modal" style="display: none;">
@@ -302,6 +375,7 @@
             <div class="tournament-controls">
                 <button class="btn-secondary" id="btn-undo" onclick="undoMatchup()" disabled>↩ Undo</button>
                 <button class="btn-skip locked-vote" id="btn-skip" onclick="skipMatchup()">Eliminate Both (I've never heard of either)</button>
+                <button class="btn-skip" id="btn-skip-to-results" onclick="skipToResults()">Skip → View Results Only</button>
             </div>
         </div>
 
@@ -317,7 +391,9 @@
                 <button class="btn" onclick="restartBracket()" style="padding: 8px 16px; font-size: 12px; margin-top: 8px;">Play Again</button>
             </div>
 
-            <div class="leaderboard-container">
+            <div id="submit-results-area" style="display: none;"></div>
+
+            <div class="leaderboard-container" id="leaderboard-section" style="display: none;">
                 <h2>Global Master Leaderboard (Elo Rating)</h2>
                 <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
                     Rankings are mathematically calculated behind the scenes. Win rates and top rivals are based on actual tournament match history.
@@ -328,9 +404,9 @@
                             <th class="rank">#</th>
                             <th>Browser</th>
                             <th>Elo Rating</th>
-                            <th>Total Matches</th>
+                            <th class="col-matches">Total Matches</th>
                             <th>Win Rate %</th>
-                            <th>Top Rival (Matchup Closest to 50%)</th>
+                            <th class="col-rival">Top Rival (Matchup Closest to 50%)</th>
                         </tr>
                     </thead>
                     <tbody id="leaderboard-body"></tbody>
@@ -482,6 +558,8 @@
                 document.getElementById('winner-view').style.display = 'flex';
                 document.getElementById('winner-name').innerText = "Bracket Completed!";
                 document.getElementById('winner-logo').style.display = 'none';
+                document.getElementById('submit-results-area').style.display = 'none';
+                document.getElementById('leaderboard-section').style.display = 'block';
                 await renderLeaderboard();
             } else {
                 document.getElementById('tournament-view').style.display = 'block';
@@ -494,9 +572,15 @@
             }
         });
 
-        function devReset() {
+        function devResetPoll() {
             localStorage.removeItem('bracketCompleted');
             localStorage.removeItem('hasFinishedBracketOnce');
+            window.location.reload();
+        }
+
+        function devResetSurvey() {
+            localStorage.removeItem('surveyCompleted');
+            localStorage.removeItem('surveyData');
             window.location.reload();
         }
 
@@ -876,6 +960,7 @@
                 logEvent("🔄 Replaying for fun. Votes will not be uploaded globally.");
             }
 
+            snapshotRoundStats(); // Baseline snapshot — used to compute full-tournament delta at submit
             generateRoundMatchups();
         }
 
@@ -884,7 +969,6 @@
             currentMatchIndex = 0;
             nextRoundPool = [];
 
-            snapshotRoundStats(); 
             shuffleArray(activePool);
 
             if (activePool.length % 2 !== 0) {
@@ -1030,10 +1114,6 @@
             if (currentMatchIndex < currentMatchups.length) {
                 updateUI();
             } else {
-                await uploadRoundDeltas();
-                historyStack = [];
-                document.getElementById('btn-undo').disabled = true;
-
                 activePool = [...nextRoundPool];
 
                 if (activePool.length === 0) {
@@ -1058,7 +1138,7 @@
         // ══════════════════════════════════════════════════════════════
         async function showWinnerAndLeaderboard(winnerObj) {
             localStorage.setItem('bracketCompleted', 'true');
-            localStorage.setItem('hasFinishedBracketOnce', 'true'); // Flag to prevent future uploads
+            localStorage.setItem('hasFinishedBracketOnce', 'true');
             
             document.getElementById('tournament-view').style.display = 'none';
             document.getElementById('winner-view').style.display = 'flex';
@@ -1074,7 +1154,26 @@
                 logEvent("🤷 TOURNAMENT ENDED: All contenders eliminated.");
             }
 
+            document.getElementById('leaderboard-section').style.display = 'block';
+            await uploadRoundDeltas();
             await renderLeaderboard();
+        }
+
+        function skipToResults() {
+            if (!confirm("Skip voting and jump straight to the global results?\n\nThis counts as completing the poll — your votes won't be submitted, and you won't be able to go back and have them count.")) return;
+
+            localStorage.setItem('bracketCompleted', 'true');
+            localStorage.setItem('hasFinishedBracketOnce', 'true');
+
+            document.getElementById('tournament-view').style.display = 'none';
+            document.getElementById('winner-view').style.display = 'flex';
+            document.getElementById('winner-name').innerText = 'Global Results';
+            document.getElementById('winner-logo').style.display = 'none';
+            document.getElementById('submit-results-area').style.display = 'none';
+            document.getElementById('leaderboard-section').style.display = 'block';
+
+            logEvent("👀 Skipped to results — votes not submitted.");
+            renderLeaderboard();
         }
 
         async function renderLeaderboard() {
@@ -1135,9 +1234,9 @@
                     <td class="rank">${index + 1}</td>
                     <td style="font-weight: 500;">${b.name}</td>
                     <td class="elo-score">${Math.round(b.elo)}</td>
-                    <td class="stat-column">${b.matches}</td>
+                    <td class="stat-column col-matches">${b.matches}</td>
                     <td class="stat-column" style="color: var(--success);">${actualWinRate.toFixed(1)}%</td>
-                    <td class="rival-cell">${rivalDisplay}</td>
+                    <td class="rival-cell col-rival">${rivalDisplay}</td>
                 `;
                 tbody.appendChild(tr);
             });
