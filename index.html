@@ -172,6 +172,11 @@
 
         .tournament-controls > * {
             flex: 1;
+            min-width: 0;
+        }
+
+        .tournament-controls > *:nth-child(2) {
+            flex: 0 0 auto;
         }
 
         @container (max-width: 460px) {
