@@ -227,6 +227,72 @@
         .survey-check-cell { display: flex; align-items: center; justify-content: center; }
         .survey-check-cell input[type="checkbox"] { cursor: pointer; accent-color: var(--accent); width: 15px; height: 15px; }
 
+        /* ── Mobile ─────────────────────────────────────────────── */
+        @media (max-width: 600px) {
+            body { padding: 12px 12px 70px; }
+
+            h1 { font-size: 22px; margin-bottom: 4px; }
+
+            /* Matchup cards */
+            .matchup-container { gap: 8px; margin-bottom: 12px; }
+            .browser-card { padding: 18px 10px; border-radius: 10px; }
+            .browser-name { font-size: 16px; }
+            .browser-logo { width: 64px; height: 64px; margin-top: 12px; }
+            .vs-badge { font-size: 14px; flex-shrink: 0; }
+
+            /* Tournament controls — stack buttons full-width */
+            .tournament-controls { gap: 8px; margin-bottom: 24px; }
+            .btn-skip, .btn-secondary {
+                width: 100%; box-sizing: border-box;
+                padding: 12px 16px; font-size: 13px;
+            }
+
+            /* Status / progress */
+            .status-bar { font-size: 15px; margin-bottom: 8px; }
+            .progress-bar { font-size: 13px; margin-bottom: 20px; }
+
+            /* Survey gate */
+            .survey-gate-area { padding: 14px; margin-bottom: 20px; gap: 6px; }
+            .btn-survey { padding: 10px 20px; font-size: 14px; }
+
+            /* Survey modal */
+            .survey-modal-header { padding: 14px 14px 10px; }
+            .survey-modal-header h2 { font-size: 16px; }
+            .survey-modal-body { padding: 0 10px 8px; }
+            .survey-modal-footer { padding: 10px 14px; gap: 8px; }
+            .survey-col-headers,
+            .survey-row { grid-template-columns: 1fr 48px 58px 70px; gap: 2px; }
+            .survey-col-headers span:not(:first-child) { font-size: 9px; letter-spacing: 0; }
+            .survey-browser-name { font-size: 12px; }
+
+            /* Winner screen */
+            .winner-screen { padding: 24px 16px; margin-top: 12px; }
+            .winner-title { font-size: 22px; }
+            .winner-logo { width: 88px; height: 88px; }
+
+            /* Leaderboard — hide less critical columns, tighten layout */
+            .leaderboard-container { padding: 12px; margin-top: 20px; }
+            .leaderboard-container h2 { font-size: 16px; }
+            table { min-width: unset; width: 100%; }
+            th, td { padding: 9px 6px; font-size: 12px; }
+            .elo-score, .stat-column { font-size: 12px; }
+            .col-matches, .col-rival { display: none; }
+
+            /* Log feed */
+            .log-container { padding: 12px; margin-top: 20px; }
+
+            /* Dev buttons — shrink a touch so they don't crowd the version badge */
+            .dev-btn-group { gap: 4px; bottom: 8px; left: 8px; }
+            .dev-reset-btn { font-size: 10px; padding: 5px 8px; }
+            .version-badge { font-size: 10px; padding: 3px 6px; bottom: 8px; right: 8px; }
+        }
+
+        @media (max-width: 380px) {
+            .browser-name { font-size: 13px; }
+            .browser-logo { width: 52px; height: 52px; }
+            .browser-card { padding: 14px 8px; }
+        }
+
     </style>
 </head>
 <body>
@@ -313,9 +379,9 @@
                             <th class="rank">#</th>
                             <th>Browser</th>
                             <th>Elo Rating</th>
-                            <th>Total Matches</th>
+                            <th class="col-matches">Total Matches</th>
                             <th>Win Rate %</th>
-                            <th>Top Rival (Matchup Closest to 50%)</th>
+                            <th class="col-rival">Top Rival (Matchup Closest to 50%)</th>
                         </tr>
                     </thead>
                     <tbody id="leaderboard-body"></tbody>
@@ -1143,9 +1209,9 @@
                     <td class="rank">${index + 1}</td>
                     <td style="font-weight: 500;">${b.name}</td>
                     <td class="elo-score">${Math.round(b.elo)}</td>
-                    <td class="stat-column">${b.matches}</td>
+                    <td class="stat-column col-matches">${b.matches}</td>
                     <td class="stat-column" style="color: var(--success);">${actualWinRate.toFixed(1)}%</td>
-                    <td class="rival-cell">${rivalDisplay}</td>
+                    <td class="rival-cell col-rival">${rivalDisplay}</td>
                 `;
                 tbody.appendChild(tr);
             });
