@@ -146,12 +146,16 @@
             pointer-events: none; z-index: 9999;
         }
 
-        /* Developer Reset Button */
+        /* Developer Buttons */
+        .dev-btn-group {
+            position: fixed; bottom: 12px; left: 12px;
+            display: flex; gap: 6px; z-index: 9999;
+        }
         .dev-reset-btn {
-            position: fixed; bottom: 12px; left: 12px; font-family: monospace;
+            font-family: monospace;
             font-size: 11px; color: var(--text-muted); background-color: rgba(0,0,0,0.6);
             padding: 6px 10px; border-radius: 4px; border: 1px solid #333;
-            cursor: pointer; z-index: 9999; transition: all 0.2s;
+            cursor: pointer; transition: all 0.2s;
         }
         .dev-reset-btn:hover { background-color: var(--accent); color: #000; }
 
@@ -227,8 +231,11 @@
 </head>
 <body>
 
-    <div class="version-badge">v1.13.0</div>
-    <button class="dev-reset-btn" onclick="devReset()">🛠 Reset LocalStorage</button>
+    <div class="version-badge">v1.14.0</div>
+    <div class="dev-btn-group">
+        <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
+        <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
+    </div>
 
     <!-- Survey Modal -->
     <div id="survey-modal" style="display: none;">
@@ -277,6 +284,7 @@
             <div class="tournament-controls">
                 <button class="btn-secondary" id="btn-undo" onclick="undoMatchup()" disabled>↩ Undo</button>
                 <button class="btn-skip locked-vote" id="btn-skip" onclick="skipMatchup()">Eliminate Both (I've never heard of either)</button>
+                <button class="btn-skip" id="btn-skip-to-results" onclick="skipToResults()">Skip → View Results Only</button>
             </div>
         </div>
 
@@ -292,7 +300,13 @@
                 <button class="btn" onclick="restartBracket()">Restart Bracket (Play for fun)</button>
             </div>
 
-            <div class="leaderboard-container">
+            <div id="submit-results-area" style="display: none; margin-top: 30px; text-align: center;">
+                <button class="btn" id="btn-submit-results" onclick="submitAndViewResults()" style="font-size: 18px; padding: 14px 40px;">
+                    ☁️ Submit &amp; View Global Results
+                </button>
+            </div>
+
+            <div class="leaderboard-container" id="leaderboard-section" style="display: none;">
                 <h2>Global Master Leaderboard (Elo Rating)</h2>
                 <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
                     Rankings are mathematically calculated behind the scenes. Win rates and top rivals are based on actual tournament match history.
@@ -457,6 +471,8 @@
                 document.getElementById('winner-view').style.display = 'flex';
                 document.getElementById('winner-name').innerText = "Bracket Completed!";
                 document.getElementById('winner-logo').style.display = 'none';
+                document.getElementById('submit-results-area').style.display = 'none';
+                document.getElementById('leaderboard-section').style.display = 'block';
                 await renderLeaderboard();
             } else {
                 document.getElementById('tournament-view').style.display = 'block';
@@ -469,8 +485,15 @@
             }
         });
 
-        function devReset() {
-            localStorage.clear();
+        function devResetPoll() {
+            localStorage.removeItem('bracketCompleted');
+            localStorage.removeItem('hasFinishedBracketOnce');
+            window.location.reload();
+        }
+
+        function devResetSurvey() {
+            localStorage.removeItem('surveyCompleted');
+            localStorage.removeItem('surveyData');
             window.location.reload();
         }
 
@@ -850,6 +873,7 @@
                 logEvent("🔄 Replaying for fun. Votes will not be uploaded globally.");
             }
 
+            snapshotRoundStats(); // Baseline snapshot — used to compute full-tournament delta at submit
             generateRoundMatchups();
         }
 
@@ -858,7 +882,6 @@
             currentMatchIndex = 0;
             nextRoundPool = [];
 
-            snapshotRoundStats(); 
             shuffleArray(activePool);
 
             if (activePool.length % 2 !== 0) {
@@ -1004,10 +1027,6 @@
             if (currentMatchIndex < currentMatchups.length) {
                 updateUI();
             } else {
-                await uploadRoundDeltas();
-                historyStack = [];
-                document.getElementById('btn-undo').disabled = true;
-
                 activePool = [...nextRoundPool];
 
                 if (activePool.length === 0) {
@@ -1032,7 +1051,7 @@
         // ══════════════════════════════════════════════════════════════
         async function showWinnerAndLeaderboard(winnerObj) {
             localStorage.setItem('bracketCompleted', 'true');
-            localStorage.setItem('hasFinishedBracketOnce', 'true'); // Flag to prevent future uploads
+            localStorage.setItem('hasFinishedBracketOnce', 'true');
             
             document.getElementById('tournament-view').style.display = 'none';
             document.getElementById('winner-view').style.display = 'flex';
@@ -1048,7 +1067,38 @@
                 logEvent("🤷 TOURNAMENT ENDED: All contenders eliminated.");
             }
 
+            // Show submit button; leaderboard stays hidden until submission
+            document.getElementById('submit-results-area').style.display = 'block';
+            document.getElementById('leaderboard-section').style.display = 'none';
+        }
+
+        async function submitAndViewResults() {
+            const btn = document.getElementById('btn-submit-results');
+            btn.disabled = true;
+            btn.textContent = '⏳ Uploading votes...';
+
+            await uploadRoundDeltas();
+
+            document.getElementById('submit-results-area').style.display = 'none';
+            document.getElementById('leaderboard-section').style.display = 'block';
             await renderLeaderboard();
+        }
+
+        function skipToResults() {
+            if (!confirm("Skip voting and jump straight to the global results?\n\nThis counts as completing the poll — your votes won't be submitted, and you won't be able to go back and have them count.")) return;
+
+            localStorage.setItem('bracketCompleted', 'true');
+            localStorage.setItem('hasFinishedBracketOnce', 'true');
+
+            document.getElementById('tournament-view').style.display = 'none';
+            document.getElementById('winner-view').style.display = 'flex';
+            document.getElementById('winner-name').innerText = 'Global Results';
+            document.getElementById('winner-logo').style.display = 'none';
+            document.getElementById('submit-results-area').style.display = 'none';
+            document.getElementById('leaderboard-section').style.display = 'block';
+
+            logEvent("👀 Skipped to results — votes not submitted.");
+            renderLeaderboard();
         }
 
         async function renderLeaderboard() {
