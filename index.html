@@ -167,11 +167,17 @@
             gap: 10px;
             justify-content: center;
             width: 100%;
+            container-type: inline-size;
         }
 
         .tournament-controls > * {
-            flex: 1 1 auto;
-            min-width: max-content;
+            flex: 0 0 auto;
+        }
+
+        @container (max-width: 590px) {
+            .tournament-controls > * {
+                flex: 0 0 100%;
+            }
         }
 
         .btn-skip,
@@ -558,7 +564,7 @@
 
 <body>
 
-    <div class="version-badge">v51</div>
+    <div class="version-badge">v52</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
