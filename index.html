@@ -18,7 +18,6 @@
             --accent-hover: #9c27b0;
             --border: #333;
             --success: #03dac6;
-            --page-pad: 12px;
             color-scheme: dark;
         }
 
@@ -52,7 +51,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: var(--page-pad);
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -68,31 +67,29 @@
         }
 
         h1 {
-            font-size: 24px;
-            margin-top: 0;
             margin-bottom: 5px;
         }
 
         .status-bar {
             color: var(--accent);
             font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 8px;
+            font-size: 18px;
+            margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
         .progress-bar {
             color: var(--text-muted);
-            margin-bottom: 16px;
-            font-size: 13px;
+            margin-bottom: 30px;
+            font-size: 14px;
         }
 
         /* Matchup Arena */
         .matchup-container {
             display: flex;
-            gap: 12px;
-            margin-bottom: 12px;
+            gap: 20px;
+            margin-bottom: 15px;
             justify-content: center;
             align-items: stretch;
         }
@@ -101,7 +98,7 @@
             background-color: var(--surface-color);
             border: 2px solid var(--border);
             border-radius: 12px;
-            padding: 36px 16px;
+            padding: 40px 20px;
             flex: 1;
             text-align: center;
             cursor: pointer;
@@ -119,16 +116,16 @@
         }
 
         .browser-name {
-            font-size: 22px;
+            font-size: 26px;
             font-weight: bold;
         }
 
         /* Logos directly on the card */
         .browser-logo {
-            width: 120px;
-            height: 120px;
+            width: 108px;
+            height: 108px;
             object-fit: contain;
-            margin-top: 16px;
+            margin-top: 20px;
             transition: transform 0.2s ease;
         }
 
@@ -141,7 +138,7 @@
             align-items: center;
             font-weight: bold;
             color: var(--text-muted);
-            font-size: 16px;
+            font-size: 20px;
         }
 
         /* Locked Voting State */
@@ -156,10 +153,10 @@
         .tournament-controls {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 15px;
             justify-content: center;
             width: 100%;
-            margin-bottom: 12px;
+            margin-bottom: 40px;
         }
 
         .btn-skip,
@@ -167,8 +164,8 @@
             background-color: transparent;
             color: var(--text-muted);
             border: 1px solid var(--border);
-            padding: 10px 16px;
-            font-size: 13px;
+            padding: 10px 20px;
+            font-size: 14px;
             font-weight: 600;
             border-radius: 6px;
             cursor: pointer;
@@ -189,10 +186,10 @@
 
         /* Leaderboard */
         .leaderboard-container {
-            margin-top: var(--page-pad);
+            margin-top: 40px;
             background-color: var(--surface-color);
             border-radius: 12px;
-            padding: var(--page-pad);
+            padding: 20px;
             border: 1px solid var(--border);
             text-align: left;
             overflow-x: auto;
@@ -201,16 +198,15 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 15px;
             min-width: 600px;
         }
 
         th,
         td {
-            padding: 10px 8px;
+            padding: 12px;
             border-bottom: 1px solid var(--border);
             text-align: left;
-            font-size: 13px;
         }
 
         th {
@@ -232,13 +228,13 @@
 
         .elo-score {
             font-family: monospace;
-            font-size: 13px;
+            font-size: 15px;
             color: var(--success);
         }
 
         .stat-column {
             font-family: monospace;
-            font-size: 13px;
+            font-size: 15px;
         }
 
         .rival-cell {
@@ -257,12 +253,12 @@
             background-color: var(--accent);
             color: #000;
             border: none;
-            padding: 10px 24px;
-            font-size: 14px;
+            padding: 12px 30px;
+            font-size: 16px;
             font-weight: bold;
             border-radius: 6px;
             cursor: pointer;
-            margin-top: 12px;
+            margin-top: 20px;
             transition: background-color 0.2s;
         }
 
@@ -273,17 +269,15 @@
 
         /* Elimination Log / Feed */
         .log-container {
-            margin-top: var(--page-pad);
+            margin-top: 40px;
             text-align: left;
             background-color: #171717;
-            padding: var(--page-pad);
+            padding: 20px;
             border-radius: 8px;
             border: 1px solid var(--border);
             width: 100%;
             box-sizing: border-box;
-            margin-bottom: 0;
-            display: flex;
-            flex-direction: column;
+            margin-bottom: 40px;
         }
 
         .log-title {
@@ -297,9 +291,7 @@
         }
 
         #log-feed {
-            flex: 1;
-            min-height: 32px;
-            max-height: 80px;
+            max-height: 120px;
             overflow-y: auto;
         }
 
@@ -355,43 +347,28 @@
         /* ── Survey Styles ───────────────────────────────────────── */
 
         .survey-gate-area {
-            position: fixed;
-            top: var(--page-pad);
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 900;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 10px;
-            padding: 10px 16px;
-            background-color: rgba(23, 23, 23, 0.95);
-            border-radius: 10px;
+            gap: 8px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #171717;
+            border-radius: 12px;
             border: 1px solid var(--border);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            max-width: calc(100% - var(--page-pad) * 2);
-            box-sizing: border-box;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        .survey-gate-area.hidden {
-            opacity: 0;
-            transform: translateX(-50%) translateY(-20px);
-            pointer-events: none;
         }
 
         .btn-survey {
             background: transparent;
             border: 2px solid var(--accent);
             color: var(--accent);
-            padding: 8px 20px;
-            font-size: 13px;
+            padding: 12px 32px;
+            font-size: 15px;
             font-weight: bold;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
             letter-spacing: 0.5px;
-            white-space: nowrap;
         }
 
         .btn-survey:hover {
@@ -410,9 +387,8 @@
         }
 
         .survey-hint {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text-muted);
-            white-space: nowrap;
         }
 
         #survey-modal {
@@ -527,60 +503,25 @@
             height: 15px;
         }
 
-        /* ── Tablet ─────────────────────────────────────────────── */
-        @media (max-width: 768px) {
-            :root {
-                --page-pad: 10px;
-            }
-
-            .browser-card {
-                padding: 20px 14px;
-            }
-
-            .browser-name {
-                font-size: 20px;
-            }
-
-            .browser-logo {
-                width: 76px;
-                height: 76px;
-                margin-top: 12px;
-            }
-
-            .survey-gate-area {
-                flex-direction: column;
-                text-align: center;
-            }
-        }
-
         /* ── Mobile ─────────────────────────────────────────────── */
         @media (max-width: 600px) {
-            :root {
-                --page-pad: 8px;
+            body {
+                padding: 10px 10px 70px;
             }
 
             h1 {
-                font-size: 20px;
+                font-size: 22px;
                 margin-bottom: 4px;
-            }
-
-            .status-bar {
-                font-size: 14px;
-            }
-
-            .progress-bar {
-                font-size: 12px;
-                margin-bottom: 12px;
             }
 
             /* Matchup cards */
             .matchup-container {
                 gap: 8px;
-                margin-bottom: 10px;
+                margin-bottom: 12px;
             }
 
             .browser-card {
-                padding: 16px 10px;
+                padding: 18px 10px;
                 border-radius: 10px;
             }
 
@@ -589,9 +530,9 @@
             }
 
             .browser-logo {
-                width: 60px;
-                height: 60px;
-                margin-top: 10px;
+                width: 64px;
+                height: 64px;
+                margin-top: 12px;
             }
 
             .vs-badge {
@@ -602,37 +543,43 @@
             /* Tournament controls — stack buttons full-width */
             .tournament-controls {
                 gap: 8px;
-                margin-bottom: 10px;
+                margin-bottom: 24px;
             }
 
             .btn-skip,
             .btn-secondary {
                 width: 100%;
                 box-sizing: border-box;
-                padding: 10px 12px;
-                font-size: 12px;
+                padding: 12px 16px;
+                font-size: 13px;
+            }
+
+            /* Status / progress */
+            .status-bar {
+                font-size: 15px;
+                margin-bottom: 8px;
+            }
+
+            .progress-bar {
+                font-size: 13px;
+                margin-bottom: 20px;
             }
 
             /* Survey gate */
             .survey-gate-area {
-                flex-direction: column;
-                text-align: center;
-                padding: 8px 12px;
+                padding: 14px;
+                margin-bottom: 20px;
                 gap: 6px;
             }
 
             .btn-survey {
-                padding: 8px 16px;
-                font-size: 12px;
-            }
-
-            .survey-hint {
-                font-size: 11px;
+                padding: 10px 20px;
+                font-size: 14px;
             }
 
             /* Survey modal */
             .survey-modal-header {
-                padding: 12px 12px 10px;
+                padding: 14px 14px 10px;
             }
 
             .survey-modal-header h2 {
@@ -644,7 +591,7 @@
             }
 
             .survey-modal-footer {
-                padding: 10px 12px;
+                padding: 10px 14px;
                 gap: 8px;
             }
 
@@ -664,6 +611,11 @@
             }
 
             /* Leaderboard */
+            .leaderboard-container {
+                padding: 12px;
+                margin-top: 12px;
+            }
+
             .leaderboard-container h2 {
                 font-size: 16px;
             }
@@ -675,7 +627,7 @@
 
             th,
             td {
-                padding: 8px 6px;
+                padding: 9px 6px;
                 font-size: 12px;
             }
 
@@ -684,38 +636,45 @@
                 font-size: 12px;
             }
 
+            /* Log feed */
+            .log-container {
+                padding: 12px;
+                margin-top: 20px;
+                margin-bottom: 12px;
+            }
+
             /* Dev buttons — shrink a touch so they don't crowd the version badge */
             .dev-btn-group {
                 gap: 4px;
-                bottom: 6px;
-                left: 6px;
+                bottom: 8px;
+                left: 8px;
             }
 
             .dev-reset-btn {
                 font-size: 10px;
-                padding: 4px 7px;
+                padding: 5px 8px;
             }
 
             .version-badge {
                 font-size: 10px;
                 padding: 3px 6px;
-                bottom: 6px;
-                right: 6px;
+                bottom: 8px;
+                right: 8px;
             }
         }
 
         @media (max-width: 380px) {
             .browser-name {
-                font-size: 14px;
+                font-size: 13px;
             }
 
             .browser-logo {
-                width: 48px;
-                height: 48px;
+                width: 52px;
+                height: 52px;
             }
 
             .browser-card {
-                padding: 12px 8px;
+                padding: 14px 8px;
             }
         }
     </style>
@@ -723,7 +682,7 @@
 
 <body>
 
-    <div class="version-badge">r37</div>
+    <div class="version-badge">r32</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -767,17 +726,17 @@
                 Results</button>
         </div>
     </div>
-    <!-- Survey Gate (floating, decoupled from layout) -->
-    <div class="survey-gate-area" id="survey-gate">
-        <div class="survey-hint" id="survey-hint">Complete the survey to unlock voting.</div>
-        <button class="btn-survey" id="survey-btn" onclick="openSurveyModal()">📋 Take Survey</button>
-    </div>
-
-    <div class="container" style="display: flex; flex-direction: column; flex: 1;">
+    <div class="container">
 
         <!-- Tournament Voting Interface -->
         <div id="tournament-view" style="display: none;">
             <h1>Browser Bracket</h1>
+
+            <!-- Survey Gate -->
+            <div class="survey-gate-area">
+                <div class="survey-hint" id="survey-hint">Complete the survey once to unlock voting.</div>
+                <button class="btn-survey" id="survey-btn" onclick="openSurveyModal()">📋 Take Browser Survey</button>
+            </div>
 
             <div class="status-bar" id="round-title">Round 1</div>
             <div class="progress-bar" id="match-progress">Match 1 of 12</div>
@@ -810,11 +769,11 @@
             <div class="leaderboard-container" id="leaderboard-section"
                 style="display: none; width: 100%; box-sizing: border-box;">
                 <div
-                    style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    style="display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 20px;">
                     <h2 style="margin: 0;">Global Leaderboard</h2>
 
                     <button class="btn-secondary" onclick="restartBracket()"
-                        style="padding: 6px 12px; font-size: 12px; border-color: var(--success); color: var(--success); border-radius: 8px; width: auto;">Play
+                        style="padding: 6px 14px; font-size: 12px; border-color: var(--success); color: var(--success); border-radius: 8px; width: auto;">Play
                         Again</button>
                 </div>
                 <table>
@@ -1140,13 +1099,8 @@
         }
 
         function unlockVotingCards() {
-            const gate = document.getElementById('survey-gate');
             const btn = document.getElementById('survey-btn');
             const hint = document.getElementById('survey-hint');
-
-            // Hide the floating survey banner
-            gate.classList.add('hidden');
-
             btn.textContent = '✓ Survey Complete (Edit)';
             btn.classList.add('completed');
             hint.style.display = 'none';
@@ -1157,14 +1111,9 @@
         }
 
         function lockVotingCards() {
-            const gate = document.getElementById('survey-gate');
             const btn = document.getElementById('survey-btn');
             const hint = document.getElementById('survey-hint');
-
-            // Show the floating survey banner
-            gate.classList.remove('hidden');
-
-            btn.textContent = '📋 Take Survey';
+            btn.textContent = '📋 Take Browser Survey';
             btn.classList.remove('completed');
             hint.style.display = '';
 
