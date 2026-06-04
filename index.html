@@ -103,7 +103,10 @@
             border-radius: 12px;
             padding: 16px;
             flex: 1;
+            min-width: 0;
+            min-height: 0;
             aspect-ratio: 1 / 1;
+            overflow: hidden;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -551,7 +554,7 @@
 
 <body>
 
-    <div class="version-badge">v46</div>
+    <div class="version-badge">v47</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
