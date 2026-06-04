@@ -114,16 +114,23 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            container-type: inline-size;
         }
 
-        .browser-card:hover:not(.locked-vote) {
-            border-color: var(--accent);
-            background-color: #2a2a2a;
-            transform: translateY(-2px);
+        @media (hover: hover) {
+            .browser-card:hover:not(.locked-vote) {
+                border-color: var(--accent);
+                background-color: #2a2a2a;
+                transform: translateY(-2px);
+            }
+
+            .browser-card:hover:not(.locked-vote) .browser-logo {
+                transform: scale(1.1);
+            }
         }
 
         .browser-name {
-            font-size: 22px;
+            font-size: 9cqi;
             font-weight: bold;
             white-space: nowrap;
         }
@@ -135,10 +142,6 @@
             object-fit: contain;
             margin-top: 10px;
             transition: transform 0.2s ease;
-        }
-
-        .browser-card:hover:not(.locked-vote) .browser-logo {
-            transform: scale(1.1);
         }
 
         .vs-badge {
@@ -555,7 +558,7 @@
 
 <body>
 
-    <div class="version-badge">v48</div>
+    <div class="version-badge">v49</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
