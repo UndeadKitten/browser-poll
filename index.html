@@ -681,7 +681,7 @@
 
 <body>
 
-    <div class="version-badge">r29</div>
+    <div class="version-badge">r30</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -707,16 +707,22 @@
     </div>
 
     <!-- Winner Modal -->
-    <div id="winner-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
-        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85);" onclick="closeWinnerModal()"></div>
-        <div style="background: var(--surface-color); border: 2px solid var(--accent); border-radius: 16px; width: 100%; max-width: 400px; text-align: center; padding: 40px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; z-index: 1001;">
+    <div id="winner-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85);"
+            onclick="closeWinnerModal()"></div>
+        <div
+            style="background: var(--surface-color); border: 2px solid var(--accent); border-radius: 16px; width: 100%; max-width: 400px; text-align: center; padding: 40px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; z-index: 1001;">
             <div style="font-size: 40px; margin-bottom: 10px;">🏆</div>
             <h2 style="margin: 0 0 5px; font-size: 24px; color: var(--accent);">Your Ultimate Choice</h2>
             <div style="margin: 20px 0;">
-                <img id="winner-modal-logo" src="" alt="Winner Logo" style="width: 120px; height: 120px; object-fit: contain; display: none; margin: 0 auto;">
-                <div id="winner-modal-name" style="font-size: 22px; font-weight: bold; margin-top: 15px;">Browser Name</div>
+                <img id="winner-modal-logo" src="" alt="Winner Logo"
+                    style="width: 120px; height: 120px; object-fit: contain; display: none; margin: 0 auto;">
+                <div id="winner-modal-name" style="font-size: 22px; font-weight: bold; margin-top: 15px;">Browser Name
+                </div>
             </div>
-            <button class="btn" onclick="closeWinnerModal()" style="margin-top: 10px; width: 100%;">View Global Results</button>
+            <button class="btn" onclick="closeWinnerModal()" style="margin-top: 10px; width: 100%;">View Global
+                Results</button>
         </div>
     </div>
     <div class="container">
@@ -928,8 +934,6 @@
             if (localStorage.getItem('bracketCompleted') === 'true') {
                 document.getElementById('tournament-view').style.display = 'none';
                 document.getElementById('winner-view').style.display = 'flex';
-                document.getElementById('winner-name').innerText = "Bracket Completed!";
-                document.getElementById('winner-logo').style.display = 'none';
                 document.getElementById('submit-results-area').style.display = 'none';
                 document.getElementById('leaderboard-section').style.display = 'block';
                 await renderLeaderboard();
