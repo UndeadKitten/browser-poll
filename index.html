@@ -300,11 +300,7 @@
                 <button class="btn" onclick="restartBracket()">Restart Bracket (Play for fun)</button>
             </div>
 
-            <div id="submit-results-area" style="display: none; margin-top: 30px; text-align: center;">
-                <button class="btn" id="btn-submit-results" onclick="submitAndViewResults()" style="font-size: 18px; padding: 14px 40px;">
-                    ☁️ Submit &amp; View Global Results
-                </button>
-            </div>
+            <div id="submit-results-area" style="display: none;"></div>
 
             <div class="leaderboard-container" id="leaderboard-section" style="display: none;">
                 <h2>Global Master Leaderboard (Elo Rating)</h2>
@@ -1067,20 +1063,8 @@
                 logEvent("🤷 TOURNAMENT ENDED: All contenders eliminated.");
             }
 
-            // Show submit button; leaderboard stays hidden until submission
-            document.getElementById('submit-results-area').style.display = 'block';
-            document.getElementById('leaderboard-section').style.display = 'none';
-        }
-
-        async function submitAndViewResults() {
-            const btn = document.getElementById('btn-submit-results');
-            btn.disabled = true;
-            btn.textContent = '⏳ Uploading votes...';
-
-            await uploadRoundDeltas();
-
-            document.getElementById('submit-results-area').style.display = 'none';
             document.getElementById('leaderboard-section').style.display = 'block';
+            await uploadRoundDeltas();
             await renderLeaderboard();
         }
 
