@@ -179,8 +179,9 @@
             flex: 0 0 auto;
         }
 
-        @container (max-width: 460px) {
-            .tournament-controls > * {
+        @container (max-width: 500px) {
+            .tournament-controls > *,
+            .tournament-controls > *:nth-child(2) {
                 flex: 0 0 100%;
             }
         }
@@ -572,7 +573,7 @@
 
 <body>
 
-    <div class="version-badge">v54</div>
+    <div class="version-badge">v55</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
