@@ -53,10 +53,12 @@
             color: var(--text-main);
             margin: 0;
             padding: var(--page-pad);
+            padding-bottom: 40px; /* Reduced to fit fixed items without breaking container */
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
+            height: 100dvh;
+            overflow: hidden; /* Prevent body scrolling entirely */
             position: relative;
             box-sizing: border-box;
         }
@@ -65,6 +67,10 @@
             width: 100%;
             max-width: 850px;
             text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0; /* CRITICAL: Allows flex children to shrink/scroll */
         }
 
         h1 {
@@ -223,6 +229,8 @@
             border: 1px solid var(--border);
             text-align: left;
             overflow-x: auto;
+            flex: 1; /* For winning view expanding */
+            min-height: 0;
         }
 
         table {
@@ -311,6 +319,8 @@
             margin-bottom: 0;
             display: flex;
             flex-direction: column;
+            flex: 1; /* Force it to take up remaining space */
+            min-height: 0; /* CRITICAL for flex child */
         }
 
         .log-title {
@@ -321,13 +331,13 @@
             margin-bottom: 10px;
             border-bottom: 1px solid var(--border);
             padding-bottom: 8px;
+            flex-shrink: 0; /* Prevent title from shrinking */
         }
 
         #log-feed {
             flex: 1;
-            min-height: 32px;
-            max-height: 130px;
-            overflow-y: auto;
+            overflow-y: auto; /* Show scrollbar only when items overflow */
+            min-height: 0; /* CRITICAL to prevent content from expanding parent */
         }
 
         .log-entry {
@@ -573,7 +583,7 @@
 
 <body>
 
-    <div class="version-badge">v55</div>
+    <div class="version-badge">v61</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -623,10 +633,10 @@
         <button class="btn-survey" id="survey-btn" onclick="openSurveyModal()">📋 Take Survey</button>
     </div>
 
-    <div class="container" style="display: flex; flex-direction: column; flex: 1;">
+    <div class="container">
 
         <!-- Tournament Voting Interface -->
-        <div id="tournament-view" style="display: none;">
+        <div id="tournament-view" style="display: none; flex-direction: column; flex-shrink: 0;">
             <h1>Browser Bracket</h1>
 
             <div class="status-bar" id="round-title">Round 1</div>
@@ -652,32 +662,34 @@
         </div>
 
         <!-- End Screen: Winner & Leaderboard -->
-        <div id="winner-view" style="display: none; flex-direction: column; width: 100%;">
+        <div id="winner-view" style="display: none; flex-direction: column; width: 100%; flex: 1; min-height: 0;">
             <div id="submit-results-area" style="display: none;"></div>
 
             <div class="leaderboard-container" id="leaderboard-section"
-                style="display: none; width: 100%; box-sizing: border-box;">
+                style="display: none; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; flex: 1; min-height: 0;">
                 <div
-                    style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; flex-shrink: 0;">
                     <h2 style="margin: 0;">Global Leaderboard</h2>
 
                     <button class="btn-secondary" onclick="restartBracket()"
                         style="padding: 6px 12px; font-size: 12px; border-color: var(--success); color: var(--success); border-radius: 8px; width: auto;">Play
                         Again</button>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="rank">#</th>
-                            <th>Browser</th>
-                            <th>Elo</th>
-                            <th class="col-matches">Matches</th>
-                            <th>Winrate</th>
-                            <th class="col-rival">Top Rival</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaderboard-body"></tbody>
-                </table>
+                <div style="flex: 1; overflow-y: auto; min-height: 0;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="rank">#</th>
+                                <th>Browser</th>
+                                <th>Elo</th>
+                                <th class="col-matches">Matches</th>
+                                <th>Winrate</th>
+                                <th class="col-rival">Top Rival</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -825,11 +837,11 @@
                 document.getElementById('tournament-view').style.display = 'none';
                 document.getElementById('winner-view').style.display = 'flex';
                 document.getElementById('submit-results-area').style.display = 'none';
-                document.getElementById('leaderboard-section').style.display = 'block';
+                document.getElementById('leaderboard-section').style.display = 'flex';
                 await renderLeaderboard();
             } else {
-                document.getElementById('tournament-view').style.display = 'block';
-                document.getElementById('feed-container').style.display = 'block';
+                document.getElementById('tournament-view').style.display = 'flex';
+                document.getElementById('feed-container').style.display = 'flex';
 
                 // Directly start tournament logic
                 activePool = [...masterBrowsers];
@@ -1433,7 +1445,7 @@
                 logEvent("🤷 TOURNAMENT ENDED: All contenders eliminated.");
             }
 
-            document.getElementById('leaderboard-section').style.display = 'block';
+            document.getElementById('leaderboard-section').style.display = 'flex';
             await uploadRoundDeltas();
             localStorage.setItem('hasFinishedBracketOnce', 'true');
             await renderLeaderboard();
@@ -1448,7 +1460,7 @@
             document.getElementById('tournament-view').style.display = 'none';
             document.getElementById('winner-view').style.display = 'flex';
             document.getElementById('submit-results-area').style.display = 'none';
-            document.getElementById('leaderboard-section').style.display = 'block';
+            document.getElementById('leaderboard-section').style.display = 'flex';
 
             logEvent("👀 Skipped to results — votes not submitted.");
             renderLeaderboard();
