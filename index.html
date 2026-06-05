@@ -583,7 +583,7 @@
 
 <body>
 
-    <div class="version-badge">v65</div>
+    <div class="version-badge">v66</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -675,8 +675,7 @@
                         <button class="btn-secondary" id="btn-toggle-feed" onclick="toggleResultsFeed()"
                             style="padding: 6px 12px; font-size: 12px; border-radius: 8px; width: auto;">Feed</button>
                         <button class="btn-secondary" onclick="restartBracket()"
-                            style="padding: 6px 12px; font-size: 12px; border-color: var(--success); color: var(--success); border-radius: 8px; width: auto;">Play
-                            Again</button>
+                            style="padding: 6px 12px; font-size: 12px; border-radius: 8px; width: auto;">Play Again</button>
                     </div>
                 </div>
                 <!-- Leaderboard table wrapper -->
@@ -1495,7 +1494,7 @@
                 const logHTML = document.getElementById('log-feed').innerHTML.trim();
                 feedContent.innerHTML = logHTML || '<div class="log-entry">No feed available for this session.</div>';
                 feedContent.style.display = 'block';
-                btn.textContent = '← Results';
+                btn.textContent = 'Results';
                 title.textContent = 'Tournament Feed';
             } else {
                 resultsViewMode = 'leaderboard';
