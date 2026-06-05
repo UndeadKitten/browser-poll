@@ -52,8 +52,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: var(--page-pad);
-            padding-bottom: 40px; /* Reduced to fit fixed items without breaking container */
+            padding: 32px var(--page-pad); /* Increased top and bottom padding to 32px to create a symmetric, larger gap */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -583,7 +582,7 @@
 
 <body>
 
-    <div class="version-badge">v61</div>
+    <div class="version-badge">v62</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -665,16 +664,17 @@
         <div id="winner-view" style="display: none; flex-direction: column; width: 100%; flex: 1; min-height: 0;">
             <div id="submit-results-area" style="display: none;"></div>
 
-            <div class="leaderboard-container" id="leaderboard-section"
-                style="display: none; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; flex: 1; min-height: 0;">
-                <div
-                    style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; flex-shrink: 0;">
-                    <h2 style="margin: 0;">Global Leaderboard</h2>
-
-                    <button class="btn-secondary" onclick="restartBracket()"
-                        style="padding: 6px 12px; font-size: 12px; border-color: var(--success); color: var(--success); border-radius: 8px; width: auto;">Play
-                        Again</button>
+            <!-- New shared header for Winner View to toggle between Leaderboard and Feed -->
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; flex-shrink: 0; background-color: var(--surface-color); padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border);">
+                <h2 id="winner-view-title" style="margin: 0; font-size: 18px;">Global Leaderboard</h2>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-secondary" id="toggle-view-btn" onclick="toggleResultsView()" style="padding: 6px 12px; font-size: 12px; border-radius: 8px;">Feed</button>
+                    <button class="btn-secondary" onclick="restartBracket()" style="padding: 6px 12px; font-size: 12px; border-color: var(--success); color: var(--success); border-radius: 8px;">Play Again</button>
                 </div>
+            </div>
+
+            <div class="leaderboard-container" id="leaderboard-section"
+                style="display: none; width: 100%; box-sizing: border-box; flex-direction: column; flex: 1; min-height: 0; margin-top: 0;">
                 <div style="flex: 1; overflow-y: auto; min-height: 0;">
                     <table>
                         <thead>
@@ -703,60 +703,46 @@
 
     <script>
         // ══════════════════════════════════════════════════════════════
-        // 0. Firebase Setup
-        // ══════════════════════════════════════════════════════════════
-        const firebaseConfig = {
-            apiKey: "AIzaSyAJPMqyXSHtkOZfVXhPiyY_gGdD7jj1VLk",
-            authDomain: "browser-poll.firebaseapp.com",
-            projectId: "browser-poll",
-            storageBucket: "browser-poll.firebasestorage.app",
-            messagingSenderId: "309916905891",
-            appId: "1:309916905891:web:e712ec567af24a7e3f6a16"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        // ══════════════════════════════════════════════════════════════
-        // 1. Master Pool — Testing Pool (Non-enthusiast options commented out)
+        // 1. Master Pool — Full Tournament Roster
         // ══════════════════════════════════════════════════════════════
         let masterBrowsers = [
             // ── CHROMIUM FORKS ──────────────────────────────────────
             { id: "chrome", name: "Google Chrome", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
             { id: "edge", name: "Microsoft Edge", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "samsung-internet",     name: "Samsung Internet",     elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "samsung-internet",     name: "Samsung Internet",     elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
             { id: "brave", name: "Brave", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
             { id: "opera", name: "Opera", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
             { id: "vivaldi", name: "Vivaldi", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
             { id: "arc-browser", name: "Arc", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
             { id: "opera-gx", name: "Opera GX", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "yandex-browser",       name: "Yandex",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "uc-browser",           name: "UC Browser",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "naver-whale-browser",  name: "Naver Whale",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "yandex-browser",       name: "Yandex",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "uc-browser",           name: "UC Browser",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "naver-whale-browser",  name: "Naver Whale",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
             { id: "duckduckgo-browser", name: "DuckDuckGo Browser", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "kiwi-browser",         name: "Kiwi Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "kiwi-browser",         name: "Kiwi Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
             { id: "chromium", name: "Ungoogled Chromium", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
             { id: "thorium", name: "Thorium", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
             { id: "cromite", name: "Cromite", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "wavebox",              name: "Wavebox",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "sigmaos",              name: "SigmaOS",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "wavebox",              name: "Wavebox",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "sigmaos",              name: "SigmaOS",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
             { id: "helium", name: "Helium", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "iridium-browser",      name: "Iridium",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "epic-privacy-browser", name: "Epic Privacy Browser", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "srware-iron",          name: "SRWare Iron",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "flow-browser",         name: "Flow Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "min-browser",          name: "Min Browser",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "coc-coc",              name: "Coc Coc",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "sogou",                name: "Sogou Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "amazon-silk-browser",  name: "Amazon Silk",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "puffin-browser",       name: "Puffin Browser",       elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "dolphin-browser",      name: "Dolphin Browser",      elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "vanadium",             name: "Vanadium",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "maxthon",              name: "Maxthon",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "falkon",               name: "Falkon",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "iridium-browser",      name: "Iridium",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "epic-privacy-browser", name: "Epic Privacy Browser", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "srware-iron",          name: "SRWare Iron",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "flow-browser",         name: "Flow Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "min-browser",          name: "Min Browser",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "coc-coc",              name: "Coc Coc",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "sogou",                name: "Sogou Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "amazon-silk-browser",  name: "Amazon Silk",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "puffin-browser",       name: "Puffin Browser",       elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "dolphin-browser",      name: "Dolphin Browser",      elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "vanadium",             name: "Vanadium",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "maxthon",              name: "Maxthon",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "falkon",               name: "Falkon",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
             { id: "qutebrowser", name: "qutebrowser", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "opera-mini",           name: "Opera Mini",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "opera-neon",           name: "Opera Neon",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "opera-touch",          name: "Opera Touch",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "opera-mini",           name: "Opera Mini",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "opera-neon",           name: "Opera Neon",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "opera-touch",          name: "Opera Touch",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
 
             // ── FIREFOX FORKS ───────────────────────────────────────
             { id: "firefox", name: "Mozilla Firefox", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
@@ -766,32 +752,32 @@
             { id: "waterfox", name: "Waterfox", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
             { id: "floorp", name: "Floorp", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
             { id: "mullvad", name: "Mullvad Browser", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "gnu-icecat",           name: "GNU IceCat",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "seamonkey",            name: "SeaMonkey",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "gnu-icecat",           name: "GNU IceCat",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "seamonkey",            name: "SeaMonkey",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
             { id: "mercury", name: "Mercury", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "palemoon",             name: "Pale Moon",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "basilisk",             name: "Basilisk",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "k-meleon",             name: "K-Meleon Browser",     elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "palemoon",             name: "Pale Moon",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "basilisk",             name: "Basilisk",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "k-meleon",             name: "K-Meleon Browser",     elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
 
             // ── MISC ────────────────────────────────────────────────
             { id: "safari", name: "Apple Safari", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
             { id: "orion", name: "Orion", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "ladybird",             name: "Ladybird",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "midori",               name: "Midori",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "konqueror",            name: "Konqueror",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "netsurf",              name: "Netsurf Browser",      elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "dillo-browser",        name: "Dillo Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "nyxt",                 name: "Nyxt Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "otter-browser",        name: "Otter Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "sleipnir-browser",     name: "Sleipnir",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "lunascape",            name: "Lunascape",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "internet-explorer",    name: "Internet Explorer",    elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "netscape",             name: "Netscape",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "avant-browser",        name: "Avant Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "lynx-browser",         name: "Lynx",                 elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "browsh",               name: "Browsh",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "dia-browser",          name: "Dia",                  elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "tempest-browser",      name: "Tempest",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "ladybird",             name: "Ladybird",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "midori",               name: "Midori",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "konqueror",            name: "Konqueror",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "netsurf",              name: "Netsurf Browser",      elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "dillo-browser",        name: "Dillo Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "nyxt",                 name: "Nyxt Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "otter-browser",        name: "Otter Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "sleipnir-browser",     name: "Sleipnir",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "lunascape",            name: "Lunascape",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "internet-explorer",    name: "Internet Explorer",    elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "netscape",             name: "Netscape",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "avant-browser",        name: "Avant Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "lynx-browser",         name: "Lynx",                 elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "browsh",               name: "Browsh",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "dia-browser",          name: "Dia",                  elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "tempest-browser",      name: "Tempest",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
         ];
 
         // ══════════════════════════════════════════════════════════════
@@ -803,12 +789,27 @@
                 ids: ["chrome", "firefox", "safari", "opera", "edge"]
             },
             {
+                label: "Mobile & Regional Powerhouses",
+                ids: ["samsung-internet", "yandex-browser", "uc-browser", "naver-whale-browser", "coc-coc", "sogou", "amazon-silk-browser"]
+            },
+            {
                 label: "Popular Forks & Enthusiast Picks",
                 ids: [
                     "brave", "vivaldi", "arc-browser", "opera-gx",
                     "chromium", "thorium", "cromite",
                     "librewolf", "zen-browser", "waterfox", "floorp", "mullvad", "tor-browser",
-                    "duckduckgo-browser", "qutebrowser", "orion", "helium", "mercury"
+                    "duckduckgo-browser", "qutebrowser", "orion", "helium", "mercury", "kiwi-browser"
+                ]
+            },
+            {
+                label: "Classic, Niche & Alternative",
+                ids: [
+                    "internet-explorer", "netscape", "seamonkey", "palemoon", "basilisk", "k-meleon",
+                    "midori", "ladybird", "konqueror", "netsurf", "dillo-browser", "nyxt", "otter-browser",
+                    "sleipnir-browser", "lunascape", "avant-browser", "lynx-browser", "browsh", "dia-browser",
+                    "tempest-browser", "epic-privacy-browser", "srware-iron", "flow-browser", "min-browser",
+                    "puffin-browser", "dolphin-browser", "vanadium", "maxthon", "falkon", "opera-mini",
+                    "opera-neon", "opera-touch", "gnu-icecat", "wavebox", "sigmaos", "iridium-browser"
                 ]
             }
         ];
@@ -835,6 +836,7 @@
 
             if (localStorage.getItem('bracketCompleted') === 'true') {
                 document.getElementById('tournament-view').style.display = 'none';
+                document.getElementById('feed-container').style.display = 'none'; // Ensure feed is initially hidden on results page
                 document.getElementById('winner-view').style.display = 'flex';
                 document.getElementById('submit-results-area').style.display = 'none';
                 document.getElementById('leaderboard-section').style.display = 'flex';
@@ -1215,6 +1217,7 @@
 
         function loadImageWithFallback(imgElementId, browserId) {
             const imgElement = document.getElementById(imgElementId);
+            const browser = masterBrowsers.find(b => b.id === browserId);
             const extensions = ['svg', 'png', 'webp', 'jpg'];
             let attempt = 0;
 
@@ -1224,7 +1227,14 @@
                 if (attempt < extensions.length) {
                     imgElement.src = "images/" + browserId + "." + extensions[attempt];
                 } else {
+                    // Fallback to stylized SVG initials if images aren't found locally
                     imgElement.onerror = null;
+                    const initial = browser ? browser.name.charAt(0).toUpperCase() : '?';
+                    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                        <rect width="100" height="100" fill="#2a2a2a" rx="20"/>
+                        <text x="50" y="68" font-family="sans-serif" font-size="55" font-weight="bold" fill="#bb86fc" text-anchor="middle">${initial}</text>
+                    </svg>`;
+                    imgElement.src = "data:image/svg+xml;utf8," + encodeURIComponent(svg);
                 }
             };
             imgElement.src = "images/" + browserId + "." + extensions[0];
@@ -1426,6 +1436,37 @@
             document.getElementById('winner-modal').style.display = 'none';
         }
 
+        let isLeaderboardView = true;
+        function toggleResultsView() {
+            isLeaderboardView = !isLeaderboardView;
+            const feedContainer = document.getElementById('feed-container');
+            const leaderboardSection = document.getElementById('leaderboard-section');
+            const title = document.getElementById('winner-view-title');
+            const btn = document.getElementById('toggle-view-btn');
+
+            if (isLeaderboardView) {
+                leaderboardSection.style.display = 'flex';
+                feedContainer.style.display = 'none';
+                title.innerText = 'Global Leaderboard';
+                btn.innerText = 'Feed';
+            } else {
+                leaderboardSection.style.display = 'none';
+                
+                // Reparent feed container inside winner-view so it sits perfectly under the shared header
+                document.getElementById('winner-view').appendChild(feedContainer);
+                
+                feedContainer.style.display = 'flex';
+                feedContainer.style.marginTop = '0'; // Remove its top margin since the header handles spacing
+                
+                // Hide its internal redundant title 
+                const internalTitle = feedContainer.querySelector('.log-title');
+                if(internalTitle) internalTitle.style.display = 'none';
+                
+                title.innerText = 'Tournament Feed';
+                btn.innerText = 'Leaderboard';
+            }
+        }
+
         // ══════════════════════════════════════════════════════════════
         // 8. Finale & Global Leaderboard Render
         // ══════════════════════════════════════════════════════════════
@@ -1433,6 +1474,7 @@
             localStorage.setItem('bracketCompleted', 'true');
 
             document.getElementById('tournament-view').style.display = 'none';
+            document.getElementById('feed-container').style.display = 'none'; // hide feed initially
             document.getElementById('winner-view').style.display = 'flex';
 
             if (winnerObj) {
@@ -1458,6 +1500,7 @@
             localStorage.setItem('hasFinishedBracketOnce', 'true');
 
             document.getElementById('tournament-view').style.display = 'none';
+            document.getElementById('feed-container').style.display = 'none'; // hide feed initially
             document.getElementById('winner-view').style.display = 'flex';
             document.getElementById('submit-results-area').style.display = 'none';
             document.getElementById('leaderboard-section').style.display = 'flex';
