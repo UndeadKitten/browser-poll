@@ -23,23 +23,10 @@
         }
 
         /* Scrollbar Styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-color);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent);
-        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
         /* Firefox scrollbar */
         * {
@@ -53,7 +40,7 @@
             color: var(--text-main);
             margin: 0;
             padding: var(--page-pad);
-            padding-bottom: 104px; /* v70: increased to match top gap (screen edge → top of vote cards) */
+            padding-bottom: 104px; /* v70: matches visual top gap (screen edge → top of vote cards) */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -70,7 +57,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            min-height: 0; /* CRITICAL: Allows flex children to shrink/scroll */
+            min-height: 0; /* CRITICAL: allows flex children to shrink/scroll */
         }
 
         h1 {
@@ -94,7 +81,8 @@
             font-size: 13px;
         }
 
-        /* Matchup Arena */
+        /* ── Matchup Arena ──────────────────────────────────────── */
+
         .matchup-container {
             display: flex;
             gap: 12px;
@@ -129,7 +117,6 @@
                 background-color: #2a2a2a;
                 transform: translateY(-2px);
             }
-
             .browser-card:hover:not(.locked-vote) .browser-logo {
                 transform: scale(1.1);
             }
@@ -141,7 +128,6 @@
             white-space: nowrap;
         }
 
-        /* Logos directly on the card */
         .browser-logo {
             width: 62%;
             height: 62%;
@@ -158,7 +144,8 @@
             font-size: 16px;
         }
 
-        /* Locked Voting State */
+        /* ── Locked Voting State ────────────────────────────────── */
+
         .locked-vote {
             opacity: 0.25;
             cursor: not-allowed;
@@ -166,7 +153,8 @@
             filter: grayscale(100%);
         }
 
-        /* Tournament Controls Area */
+        /* ── Tournament Controls ────────────────────────────────── */
+
         .tournament-controls {
             display: flex;
             flex-wrap: wrap;
@@ -176,14 +164,8 @@
             container-type: inline-size;
         }
 
-        .tournament-controls > * {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .tournament-controls > *:nth-child(2) {
-            flex: 0 0 auto;
-        }
+        .tournament-controls > * { flex: 1; min-width: 0; }
+        .tournament-controls > *:nth-child(2) { flex: 0 0 auto; }
 
         @container (max-width: 580px) {
             .tournament-controls > *,
@@ -191,6 +173,8 @@
                 flex: 0 0 100%;
             }
         }
+
+        /* ── Buttons ────────────────────────────────────────────── */
 
         .btn-skip,
         .btn-secondary {
@@ -220,16 +204,34 @@
             cursor: not-allowed;
         }
 
-        /* Leaderboard */
+        .btn {
+            background-color: var(--accent);
+            color: #000;
+            border: none;
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+            color: #fff;
+        }
+
+        /* ── Leaderboard ────────────────────────────────────────── */
+
         .leaderboard-container {
-            margin-top: 0;
             background-color: var(--surface-color);
             border-radius: 12px;
             padding: var(--page-pad);
             border: 1px solid var(--border);
             text-align: left;
             overflow-x: auto;
-            flex: 1; /* For winning view expanding */
+            flex: 1;
             min-height: 0;
         }
 
@@ -240,8 +242,7 @@
             min-width: 600px;
         }
 
-        th,
-        td {
+        th, td {
             padding: 10px 8px;
             border-bottom: 1px solid var(--border);
             text-align: left;
@@ -255,9 +256,7 @@
             letter-spacing: 1px;
         }
 
-        tr:last-child td {
-            border-bottom: none;
-        }
+        tr:last-child td { border-bottom: none; }
 
         .rank {
             font-weight: bold;
@@ -288,25 +287,8 @@
             margin-left: 4px;
         }
 
-        .btn {
-            background-color: var(--accent);
-            color: #000;
-            border: none;
-            padding: 10px 24px;
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 12px;
-            transition: background-color 0.2s;
-        }
+        /* ── Tournament Feed Log ────────────────────────────────── */
 
-        .btn:hover {
-            background-color: var(--accent-hover);
-            color: #fff;
-        }
-
-        /* Elimination Log / Feed */
         .log-container {
             margin-top: var(--page-pad);
             text-align: left;
@@ -316,10 +298,9 @@
             border: 1px solid var(--border);
             width: 100%;
             box-sizing: border-box;
-            margin-bottom: 0;
             display: flex;
             flex-direction: column;
-            flex: 1; /* Force it to take up remaining space */
+            flex: 1;
             min-height: 0; /* CRITICAL for flex child */
         }
 
@@ -331,12 +312,12 @@
             margin-bottom: 10px;
             border-bottom: 1px solid var(--border);
             padding-bottom: 8px;
-            flex-shrink: 0; /* Prevent title from shrinking */
+            flex-shrink: 0;
         }
 
         #log-feed {
             flex: 1;
-            overflow-y: auto; /* Show scrollbar only when items overflow */
+            overflow-y: auto;
             min-height: 0; /* CRITICAL to prevent content from expanding parent */
         }
 
@@ -346,6 +327,8 @@
             margin-bottom: 4px;
             font-family: monospace;
         }
+
+        /* ── Fixed UI Elements ──────────────────────────────────── */
 
         .version-badge {
             position: fixed;
@@ -362,7 +345,6 @@
             z-index: 9999;
         }
 
-        /* Developer Buttons */
         .dev-btn-group {
             position: fixed;
             bottom: 12px;
@@ -389,7 +371,7 @@
             color: #000;
         }
 
-        /* ── Survey Styles ───────────────────────────────────────── */
+        /* ── Survey Styles ──────────────────────────────────────── */
 
         .survey-gate-area {
             position: fixed;
@@ -431,20 +413,10 @@
             white-space: nowrap;
         }
 
-        .btn-survey:hover {
-            background: var(--accent);
-            color: #000;
-        }
+        .btn-survey:hover { background: var(--accent); color: #000; }
 
-        .btn-survey.completed {
-            border-color: var(--success);
-            color: var(--success);
-        }
-
-        .btn-survey.completed:hover {
-            background: var(--success);
-            color: #000;
-        }
+        .btn-survey.completed { border-color: var(--success); color: var(--success); }
+        .btn-survey.completed:hover { background: var(--success); color: #000; }
 
         .survey-hint {
             font-size: 12px;
@@ -517,9 +489,7 @@
             margin-bottom: 4px;
         }
 
-        .survey-col-headers span:not(:first-child) {
-            text-align: center;
-        }
+        .survey-col-headers span:not(:first-child) { text-align: center; }
 
         .survey-cat-label {
             font-size: 11px;
@@ -542,14 +512,9 @@
             transition: background 0.1s;
         }
 
-        .survey-row:hover {
-            background: #252525;
-        }
+        .survey-row:hover { background: #252525; }
 
-        .survey-browser-name {
-            font-size: 13px;
-            color: var(--text-main);
-        }
+        .survey-browser-name { font-size: 13px; color: var(--text-main); }
 
         .survey-check-cell {
             display: flex;
@@ -564,14 +529,14 @@
             height: 15px;
         }
 
-        /* ── Narrow screens: structural layout only, no size snapping ── */
+        /* ── Narrow screens ─────────────────────────────────────── */
+
         @media (max-width: 600px) {
             .survey-gate-area {
                 flex-direction: column;
                 text-align: center;
                 gap: 6px;
             }
-
             .survey-col-headers,
             .survey-row {
                 grid-template-columns: 1fr 48px 58px 70px;
@@ -583,7 +548,7 @@
 
 <body>
 
-    <div class="version-badge">v70</div>
+    <div class="version-badge">v73</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -595,15 +560,13 @@
             <div class="survey-modal-header">
                 <h2 style="margin: 0 0 6px; font-size: 20px;">Browser Experience Survey</h2>
                 <p style="margin: 0; color: var(--text-muted); font-size: 13px; line-height: 1.4;">
-                    Mark any browsers you've used or are regularly using. At least one selection required to unlock
-                    voting.
+                    Mark any browsers you've used or are regularly using. At least one selection required to unlock voting.
                 </p>
             </div>
             <div class="survey-modal-body" id="survey-modal-body"></div>
             <div class="survey-modal-footer">
                 <button class="btn-secondary" onclick="closeSurveyModal()">Cancel</button>
-                <button class="btn" id="survey-save-btn" onclick="saveSurvey()" style="margin-top: 0;" disabled>Save
-                    &amp; Unlock</button>
+                <button class="btn" id="survey-save-btn" onclick="saveSurvey()" style="margin-top: 0;" disabled>Save &amp; Unlock</button>
             </div>
         </div>
     </div>
@@ -613,20 +576,18 @@
         style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
         <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85);"
             onclick="closeWinnerModal()"></div>
-        <div
-            style="background: var(--surface-color); border: 2px solid var(--accent); border-radius: 16px; width: 100%; max-width: 400px; text-align: center; padding: 40px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; z-index: 1001;">
+        <div style="background: var(--surface-color); border: 2px solid var(--accent); border-radius: 16px; width: 100%; max-width: 400px; text-align: center; padding: 40px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; z-index: 1001;">
             <div style="font-size: 40px; margin-bottom: 10px;">🏆</div>
             <h2 style="margin: 0 0 5px; font-size: 24px; color: var(--accent);">Your Ultimate Choice</h2>
             <div style="margin: 20px 0;">
                 <img id="winner-modal-logo" src="" alt="Winner Logo"
                     style="width: 120px; height: 120px; object-fit: contain; display: none; margin: 0 auto;">
-                <div id="winner-modal-name" style="font-size: 22px; font-weight: bold; margin-top: 15px;">Browser Name
-                </div>
+                <div id="winner-modal-name" style="font-size: 22px; font-weight: bold; margin-top: 15px;">Browser Name</div>
             </div>
-            <button class="btn" onclick="closeWinnerModal()" style="margin-top: 10px; width: 100%;">View Global
-                Results</button>
+            <button class="btn" onclick="closeWinnerModal()" style="margin-top: 10px; width: 100%;">View Global Results</button>
         </div>
     </div>
+
     <!-- Survey Gate (floating, decoupled from layout) -->
     <div class="survey-gate-area" id="survey-gate">
         <div class="survey-hint" id="survey-hint">Complete the survey to unlock voting.</div>
@@ -638,7 +599,6 @@
         <!-- Tournament Voting Interface -->
         <div id="tournament-view" style="display: none; flex-direction: column; flex-shrink: 0;">
             <h1>Browser Bracket</h1>
-
             <div class="status-bar" id="round-title">Round 1</div>
             <div class="progress-bar" id="match-progress">Match 1 of 12</div>
 
@@ -661,15 +621,13 @@
             </div>
         </div>
 
-        <!-- End Screen: Winner & Leaderboard -->
+        <!-- Results Page: Winner & Global Leaderboard -->
         <div id="winner-view" style="display: none; flex-direction: column; width: 100%; flex: 1; min-height: 0;">
             <div id="submit-results-area" style="display: none;"></div>
 
-            <!-- v63: Restructured leaderboard section with Feed toggle button -->
             <div class="leaderboard-container" id="leaderboard-section"
-                style="display: none; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; flex: 1; min-height: 0;">
-                <div
-                    style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; flex-shrink: 0;">
+                style="width: 100%; box-sizing: border-box; display: flex; flex-direction: column; flex: 1; min-height: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; flex-shrink: 0;">
                     <h2 style="margin: 0; font-size: 18px;" id="leaderboard-title">Global Leaderboard</h2>
                     <div style="display: flex; gap: 8px; align-items: center;">
                         <button class="btn-secondary" id="btn-toggle-feed" onclick="toggleResultsFeed()"
@@ -678,7 +636,8 @@
                             style="padding: 6px 12px; font-size: 12px; border-radius: 8px; width: auto;">Play Again</button>
                     </div>
                 </div>
-                <!-- Leaderboard table wrapper -->
+
+                <!-- Leaderboard table -->
                 <div id="leaderboard-table-wrap" style="flex: 1; overflow-y: auto; min-height: 0;">
                     <table>
                         <thead>
@@ -694,7 +653,8 @@
                         <tbody id="leaderboard-body"></tbody>
                     </table>
                 </div>
-                <!-- Feed view (hidden by default, shown when Feed toggle is active) -->
+
+                <!-- Feed view (toggled via Feed button) -->
                 <div id="results-feed-content" style="display: none; flex: 1; overflow-y: auto; min-height: 0;"></div>
             </div>
         </div>
@@ -723,81 +683,37 @@
         const db = firebase.firestore();
 
         // ══════════════════════════════════════════════════════════════
-        // 1. Master Pool — Testing Pool (Non-enthusiast options commented out)
+        // 1. Master Browser Pool
         // ══════════════════════════════════════════════════════════════
         let masterBrowsers = [
-            // ── CHROMIUM FORKS ──────────────────────────────────────
-            { id: "chrome", name: "Google Chrome", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "edge", name: "Microsoft Edge", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "samsung-internet",     name: "Samsung Internet",     elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "brave", name: "Brave", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "opera", name: "Opera", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "vivaldi", name: "Vivaldi", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "arc-browser", name: "Arc", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "opera-gx", name: "Opera GX", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "yandex-browser",       name: "Yandex",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "uc-browser",           name: "UC Browser",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "naver-whale-browser",  name: "Naver Whale",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // ── Chromium Forks ───────────────────────────────────────
+            { id: "chrome",             name: "Google Chrome",      elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "edge",               name: "Microsoft Edge",     elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "brave",              name: "Brave",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "opera",              name: "Opera",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "vivaldi",            name: "Vivaldi",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "arc-browser",        name: "Arc",                elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "opera-gx",           name: "Opera GX",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
             { id: "duckduckgo-browser", name: "DuckDuckGo Browser", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "kiwi-browser",         name: "Kiwi Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "chromium", name: "Ungoogled Chromium", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "thorium", name: "Thorium", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "cromite", name: "Cromite", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "wavebox",              name: "Wavebox",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "sigmaos",              name: "SigmaOS",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "helium", name: "Helium", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "iridium-browser",      name: "Iridium",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "epic-privacy-browser", name: "Epic Privacy Browser", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "srware-iron",          name: "SRWare Iron",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "flow-browser",         name: "Flow Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "min-browser",          name: "Min Browser",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "coc-coc",              name: "Coc Coc",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "sogou",                name: "Sogou Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "amazon-silk-browser",  name: "Amazon Silk",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "puffin-browser",       name: "Puffin Browser",       elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "dolphin-browser",      name: "Dolphin Browser",      elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "vanadium",             name: "Vanadium",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "maxthon",              name: "Maxthon",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "falkon",               name: "Falkon",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "qutebrowser", name: "qutebrowser", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "opera-mini",           name: "Opera Mini",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "opera-neon",           name: "Opera Neon",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "opera-touch",          name: "Opera Touch",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "chromium",           name: "Ungoogled Chromium", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "thorium",            name: "Thorium",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "cromite",            name: "Cromite",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "helium",             name: "Helium",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "qutebrowser",        name: "qutebrowser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
 
-            // ── FIREFOX FORKS ───────────────────────────────────────
-            { id: "firefox", name: "Mozilla Firefox", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "tor-browser", name: "Tor Browser", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "librewolf", name: "Librewolf", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "zen-browser", name: "Zen Browser", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "waterfox", name: "Waterfox", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "floorp", name: "Floorp", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "mullvad", name: "Mullvad Browser", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "gnu-icecat",           name: "GNU IceCat",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "seamonkey",            name: "SeaMonkey",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "mercury", name: "Mercury", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "palemoon",             name: "Pale Moon",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "basilisk",             name: "Basilisk",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "k-meleon",             name: "K-Meleon Browser",     elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // ── Firefox Forks ────────────────────────────────────────
+            { id: "firefox",            name: "Mozilla Firefox",    elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "tor-browser",        name: "Tor Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "librewolf",          name: "Librewolf",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "zen-browser",        name: "Zen Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "waterfox",           name: "Waterfox",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "floorp",             name: "Floorp",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "mullvad",            name: "Mullvad Browser",    elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "mercury",            name: "Mercury",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
 
-            // ── MISC ────────────────────────────────────────────────
-            { id: "safari", name: "Apple Safari", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            { id: "orion", name: "Orion", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "ladybird",             name: "Ladybird",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "midori",               name: "Midori",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "konqueror",            name: "Konqueror",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "netsurf",              name: "Netsurf Browser",      elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "dillo-browser",        name: "Dillo Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "nyxt",                 name: "Nyxt Browser",         elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "otter-browser",        name: "Otter Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "sleipnir-browser",     name: "Sleipnir",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "lunascape",            name: "Lunascape",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "internet-explorer",    name: "Internet Explorer",    elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "netscape",             name: "Netscape",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "avant-browser",        name: "Avant Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "lynx-browser",         name: "Lynx",                 elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "browsh",               name: "Browsh",               elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "dia-browser",          name: "Dia",                  elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
-            // { id: "tempest-browser",      name: "Tempest",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            // ── Other ────────────────────────────────────────────────
+            { id: "safari",             name: "Apple Safari",       elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
+            { id: "orion",              name: "Orion",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
         ];
 
         // ══════════════════════════════════════════════════════════════
@@ -832,7 +748,7 @@
         let totalRounds = 1;
         let historyStack = [];
         let roundStartStats = {};
-        let resultsViewMode = 'leaderboard'; // v63: tracks Feed toggle state on results page
+        let resultsViewMode = 'leaderboard'; // tracks Feed/Results toggle state on results page
 
         // ══════════════════════════════════════════════════════════════
         // 4. Initialization & LocalStorage Boot
@@ -841,19 +757,11 @@
             loadSurveyState();
 
             if (localStorage.getItem('bracketCompleted') === 'true') {
-                document.getElementById('tournament-view').style.display = 'none';
-                document.getElementById('feed-container').style.display = 'none'; // v63: hide feed on results page
-                document.getElementById('winner-view').style.display = 'flex';
-                document.getElementById('submit-results-area').style.display = 'none';
-                document.getElementById('leaderboard-section').style.display = 'flex';
-                document.body.style.paddingBottom = 'var(--page-pad)'; // v64: match top gap on results page
-                document.getElementById('survey-gate').classList.add('hidden'); // v68: hide survey gate on results page
+                showResultsPage();
                 await renderLeaderboard();
             } else {
                 document.getElementById('tournament-view').style.display = 'flex';
                 document.getElementById('feed-container').style.display = 'flex';
-
-                // Directly start tournament logic
                 activePool = [...masterBrowsers];
                 initFirestoreData();
                 initTournament();
@@ -875,12 +783,23 @@
         function loadSurveyState() {
             const storedCompleted = localStorage.getItem('surveyCompleted');
             const storedData = localStorage.getItem('surveyData');
-
             if (storedCompleted === 'true' && storedData) {
                 surveyCompleted = true;
                 surveyData = JSON.parse(storedData);
                 unlockVotingCards();
             }
+        }
+
+        // Switches the UI to the results page and resets related display state.
+        // Called from all three entry points: post-tournament, skip-to-results, and page reload.
+        function showResultsPage() {
+            document.getElementById('tournament-view').style.display = 'none';
+            document.getElementById('feed-container').style.display = 'none';
+            document.getElementById('submit-results-area').style.display = 'none';
+            document.getElementById('winner-view').style.display = 'flex';
+            document.getElementById('leaderboard-section').style.display = 'flex';
+            document.body.style.paddingBottom = 'var(--page-pad)';
+            document.getElementById('survey-gate').classList.add('hidden');
         }
 
         // ══════════════════════════════════════════════════════════════
@@ -903,12 +822,12 @@
 
                 cat.ids.forEach(id => {
                     const browser = masterBrowsers.find(b => b.id === id);
-                    if (!browser) return; // Skip if currently commented out
+                    if (!browser) return; // skip if commented out of master pool
 
                     if (!surveyData[id]) surveyData[id] = { heard: false, used: false, current: false };
 
-                    let heardDisabled = (surveyData[id].used || surveyData[id].current) ? 'disabled style="opacity:0.35;cursor:not-allowed;"' : '';
-                    let usedDisabled = surveyData[id].current ? 'disabled style="opacity:0.35;cursor:not-allowed;"' : '';
+                    const heardDisabled = (surveyData[id].used || surveyData[id].current) ? 'disabled style="opacity:0.35;cursor:not-allowed;"' : '';
+                    const usedDisabled  = surveyData[id].current ? 'disabled style="opacity:0.35;cursor:not-allowed;"' : '';
 
                     const row = document.createElement('div');
                     row.className = 'survey-row';
@@ -939,7 +858,7 @@
             if (!surveyData[id]) surveyData[id] = { heard: false, used: false, current: false };
             surveyData[id][field] = value;
 
-            // Cascade logic for checkboxes
+            // Cascade: "currently using" implies "used before" implies "heard of"
             if (field === 'current' && value) {
                 surveyData[id].used = true;
                 surveyData[id].heard = true;
@@ -947,23 +866,23 @@
                 surveyData[id].heard = true;
             }
 
-            // Sync visual UI for this row immediately
+            // Sync checkbox UI for this row
             const heardBox = document.getElementById('sv-heard-' + id);
-            const usedBox = document.getElementById('sv-used-' + id);
-            const currBox = document.getElementById('sv-curr-' + id);
+            const usedBox  = document.getElementById('sv-used-'  + id);
+            const currBox  = document.getElementById('sv-curr-'  + id);
 
             if (heardBox) heardBox.checked = surveyData[id].heard;
-            if (usedBox) usedBox.checked = surveyData[id].used;
-            if (currBox) currBox.checked = surveyData[id].current;
+            if (usedBox)  usedBox.checked  = surveyData[id].used;
+            if (currBox)  currBox.checked  = surveyData[id].current;
 
             if (surveyData[id].current) {
-                if (usedBox) { usedBox.disabled = true; usedBox.style.opacity = '0.35'; usedBox.style.cursor = 'not-allowed'; }
-                if (heardBox) { heardBox.disabled = true; heardBox.style.opacity = '0.35'; heardBox.style.cursor = 'not-allowed'; }
+                if (usedBox)  { usedBox.disabled  = true;  usedBox.style.opacity  = '0.35'; usedBox.style.cursor  = 'not-allowed'; }
+                if (heardBox) { heardBox.disabled = true;  heardBox.style.opacity = '0.35'; heardBox.style.cursor = 'not-allowed'; }
             } else if (surveyData[id].used) {
-                if (usedBox) { usedBox.disabled = false; usedBox.style.opacity = ''; usedBox.style.cursor = ''; }
-                if (heardBox) { heardBox.disabled = true; heardBox.style.opacity = '0.35'; heardBox.style.cursor = 'not-allowed'; }
+                if (usedBox)  { usedBox.disabled  = false; usedBox.style.opacity  = '';      usedBox.style.cursor  = ''; }
+                if (heardBox) { heardBox.disabled = true;  heardBox.style.opacity = '0.35'; heardBox.style.cursor = 'not-allowed'; }
             } else {
-                if (usedBox) { usedBox.disabled = false; usedBox.style.opacity = ''; usedBox.style.cursor = ''; }
+                if (usedBox)  { usedBox.disabled  = false; usedBox.style.opacity  = ''; usedBox.style.cursor  = ''; }
                 if (heardBox) { heardBox.disabled = false; heardBox.style.opacity = ''; heardBox.style.cursor = ''; }
             }
 
@@ -1011,12 +930,10 @@
 
         function unlockVotingCards() {
             const gate = document.getElementById('survey-gate');
-            const btn = document.getElementById('survey-btn');
+            const btn  = document.getElementById('survey-btn');
             const hint = document.getElementById('survey-hint');
 
-            // Hide the floating survey banner
             gate.classList.add('hidden');
-
             btn.textContent = '✓ Survey Complete (Edit)';
             btn.classList.add('completed');
             hint.style.display = 'none';
@@ -1028,12 +945,10 @@
 
         function lockVotingCards() {
             const gate = document.getElementById('survey-gate');
-            const btn = document.getElementById('survey-btn');
+            const btn  = document.getElementById('survey-btn');
             const hint = document.getElementById('survey-hint');
 
-            // Show the floating survey banner
             gate.classList.remove('hidden');
-
             btn.textContent = '📋 Take Survey';
             btn.classList.remove('completed');
             hint.style.display = '';
@@ -1044,8 +959,19 @@
         }
 
         // ══════════════════════════════════════════════════════════════
-        // 6. Firestore & Head-to-Head / Contextual Stat Tracking
+        // 6. Firestore & Stat Tracking
         // ══════════════════════════════════════════════════════════════
+
+        // Returns the voter-context key for a browser, e.g. "chrome_current" or "brave_none".
+        // Used to track which browsers the voter knows when recording match outcomes.
+        function getSurveyStateKey(browserId) {
+            const data = surveyData[browserId];
+            if (data?.current) return `${browserId}_current`;
+            if (data?.used)    return `${browserId}_used`;
+            if (data?.heard)   return `${browserId}_heard`;
+            return `${browserId}_none`;
+        }
+
         async function initFirestoreData() {
             try {
                 const snapshot = await db.collection('browsers').limit(1).get();
@@ -1060,12 +986,14 @@
                         matches: 0,
                         wins: 0,
                         headToHead: {},
-                        voterContext: {} // Initialize the flattened context tracker
+                        voterContext: {}
                     });
                 });
                 await batch.commit();
                 logEvent("✅ Database initialised with " + masterBrowsers.length + " browsers.");
-            } catch (err) { console.error("Firestore init error:", err); }
+            } catch (err) {
+                console.error("Firestore init error:", err);
+            }
         }
 
         function snapshotRoundStats() {
@@ -1096,51 +1024,49 @@
                     const start = roundStartStats[b.id];
                     if (!start) return;
 
-                    const eloDelta = b.elo - start.elo;
+                    const eloDelta     = b.elo - start.elo;
                     const matchesDelta = b.matches - start.matches;
-                    const winsDelta = (b.wins || 0) - start.wins;
+                    const winsDelta    = (b.wins || 0) - start.wins;
 
-                    let updates = { name: b.name }; // Included so missing docs get named on creation
+                    const updates = { name: b.name }; // ensures doc gets a name even if created fresh
 
-                    if (eloDelta !== 0) updates.elo = firebase.firestore.FieldValue.increment(eloDelta);
+                    if (eloDelta     !== 0) updates.elo     = firebase.firestore.FieldValue.increment(eloDelta);
                     if (matchesDelta !== 0) updates.matches = firebase.firestore.FieldValue.increment(matchesDelta);
-                    if (winsDelta !== 0) updates.wins = firebase.firestore.FieldValue.increment(winsDelta);
+                    if (winsDelta    !== 0) updates.wins    = firebase.firestore.FieldValue.increment(winsDelta);
 
-                    // 1. Compute head-to-head match differentials
+                    // Head-to-head differentials
                     const currentH2H = b.headToHead || {};
-                    const startH2H = start.headToHead || {};
+                    const startH2H   = start.headToHead || {};
 
                     Object.keys(currentH2H).forEach(oppId => {
-                        const currentOppStats = currentH2H[oppId];
-                        const startOppStats = startH2H[oppId] || { wins: 0, matches: 0 };
+                        const curr  = currentH2H[oppId];
+                        const prev  = startH2H[oppId] || { wins: 0, matches: 0 };
+                        const wDiff = curr.wins    - prev.wins;
+                        const mDiff = curr.matches - prev.matches;
 
-                        const h2hWinsDelta = currentOppStats.wins - startOppStats.wins;
-                        const h2hMatchesDelta = currentOppStats.matches - startOppStats.matches;
-
-                        if (h2hWinsDelta !== 0 || h2hMatchesDelta !== 0) {
-                            if (!updates.headToHead) updates.headToHead = {};
+                        if (wDiff !== 0 || mDiff !== 0) {
+                            if (!updates.headToHead)        updates.headToHead = {};
                             if (!updates.headToHead[oppId]) updates.headToHead[oppId] = {};
-                            if (h2hWinsDelta !== 0) updates.headToHead[oppId].wins = firebase.firestore.FieldValue.increment(h2hWinsDelta);
-                            if (h2hMatchesDelta !== 0) updates.headToHead[oppId].matches = firebase.firestore.FieldValue.increment(h2hMatchesDelta);
+                            if (wDiff !== 0) updates.headToHead[oppId].wins    = firebase.firestore.FieldValue.increment(wDiff);
+                            if (mDiff !== 0) updates.headToHead[oppId].matches = firebase.firestore.FieldValue.increment(mDiff);
                         }
                     });
 
-                    // 2. Compute Voter Context (Demographic) differentials
+                    // Voter-context differentials
                     const currentVC = b.voterContext || {};
-                    const startVC = start.voterContext || {};
+                    const startVC   = start.voterContext || {};
 
-                    Object.keys(currentVC).forEach(contextKey => {
-                        const currentVCStats = currentVC[contextKey];
-                        const startVCStats = startVC[contextKey] || { wins: 0, matches: 0 };
+                    Object.keys(currentVC).forEach(key => {
+                        const curr  = currentVC[key];
+                        const prev  = startVC[key] || { wins: 0, matches: 0 };
+                        const wDiff = curr.wins    - prev.wins;
+                        const mDiff = curr.matches - prev.matches;
 
-                        const vcWinsDelta = currentVCStats.wins - startVCStats.wins;
-                        const vcMatchesDelta = currentVCStats.matches - startVCStats.matches;
-
-                        if (vcWinsDelta !== 0 || vcMatchesDelta !== 0) {
-                            if (!updates.voterContext) updates.voterContext = {};
-                            if (!updates.voterContext[contextKey]) updates.voterContext[contextKey] = {};
-                            if (vcWinsDelta !== 0) updates.voterContext[contextKey].wins = firebase.firestore.FieldValue.increment(vcWinsDelta);
-                            if (vcMatchesDelta !== 0) updates.voterContext[contextKey].matches = firebase.firestore.FieldValue.increment(vcMatchesDelta);
+                        if (wDiff !== 0 || mDiff !== 0) {
+                            if (!updates.voterContext)      updates.voterContext = {};
+                            if (!updates.voterContext[key]) updates.voterContext[key] = {};
+                            if (wDiff !== 0) updates.voterContext[key].wins    = firebase.firestore.FieldValue.increment(wDiff);
+                            if (mDiff !== 0) updates.voterContext[key].matches = firebase.firestore.FieldValue.increment(mDiff);
                         }
                     });
 
@@ -1161,54 +1087,43 @@
         }
 
         const K_FACTOR = 32;
-        function updateRatings(winnerObj, loserObj) {
-            // --- ELO Calculation ---
-            let expectedWinner = 1 / (1 + Math.pow(10, (loserObj.elo - winnerObj.elo) / 400));
-            let expectedLoser = 1 / (1 + Math.pow(10, (winnerObj.elo - loserObj.elo) / 400));
-            winnerObj.elo = winnerObj.elo + K_FACTOR * (1 - expectedWinner);
-            loserObj.elo = loserObj.elo + K_FACTOR * (0 - expectedLoser);
+        function updateRatings(winner, loser) {
+            // Elo calculation
+            const expectedWinner = 1 / (1 + Math.pow(10, (loser.elo - winner.elo) / 400));
+            const expectedLoser  = 1 / (1 + Math.pow(10, (winner.elo - loser.elo) / 400));
+            winner.elo = winner.elo + K_FACTOR * (1 - expectedWinner);
+            loser.elo  = loser.elo  + K_FACTOR * (0 - expectedLoser);
 
-            // --- Overall Win/Match Counts ---
-            winnerObj.matches++;
-            loserObj.matches++;
-            winnerObj.wins = (winnerObj.wins || 0) + 1;
-            loserObj.wins = (loserObj.wins || 0);
+            // Overall win/match counts
+            winner.matches++;
+            loser.matches++;
+            winner.wins = (winner.wins || 0) + 1;
 
-            // --- Head-to-Head Tracker ---
-            if (!winnerObj.headToHead) winnerObj.headToHead = {};
-            if (!loserObj.headToHead) loserObj.headToHead = {};
+            // Head-to-head tracker
+            if (!winner.headToHead) winner.headToHead = {};
+            if (!loser.headToHead)  loser.headToHead  = {};
 
-            if (!winnerObj.headToHead[loserObj.id]) winnerObj.headToHead[loserObj.id] = { wins: 0, matches: 0 };
-            if (!loserObj.headToHead[winnerObj.id]) loserObj.headToHead[winnerObj.id] = { wins: 0, matches: 0 };
+            if (!winner.headToHead[loser.id])  winner.headToHead[loser.id]  = { wins: 0, matches: 0 };
+            if (!loser.headToHead[winner.id])  loser.headToHead[winner.id]  = { wins: 0, matches: 0 };
 
-            winnerObj.headToHead[loserObj.id].matches++;
-            winnerObj.headToHead[loserObj.id].wins++;
-            loserObj.headToHead[winnerObj.id].matches++;
+            winner.headToHead[loser.id].matches++;
+            winner.headToHead[loser.id].wins++;
+            loser.headToHead[winner.id].matches++;
 
-            // --- Voter Context (Demographics) Tracker ---
-            if (!winnerObj.voterContext) winnerObj.voterContext = {};
-            if (!loserObj.voterContext) loserObj.voterContext = {};
+            // Voter-context tracker — records the voter's familiarity with every browser
+            // at the time of each vote, so results can be segmented by voter background later
+            if (!winner.voterContext) winner.voterContext = {};
+            if (!loser.voterContext)  loser.voterContext  = {};
 
-            // Loop through ALL possible browsers to see the user's background relationship with them
             masterBrowsers.forEach(b => {
-                let state = 'none'; // Default to blind/none
-                if (surveyData[b.id]) {
-                    if (surveyData[b.id].current) state = 'current';
-                    else if (surveyData[b.id].used) state = 'used';
-                    else if (surveyData[b.id].heard) state = 'heard';
-                }
+                const key = getSurveyStateKey(b.id);
 
-                // Construct the flattened key e.g., "chrome_current" or "brave_none"
-                let key = `${b.id}_${state}`;
+                if (!winner.voterContext[key]) winner.voterContext[key] = { matches: 0, wins: 0 };
+                winner.voterContext[key].matches++;
+                winner.voterContext[key].wins++;
 
-                // Apply +1 win and +1 match to winner's context tracking
-                if (!winnerObj.voterContext[key]) winnerObj.voterContext[key] = { matches: 0, wins: 0 };
-                winnerObj.voterContext[key].matches++;
-                winnerObj.voterContext[key].wins++;
-
-                // Apply +1 match to loser's context tracking
-                if (!loserObj.voterContext[key]) loserObj.voterContext[key] = { matches: 0, wins: 0 };
-                loserObj.voterContext[key].matches++;
+                if (!loser.voterContext[key]) loser.voterContext[key] = { matches: 0, wins: 0 };
+                loser.voterContext[key].matches++;
             });
         }
 
@@ -1216,10 +1131,10 @@
         // 7. Tournament Bracket Engine
         // ══════════════════════════════════════════════════════════════
         function logEvent(text) {
-            const feed = document.getElementById('log-feed');
+            const feed  = document.getElementById('log-feed');
             const entry = document.createElement('div');
             entry.className = 'log-entry';
-            entry.innerText = text;
+            entry.textContent = text;
             feed.insertBefore(entry, feed.firstChild);
         }
 
@@ -1232,12 +1147,12 @@
             imgElement.onerror = function () {
                 attempt++;
                 if (attempt < extensions.length) {
-                    imgElement.src = "images/" + browserId + "." + extensions[attempt];
+                    imgElement.src = `images/${browserId}.${extensions[attempt]}`;
                 } else {
                     imgElement.onerror = null;
                 }
             };
-            imgElement.src = "images/" + browserId + "." + extensions[0];
+            imgElement.src = `images/${browserId}.${extensions[0]}`;
         }
 
         function shuffleArray(array) {
@@ -1253,13 +1168,13 @@
             totalRounds = Math.max(1, Math.ceil(Math.log2(activePool.length)));
             historyStack = [];
             document.getElementById('btn-undo').disabled = true;
-            logEvent("⚔️ Tournament started with " + activePool.length + " browsers.");
+            logEvent(`⚔️ Tournament started with ${activePool.length} browsers.`);
 
             if (localStorage.getItem('hasFinishedBracketOnce') === 'true') {
                 logEvent("🔄 Replaying for fun. Votes will not be uploaded globally.");
             }
 
-            snapshotRoundStats(); // Baseline snapshot — used to compute full-tournament delta at submit
+            snapshotRoundStats();
             generateRoundMatchups();
         }
 
@@ -1271,9 +1186,9 @@
             shuffleArray(activePool);
 
             if (activePool.length % 2 !== 0) {
-                let byeBrowser = activePool.pop();
+                const byeBrowser = activePool.pop();
                 nextRoundPool.push(byeBrowser);
-                logEvent("🎲 " + byeBrowser.name + " received a round bye and automatically advances.");
+                logEvent(`🎲 ${byeBrowser.name} received a round bye and automatically advances.`);
             }
 
             for (let i = 0; i < activePool.length; i += 2) {
@@ -1284,10 +1199,10 @@
         }
 
         function updateUI() {
-            document.getElementById('round-title').innerText = "Round " + roundNumber + " of " + totalRounds;
-            document.getElementById('match-progress').innerText = "Match " + (currentMatchIndex + 1) + " of " + currentMatchups.length;
+            document.getElementById('round-title').innerText   = `Round ${roundNumber} of ${totalRounds}`;
+            document.getElementById('match-progress').innerText = `Match ${currentMatchIndex + 1} of ${currentMatchups.length}`;
 
-            let currentPair = currentMatchups[currentMatchIndex];
+            const currentPair = currentMatchups[currentMatchIndex];
             document.getElementById('nameA').innerText = currentPair[0].name;
             document.getElementById('nameB').innerText = currentPair[1].name;
 
@@ -1297,18 +1212,16 @@
 
         function saveState() {
             historyStack.push({
-                activePoolIds: activePool.map(b => b.id),
-                nextRoundPoolIds: nextRoundPool.map(b => b.id),
+                activePoolIds:      activePool.map(b => b.id),
+                nextRoundPoolIds:   nextRoundPool.map(b => b.id),
                 currentMatchupsIds: currentMatchups.map(pair => [pair[0].id, pair[1].id]),
-                currentMatchIndex: currentMatchIndex,
-                roundNumber: roundNumber,
+                currentMatchIndex,
+                roundNumber,
                 masterStats: JSON.parse(JSON.stringify(masterBrowsers.map(b => ({
-                    id: b.id,
-                    elo: b.elo,
-                    matches: b.matches,
+                    id: b.id, elo: b.elo, matches: b.matches,
                     wins: b.wins || 0,
-                    headToHead: b.headToHead || {},
-                    voterContext: b.voterContext || {}
+                    headToHead:   b.headToHead   || {},
+                    voterContext: b.voterContext  || {}
                 })))),
                 logHTML: document.getElementById('log-feed').innerHTML
             });
@@ -1318,28 +1231,28 @@
         function undoMatchup() {
             if (historyStack.length === 0) return;
 
-            let state = historyStack.pop();
+            const state = historyStack.pop();
 
             state.masterStats.forEach(savedStat => {
-                let browser = masterBrowsers.find(b => b.id === savedStat.id);
+                const browser = masterBrowsers.find(b => b.id === savedStat.id);
                 if (browser) {
-                    browser.elo = savedStat.elo;
-                    browser.matches = savedStat.matches;
-                    browser.wins = savedStat.wins;
-                    browser.headToHead = savedStat.headToHead;
+                    browser.elo          = savedStat.elo;
+                    browser.matches      = savedStat.matches;
+                    browser.wins         = savedStat.wins;
+                    browser.headToHead   = savedStat.headToHead;
                     browser.voterContext = savedStat.voterContext;
                 }
             });
 
-            activePool = state.activePoolIds.map(id => masterBrowsers.find(b => b.id === id));
-            nextRoundPool = state.nextRoundPoolIds.map(id => masterBrowsers.find(b => b.id === id));
+            activePool      = state.activePoolIds.map(id => masterBrowsers.find(b => b.id === id));
+            nextRoundPool   = state.nextRoundPoolIds.map(id => masterBrowsers.find(b => b.id === id));
             currentMatchups = state.currentMatchupsIds.map(pair => [
                 masterBrowsers.find(b => b.id === pair[0]),
                 masterBrowsers.find(b => b.id === pair[1])
             ]);
 
             currentMatchIndex = state.currentMatchIndex;
-            roundNumber = state.roundNumber;
+            roundNumber       = state.roundNumber;
             document.getElementById('log-feed').innerHTML = state.logHTML;
 
             if (historyStack.length === 0) document.getElementById('btn-undo').disabled = true;
@@ -1347,63 +1260,53 @@
         }
 
         function castVote(selectedIndex) {
-            if (!surveyCompleted) return; // Prevent voting if survey is locked
+            if (!surveyCompleted) return;
 
             saveState();
-            let currentPair = currentMatchups[currentMatchIndex];
-            let winner = currentPair[selectedIndex];
-            let loser = currentPair[selectedIndex === 0 ? 1 : 0];
+            const currentPair = currentMatchups[currentMatchIndex];
+            const winner = currentPair[selectedIndex];
+            const loser  = currentPair[selectedIndex === 0 ? 1 : 0];
 
             updateRatings(winner, loser);
-            logEvent("❌ " + loser.name + " eliminated by " + winner.name);
+            logEvent(`❌ ${loser.name} eliminated by ${winner.name}`);
 
             nextRoundPool.push(winner);
             advanceBracket();
         }
 
         function skipMatchup() {
-            if (!surveyCompleted) return; // Prevent skipping if survey is locked
+            if (!surveyCompleted) return;
 
             saveState();
-            let currentPair = currentMatchups[currentMatchIndex];
+            const currentPair = currentMatchups[currentMatchIndex];
+            const browserA = currentPair[0];
+            const browserB = currentPair[1];
 
-            // Advance matches for both without incrementing wins to affect their winrates correctly
-            let loserA = currentPair[0];
-            let loserB = currentPair[1];
+            // Increment match counts for both without awarding a win to either
+            browserA.matches++;
+            browserB.matches++;
 
-            // Update match counts
-            loserA.matches++;
-            loserB.matches++;
+            if (!browserA.headToHead) browserA.headToHead = {};
+            if (!browserB.headToHead) browserB.headToHead = {};
+            if (!browserA.headToHead[browserB.id]) browserA.headToHead[browserB.id] = { wins: 0, matches: 0 };
+            if (!browserB.headToHead[browserA.id]) browserB.headToHead[browserA.id] = { wins: 0, matches: 0 };
+            browserA.headToHead[browserB.id].matches++;
+            browserB.headToHead[browserA.id].matches++;
 
-            // Update head to head match counts
-            if (!loserA.headToHead) loserA.headToHead = {};
-            if (!loserB.headToHead) loserB.headToHead = {};
-            if (!loserA.headToHead[loserB.id]) loserA.headToHead[loserB.id] = { wins: 0, matches: 0 };
-            if (!loserB.headToHead[loserA.id]) loserB.headToHead[loserA.id] = { wins: 0, matches: 0 };
-            loserA.headToHead[loserB.id].matches++;
-            loserB.headToHead[loserA.id].matches++;
-
-            // Update Context Tracker Matches
-            if (!loserA.voterContext) loserA.voterContext = {};
-            if (!loserB.voterContext) loserB.voterContext = {};
+            if (!browserA.voterContext) browserA.voterContext = {};
+            if (!browserB.voterContext) browserB.voterContext = {};
 
             masterBrowsers.forEach(b => {
-                let state = 'none';
-                if (surveyData[b.id]) {
-                    if (surveyData[b.id].current) state = 'current';
-                    else if (surveyData[b.id].used) state = 'used';
-                    else if (surveyData[b.id].heard) state = 'heard';
-                }
-                let key = `${b.id}_${state}`;
+                const key = getSurveyStateKey(b.id);
 
-                if (!loserA.voterContext[key]) loserA.voterContext[key] = { matches: 0, wins: 0 };
-                loserA.voterContext[key].matches++;
+                if (!browserA.voterContext[key]) browserA.voterContext[key] = { matches: 0, wins: 0 };
+                browserA.voterContext[key].matches++;
 
-                if (!loserB.voterContext[key]) loserB.voterContext[key] = { matches: 0, wins: 0 };
-                loserB.voterContext[key].matches++;
+                if (!browserB.voterContext[key]) browserB.voterContext[key] = { matches: 0, wins: 0 };
+                browserB.voterContext[key].matches++;
             });
 
-            logEvent("⏭️ Skipped: " + loserA.name + " & " + loserB.name + " (Both eliminated)");
+            logEvent(`⏭️ Skipped: ${browserA.name} & ${browserB.name} (Both eliminated)`);
             advanceBracket();
         }
 
@@ -1421,14 +1324,14 @@
                     showWinnerAndLeaderboard(activePool[0]);
                 } else {
                     roundNumber++;
-                    logEvent("🚀 Moving into Round " + roundNumber + " with " + activePool.length + " contenders.");
+                    logEvent(`🚀 Moving into Round ${roundNumber} with ${activePool.length} contenders.`);
                     generateRoundMatchups();
                 }
             }
         }
 
         function restartBracket() {
-            localStorage.removeItem('bracketCompleted'); // removes 'active block' so they can play again
+            localStorage.removeItem('bracketCompleted');
             window.location.reload();
         }
 
@@ -1437,28 +1340,22 @@
         }
 
         // ══════════════════════════════════════════════════════════════
-        // 8. Finale & Global Leaderboard Render
+        // 8. Finale & Global Leaderboard
         // ══════════════════════════════════════════════════════════════
         async function showWinnerAndLeaderboard(winnerObj) {
             localStorage.setItem('bracketCompleted', 'true');
-
-            document.getElementById('tournament-view').style.display = 'none';
-            document.getElementById('feed-container').style.display = 'none'; // v63: hide feed on results page
-            document.getElementById('winner-view').style.display = 'flex';
-            document.body.style.paddingBottom = 'var(--page-pad)'; // v64: match top gap on results page
-            document.getElementById('survey-gate').classList.add('hidden'); // v68: hide survey gate on results page
+            showResultsPage();
 
             if (winnerObj) {
                 document.getElementById('winner-modal-name').innerText = winnerObj.name;
                 loadImageWithFallback('winner-modal-logo', winnerObj.id);
                 document.getElementById('winner-modal-logo').style.display = 'block';
                 document.getElementById('winner-modal').style.display = 'flex';
-                logEvent("🏆 TOURNAMENT CHAMPION: " + winnerObj.name);
+                logEvent(`🏆 TOURNAMENT CHAMPION: ${winnerObj.name}`);
             } else {
                 logEvent("🤷 TOURNAMENT ENDED: All contenders eliminated.");
             }
 
-            document.getElementById('leaderboard-section').style.display = 'flex';
             await uploadRoundDeltas();
             localStorage.setItem('hasFinishedBracketOnce', 'true');
             await renderLeaderboard();
@@ -1469,27 +1366,20 @@
 
             localStorage.setItem('bracketCompleted', 'true');
             localStorage.setItem('hasFinishedBracketOnce', 'true');
-
-            document.getElementById('tournament-view').style.display = 'none';
-            document.getElementById('feed-container').style.display = 'none'; // v63: hide feed on results page
-            document.getElementById('winner-view').style.display = 'flex';
-            document.getElementById('submit-results-area').style.display = 'none';
-            document.getElementById('leaderboard-section').style.display = 'flex';
-            document.body.style.paddingBottom = 'var(--page-pad)'; // v64: match top gap on results page
-            document.getElementById('survey-gate').classList.add('hidden'); // v68: hide survey gate on results page
+            showResultsPage();
 
             logEvent("👀 Skipped to results — votes not submitted.");
             renderLeaderboard();
         }
 
         // ══════════════════════════════════════════════════════════════
-        // 9. Results Feed Toggle (v63)
+        // 9. Results Feed Toggle
         // ══════════════════════════════════════════════════════════════
         function toggleResultsFeed() {
-            const tableWrap = document.getElementById('leaderboard-table-wrap');
+            const tableWrap   = document.getElementById('leaderboard-table-wrap');
             const feedContent = document.getElementById('results-feed-content');
-            const btn = document.getElementById('btn-toggle-feed');
-            const title = document.getElementById('leaderboard-title');
+            const btn         = document.getElementById('btn-toggle-feed');
+            const title       = document.getElementById('leaderboard-title');
 
             if (resultsViewMode === 'leaderboard') {
                 resultsViewMode = 'feed';
@@ -1497,13 +1387,13 @@
                 const logHTML = document.getElementById('log-feed').innerHTML.trim();
                 feedContent.innerHTML = logHTML || '<div class="log-entry">No feed available for this session.</div>';
                 feedContent.style.display = 'block';
-                btn.textContent = 'Results';
+                btn.textContent   = 'Results';
                 title.textContent = 'Tournament Feed';
             } else {
                 resultsViewMode = 'leaderboard';
                 tableWrap.style.display = '';
                 feedContent.style.display = 'none';
-                btn.textContent = 'Feed';
+                btn.textContent   = 'Feed';
                 title.textContent = 'Global Leaderboard';
             }
         }
@@ -1521,53 +1411,54 @@
                 logEvent("⚠️ Could not load global rankings — showing local results.");
             }
 
-            // Populate up-to-date data list combining local backup and remote sync
-            let sortedBrowsers = masterBrowsers.map(b => ({
-                ...b,
-                elo: dbData[b.id] ? dbData[b.id].elo : b.elo,
-                matches: dbData[b.id] ? dbData[b.id].matches : b.matches,
-                wins: dbData[b.id] ? (dbData[b.id].wins || 0) : (b.wins || 0),
-                headToHead: dbData[b.id] ? (dbData[b.id].headToHead || {}) : (b.headToHead || {}),
-                voterContext: dbData[b.id] ? (dbData[b.id].voterContext || {}) : (b.voterContext || {})
-            })).sort((a, b) => b.elo - a.elo);
+            // Merge local state with Firestore data, preferring remote values where available
+            const sortedBrowsers = masterBrowsers.map(b => {
+                const remote = dbData[b.id] || {};
+                return {
+                    ...b,
+                    elo:          remote.elo          ?? b.elo,
+                    matches:      remote.matches       ?? b.matches,
+                    wins:         remote.wins          ?? b.wins          ?? 0,
+                    headToHead:   remote.headToHead    ?? b.headToHead    ?? {},
+                    voterContext: remote.voterContext   ?? b.voterContext  ?? {},
+                };
+            }).sort((a, b) => b.elo - a.elo);
 
             tbody.innerHTML = '';
             sortedBrowsers.forEach((b, index) => {
-                const actualWinRate = b.matches > 0 ? ((b.wins || 0) / b.matches) * 100 : 0.0;
+                const winRate = b.matches > 0 ? ((b.wins || 0) / b.matches) * 100 : 0;
 
+                // Find the closest rival: the opponent with a win rate nearest to 50%
                 let topRival = null;
-                let closestProbabilityDiff = Infinity;
-                let rivalWinRatePercent = 0.0;
-                let rivalMatchesPlayed = 0;
+                let closestDiff = Infinity;
+                let rivalWinRate = 0;
+                let rivalMatches = 0;
 
-                const h2h = b.headToHead || {};
-                Object.keys(h2h).forEach(oppId => {
-                    const stats = h2h[oppId];
+                Object.keys(b.headToHead || {}).forEach(oppId => {
+                    const stats = b.headToHead[oppId];
                     if (stats.matches > 0) {
-                        const winRate = stats.wins / stats.matches;
-                        const diff = Math.abs(winRate - 0.50);
-
-                        if (diff < closestProbabilityDiff || (diff === closestProbabilityDiff && stats.matches > rivalMatchesPlayed)) {
-                            closestProbabilityDiff = diff;
-                            topRival = masterBrowsers.find(x => x.id === oppId);
-                            rivalWinRatePercent = winRate * 100;
-                            rivalMatchesPlayed = stats.matches;
+                        const rate = stats.wins / stats.matches;
+                        const diff = Math.abs(rate - 0.5);
+                        if (diff < closestDiff || (diff === closestDiff && stats.matches > rivalMatches)) {
+                            closestDiff  = diff;
+                            topRival     = masterBrowsers.find(x => x.id === oppId);
+                            rivalWinRate = rate * 100;
+                            rivalMatches = stats.matches;
                         }
                     }
                 });
 
-                let rivalDisplay = "None";
-                if (topRival) {
-                    rivalDisplay = `${topRival.name} <span class="rival-pct">(${rivalWinRatePercent.toFixed(1)}%)</span>`;
-                }
+                const rivalDisplay = topRival
+                    ? `${topRival.name} <span class="rival-pct">(${rivalWinRate.toFixed(1)}%)</span>`
+                    : "None";
 
-                let tr = document.createElement('tr');
+                const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="rank">${index + 1}</td>
                     <td style="font-weight: 500;">${b.name}</td>
                     <td class="elo-score">${Math.round(b.elo)}</td>
                     <td class="stat-column col-matches">${b.matches}</td>
-                    <td class="stat-column" style="color: var(--success);">${actualWinRate.toFixed(1)}%</td>
+                    <td class="stat-column" style="color: var(--success);">${winRate.toFixed(1)}%</td>
                     <td class="rival-cell col-rival">${rivalDisplay}</td>
                 `;
                 tbody.appendChild(tr);
