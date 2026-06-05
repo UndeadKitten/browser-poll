@@ -583,7 +583,7 @@
 
 <body>
 
-    <div class="version-badge">v63</div>
+    <div class="version-badge">v65</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -847,6 +847,7 @@
                 document.getElementById('winner-view').style.display = 'flex';
                 document.getElementById('submit-results-area').style.display = 'none';
                 document.getElementById('leaderboard-section').style.display = 'flex';
+                document.body.style.paddingBottom = 'var(--page-pad)'; // v64: match top gap on results page
                 await renderLeaderboard();
             } else {
                 document.getElementById('tournament-view').style.display = 'flex';
@@ -1444,6 +1445,7 @@
             document.getElementById('tournament-view').style.display = 'none';
             document.getElementById('feed-container').style.display = 'none'; // v63: hide feed on results page
             document.getElementById('winner-view').style.display = 'flex';
+            document.body.style.paddingBottom = 'var(--page-pad)'; // v64: match top gap on results page
 
             if (winnerObj) {
                 document.getElementById('winner-modal-name').innerText = winnerObj.name;
@@ -1472,6 +1474,7 @@
             document.getElementById('winner-view').style.display = 'flex';
             document.getElementById('submit-results-area').style.display = 'none';
             document.getElementById('leaderboard-section').style.display = 'flex';
+            document.body.style.paddingBottom = 'var(--page-pad)'; // v64: match top gap on results page
 
             logEvent("👀 Skipped to results — votes not submitted.");
             renderLeaderboard();
