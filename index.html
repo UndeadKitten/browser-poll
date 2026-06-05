@@ -5,10 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browser Bracket & Global Leaderboard</title>
-    <!-- Firebase -->
+    
+    <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
     <style>
+        /* ── Global Variables & Theming ─────────────────────────── */
         :root {
             --bg-color: #121212;
             --surface-color: #1e1e1e;
@@ -22,30 +25,30 @@
             color-scheme: dark;
         }
 
-        /* Scrollbar Styling */
+        /* ── Scrollbar Styling ──────────────────────────────────── */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-color); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-        /* Firefox scrollbar */
         * {
             scrollbar-color: var(--border) var(--bg-color);
             scrollbar-width: thin;
         }
 
+        /* ── Base Layout ────────────────────────────────────────── */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
             padding: var(--page-pad);
-            padding-bottom: 104px; /* v70: matches visual top gap (screen edge → top of vote cards) */
+            padding-bottom: 104px; /* Matches visual top gap for balance */
             display: flex;
             flex-direction: column;
             align-items: center;
             height: 100dvh;
-            overflow: hidden; /* Prevent body scrolling entirely */
+            overflow: hidden; /* Prevent body scrolling entirely; let inner containers scroll */
             position: relative;
             box-sizing: border-box;
         }
@@ -57,7 +60,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            min-height: 0; /* CRITICAL: allows flex children to shrink/scroll */
+            min-height: 0; /* Important: Allows flex children to shrink and scroll properly */
         }
 
         h1 {
@@ -81,8 +84,7 @@
             font-size: 13px;
         }
 
-        /* ── Matchup Arena ──────────────────────────────────────── */
-
+        /* ── Matchup Arena (Voting Cards) ───────────────────────── */
         .matchup-container {
             display: flex;
             gap: 12px;
@@ -144,8 +146,7 @@
             font-size: 16px;
         }
 
-        /* ── Locked Voting State ────────────────────────────────── */
-
+        /* Grayed out state before survey completion */
         .locked-vote {
             opacity: 0.25;
             cursor: not-allowed;
@@ -154,7 +155,6 @@
         }
 
         /* ── Tournament Controls ────────────────────────────────── */
-
         .tournament-controls {
             display: flex;
             flex-wrap: wrap;
@@ -174,8 +174,7 @@
             }
         }
 
-        /* ── Buttons ────────────────────────────────────────────── */
-
+        /* ── General Buttons ────────────────────────────────────── */
         .btn-skip,
         .btn-secondary {
             background-color: transparent;
@@ -222,7 +221,25 @@
             color: #fff;
         }
 
-        /* ── Leaderboard ────────────────────────────────────────── */
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 8px;
+            width: auto;
+        }
+
+        .btn-full-width {
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        /* ── Global Leaderboard ─────────────────────────────────── */
+        .results-view {
+            flex-direction: column;
+            width: 100%;
+            flex: 1;
+            min-height: 0;
+        }
 
         .leaderboard-container {
             background-color: var(--surface-color);
@@ -232,6 +249,42 @@
             text-align: left;
             overflow-x: auto;
             flex: 1;
+            min-height: 0;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .leaderboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-shrink: 0;
+        }
+
+        .leaderboard-header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .leaderboard-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .leaderboard-table-wrap {
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+        }
+
+        .results-feed-content {
+            flex: 1;
+            overflow-y: auto;
             min-height: 0;
         }
 
@@ -287,8 +340,7 @@
             margin-left: 4px;
         }
 
-        /* ── Tournament Feed Log ────────────────────────────────── */
-
+        /* ── Tournament Action Log / Feed ───────────────────────── */
         .log-container {
             margin-top: var(--page-pad);
             text-align: left;
@@ -301,7 +353,7 @@
             display: flex;
             flex-direction: column;
             flex: 1;
-            min-height: 0; /* CRITICAL for flex child */
+            min-height: 0; 
         }
 
         .log-title {
@@ -318,7 +370,7 @@
         #log-feed {
             flex: 1;
             overflow-y: auto;
-            min-height: 0; /* CRITICAL to prevent content from expanding parent */
+            min-height: 0; 
         }
 
         .log-entry {
@@ -328,8 +380,7 @@
             font-family: monospace;
         }
 
-        /* ── Fixed UI Elements ──────────────────────────────────── */
-
+        /* ── Fixed UI Elements (Badges & Dev Tools) ─────────────── */
         .version-badge {
             position: fixed;
             bottom: 12px;
@@ -371,8 +422,7 @@
             color: #000;
         }
 
-        /* ── Survey Styles ──────────────────────────────────────── */
-
+        /* ── Survey UI ──────────────────────────────────────────── */
         .survey-gate-area {
             position: fixed;
             top: var(--page-pad);
@@ -414,7 +464,6 @@
         }
 
         .btn-survey:hover { background: var(--accent); color: #000; }
-
         .btn-survey.completed { border-color: var(--success); color: var(--success); }
         .btn-survey.completed:hover { background: var(--success); color: #000; }
 
@@ -456,6 +505,9 @@
             border-bottom: 1px solid var(--border);
             flex-shrink: 0;
         }
+
+        .survey-modal-header h2 { margin: 0 0 6px; font-size: 20px; }
+        .survey-modal-header p { margin: 0; color: var(--text-muted); font-size: 13px; line-height: 1.4; }
 
         .survey-modal-body {
             overflow-y: auto;
@@ -513,7 +565,6 @@
         }
 
         .survey-row:hover { background: #252525; }
-
         .survey-browser-name { font-size: 13px; color: var(--text-main); }
 
         .survey-check-cell {
@@ -529,8 +580,40 @@
             height: 15px;
         }
 
-        /* ── Narrow screens ─────────────────────────────────────── */
+        /* ── Winner Modal UI ────────────────────────────────────── */
+        #winner-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1000;
+            align-items: center; justify-content: center;
+            padding: 20px; box-sizing: border-box;
+        }
 
+        .winner-backdrop {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+        }
+
+        .winner-content {
+            background: var(--surface-color);
+            border: 2px solid var(--accent);
+            border-radius: 16px;
+            width: 100%; max-width: 400px;
+            text-align: center;
+            padding: 40px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative; z-index: 1001;
+        }
+
+        .winner-icon { font-size: 40px; margin-bottom: 10px; }
+        .winner-title { margin: 0 0 5px; font-size: 24px; color: var(--accent); }
+        .winner-logo-wrapper { margin: 20px 0; }
+        .winner-logo { width: 120px; height: 120px; object-fit: contain; margin: 0 auto; }
+        .winner-name { font-size: 22px; font-weight: bold; margin-top: 15px; }
+
+        /* ── Responsive Overrides ───────────────────────────────── */
         @media (max-width: 600px) {
             .survey-gate-area {
                 flex-direction: column;
@@ -547,21 +630,20 @@
 </head>
 
 <body>
-
-    <div class="version-badge">v73</div>
+    <!-- ── Utility / Debug Overlays ─────────────────────────────────── -->
+    <div class="version-badge">v74</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
     </div>
 
-    <!-- Survey Modal -->
+    <!-- ── Survey Modal ─────────────────────────────────────────────── -->
+    <!-- Gates access to voting until users provide context -->
     <div id="survey-modal" style="display: none;">
         <div id="survey-modal-content">
             <div class="survey-modal-header">
-                <h2 style="margin: 0 0 6px; font-size: 20px;">Browser Experience Survey</h2>
-                <p style="margin: 0; color: var(--text-muted); font-size: 13px; line-height: 1.4;">
-                    Mark any browsers you've used or are regularly using. At least one selection required to unlock voting.
-                </p>
+                <h2>Browser Experience Survey</h2>
+                <p>Mark any browsers you've used or are regularly using. At least one selection required to unlock voting.</p>
             </div>
             <div class="survey-modal-body" id="survey-modal-body"></div>
             <div class="survey-modal-footer">
@@ -571,37 +653,39 @@
         </div>
     </div>
 
-    <!-- Winner Modal -->
-    <div id="winner-modal"
-        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
-        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85);"
-            onclick="closeWinnerModal()"></div>
-        <div style="background: var(--surface-color); border: 2px solid var(--accent); border-radius: 16px; width: 100%; max-width: 400px; text-align: center; padding: 40px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; z-index: 1001;">
-            <div style="font-size: 40px; margin-bottom: 10px;">🏆</div>
-            <h2 style="margin: 0 0 5px; font-size: 24px; color: var(--accent);">Your Ultimate Choice</h2>
-            <div style="margin: 20px 0;">
-                <img id="winner-modal-logo" src="" alt="Winner Logo"
-                    style="width: 120px; height: 120px; object-fit: contain; display: none; margin: 0 auto;">
-                <div id="winner-modal-name" style="font-size: 22px; font-weight: bold; margin-top: 15px;">Browser Name</div>
+    <!-- ── Winner Modal ─────────────────────────────────────────────── -->
+    <!-- Shown at the very end of the tournament -->
+    <div id="winner-modal" style="display: none;">
+        <div class="winner-backdrop" onclick="closeWinnerModal()"></div>
+        <div class="winner-content">
+            <div class="winner-icon">🏆</div>
+            <h2 class="winner-title">Your Ultimate Choice</h2>
+            
+            <div class="winner-logo-wrapper">
+                <img id="winner-modal-logo" class="winner-logo" src="" alt="Winner Logo" style="display: none;">
+                <div id="winner-modal-name" class="winner-name">Browser Name</div>
             </div>
-            <button class="btn" onclick="closeWinnerModal()" style="margin-top: 10px; width: 100%;">View Global Results</button>
+            
+            <button class="btn btn-full-width" onclick="closeWinnerModal()">View Global Results</button>
         </div>
     </div>
 
-    <!-- Survey Gate (floating, decoupled from layout) -->
+    <!-- ── Survey Gate Header ───────────────────────────────────────── -->
     <div class="survey-gate-area" id="survey-gate">
         <div class="survey-hint" id="survey-hint">Complete the survey to unlock voting.</div>
         <button class="btn-survey" id="survey-btn" onclick="openSurveyModal()">📋 Take Survey</button>
     </div>
 
+    <!-- ── Main Content Container ───────────────────────────────────── -->
     <div class="container">
 
-        <!-- Tournament Voting Interface -->
+        <!-- VIEW 1: Tournament Interface -->
         <div id="tournament-view" style="display: none; flex-direction: column; flex-shrink: 0;">
             <h1>Browser Bracket</h1>
             <div class="status-bar" id="round-title">Round 1</div>
             <div class="progress-bar" id="match-progress">Match 1 of 12</div>
 
+            <!-- Voting Cards -->
             <div class="matchup-container">
                 <div class="browser-card locked-vote" id="cardA" onclick="castVote(0)">
                     <div class="browser-name" id="nameA">Browser A</div>
@@ -614,6 +698,7 @@
                 </div>
             </div>
 
+            <!-- View Controls -->
             <div class="tournament-controls">
                 <button class="btn-secondary" id="btn-undo" onclick="undoMatchup()" disabled>↩ Undo</button>
                 <button class="btn-skip locked-vote" id="btn-skip" onclick="skipMatchup()">Eliminate Both (Never heard of either)</button>
@@ -621,24 +706,22 @@
             </div>
         </div>
 
-        <!-- Results Page: Winner & Global Leaderboard -->
-        <div id="winner-view" style="display: none; flex-direction: column; width: 100%; flex: 1; min-height: 0;">
+        <!-- VIEW 2: Results & Global Leaderboard -->
+        <div id="winner-view" class="results-view" style="display: none;">
             <div id="submit-results-area" style="display: none;"></div>
 
-            <div class="leaderboard-container" id="leaderboard-section"
-                style="width: 100%; box-sizing: border-box; display: flex; flex-direction: column; flex: 1; min-height: 0;">
-                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; flex-shrink: 0;">
-                    <h2 style="margin: 0; font-size: 18px;" id="leaderboard-title">Global Leaderboard</h2>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <button class="btn-secondary" id="btn-toggle-feed" onclick="toggleResultsFeed()"
-                            style="padding: 6px 12px; font-size: 12px; border-radius: 8px; width: auto;">Feed</button>
-                        <button class="btn-secondary" onclick="restartBracket()"
-                            style="padding: 6px 12px; font-size: 12px; border-radius: 8px; width: auto;">Play Again</button>
+            <div class="leaderboard-container" id="leaderboard-section">
+                
+                <div class="leaderboard-header">
+                    <h2 id="leaderboard-title">Global Leaderboard</h2>
+                    <div class="leaderboard-actions">
+                        <button class="btn-secondary btn-small" id="btn-toggle-feed" onclick="toggleResultsFeed()">Feed</button>
+                        <button class="btn-secondary btn-small" onclick="restartBracket()">Play Again</button>
                     </div>
                 </div>
 
-                <!-- Leaderboard table -->
-                <div id="leaderboard-table-wrap" style="flex: 1; overflow-y: auto; min-height: 0;">
+                <!-- Table View -->
+                <div id="leaderboard-table-wrap" class="leaderboard-table-wrap">
                     <table>
                         <thead>
                             <tr>
@@ -654,12 +737,12 @@
                     </table>
                 </div>
 
-                <!-- Feed view (toggled via Feed button) -->
-                <div id="results-feed-content" style="display: none; flex: 1; overflow-y: auto; min-height: 0;"></div>
+                <!-- Action Feed View (toggled via Feed button) -->
+                <div id="results-feed-content" class="results-feed-content" style="display: none;"></div>
             </div>
         </div>
 
-        <!-- Tournament Feed Log (voting page only) -->
+        <!-- ── Live Action Feed (Shown during tournament) ───────────── -->
         <div class="log-container" id="feed-container" style="display: none;">
             <div class="log-title">Tournament Feed</div>
             <div id="log-feed"></div>
@@ -671,6 +754,8 @@
         // ══════════════════════════════════════════════════════════════
         // 0. Firebase Setup
         // ══════════════════════════════════════════════════════════════
+        // Note: For production, secure API keys using environment variables
+        // and restrict Firestore rules to prevent unauthorized overwrites.
         const firebaseConfig = {
             apiKey: "AIzaSyAJPMqyXSHtkOZfVXhPiyY_gGdD7jj1VLk",
             authDomain: "browser-poll.firebaseapp.com",
@@ -685,6 +770,9 @@
         // ══════════════════════════════════════════════════════════════
         // 1. Master Browser Pool
         // ══════════════════════════════════════════════════════════════
+        // This is the source of truth for the local bracket.
+        // `headToHead`: Tracks wins/matches against specific opponents.
+        // `voterContext`: Tracks outcomes based on the user's survey responses.
         let masterBrowsers = [
             // ── Chromium Forks ───────────────────────────────────────
             { id: "chrome",             name: "Google Chrome",      elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
@@ -736,19 +824,19 @@
         ];
 
         // ══════════════════════════════════════════════════════════════
-        // 3. Application State
+        // 3. Application State Variables
         // ══════════════════════════════════════════════════════════════
-        let surveyCompleted = false;
-        let surveyData = {};
-        let activePool = [];
-        let nextRoundPool = [];
-        let currentMatchups = [];
-        let currentMatchIndex = 0;
-        let roundNumber = 1;
-        let totalRounds = 1;
-        let historyStack = [];
-        let roundStartStats = {};
-        let resultsViewMode = 'leaderboard'; // tracks Feed/Results toggle state on results page
+        let surveyCompleted   = false; // Is the user allowed to vote?
+        let surveyData        = {};    // User's context (heard of, used, current)
+        let activePool        = [];    // Browsers actively competing in the current round
+        let nextRoundPool     = [];    // Browsers that advanced to the next round
+        let currentMatchups   = [];    // Array of browser pairs for the current round
+        let currentMatchIndex = 0;     // Which pair we are currently voting on
+        let roundNumber       = 1;         
+        let totalRounds       = 1;
+        let historyStack      = [];    // Stores previous states to enable the Undo feature
+        let roundStartStats   = {};    // Snapshot to calculate deltas for Firestore sync
+        let resultsViewMode   = 'leaderboard'; // Toggle between table and feed on results page
 
         // ══════════════════════════════════════════════════════════════
         // 4. Initialization & LocalStorage Boot
@@ -756,6 +844,7 @@
         window.addEventListener('DOMContentLoaded', async () => {
             loadSurveyState();
 
+            // Skip straight to results if user already completed the bracket locally
             if (localStorage.getItem('bracketCompleted') === 'true') {
                 showResultsPage();
                 await renderLeaderboard();
@@ -768,6 +857,7 @@
             }
         });
 
+        // Debug tools
         function devResetPoll() {
             localStorage.removeItem('bracketCompleted');
             localStorage.removeItem('hasFinishedBracketOnce');
@@ -783,6 +873,7 @@
         function loadSurveyState() {
             const storedCompleted = localStorage.getItem('surveyCompleted');
             const storedData = localStorage.getItem('surveyData');
+            
             if (storedCompleted === 'true' && storedData) {
                 surveyCompleted = true;
                 surveyData = JSON.parse(storedData);
@@ -790,8 +881,7 @@
             }
         }
 
-        // Switches the UI to the results page and resets related display state.
-        // Called from all three entry points: post-tournament, skip-to-results, and page reload.
+        // Swaps visibility of DOM elements to display the Results/Leaderboard page
         function showResultsPage() {
             document.getElementById('tournament-view').style.display = 'none';
             document.getElementById('feed-container').style.display = 'none';
@@ -822,10 +912,13 @@
 
                 cat.ids.forEach(id => {
                     const browser = masterBrowsers.find(b => b.id === id);
-                    if (!browser) return; // skip if commented out of master pool
+                    if (!browser) return;
 
-                    if (!surveyData[id]) surveyData[id] = { heard: false, used: false, current: false };
+                    if (!surveyData[id]) {
+                        surveyData[id] = { heard: false, used: false, current: false };
+                    }
 
+                    // Pre-calculate disabled attributes for logic cascading
                     const heardDisabled = (surveyData[id].used || surveyData[id].current) ? 'disabled style="opacity:0.35;cursor:not-allowed;"' : '';
                     const usedDisabled  = surveyData[id].current ? 'disabled style="opacity:0.35;cursor:not-allowed;"' : '';
 
@@ -854,11 +947,12 @@
             });
         }
 
+        // Handles checkbox interaction and cascading logic
         function onSurveyChange(id, field, value) {
             if (!surveyData[id]) surveyData[id] = { heard: false, used: false, current: false };
             surveyData[id][field] = value;
 
-            // Cascade: "currently using" implies "used before" implies "heard of"
+            // Cascade rules: "currently using" automatically checks and locks "used before" and "heard of".
             if (field === 'current' && value) {
                 surveyData[id].used = true;
                 surveyData[id].heard = true;
@@ -866,7 +960,7 @@
                 surveyData[id].heard = true;
             }
 
-            // Sync checkbox UI for this row
+            // Sync visual checkbox states
             const heardBox = document.getElementById('sv-heard-' + id);
             const usedBox  = document.getElementById('sv-used-'  + id);
             const currBox  = document.getElementById('sv-curr-'  + id);
@@ -875,6 +969,7 @@
             if (usedBox)  usedBox.checked  = surveyData[id].used;
             if (currBox)  currBox.checked  = surveyData[id].current;
 
+            // Manage interactive states based on cascades
             if (surveyData[id].current) {
                 if (usedBox)  { usedBox.disabled  = true;  usedBox.style.opacity  = '0.35'; usedBox.style.cursor  = 'not-allowed'; }
                 if (heardBox) { heardBox.disabled = true;  heardBox.style.opacity = '0.35'; heardBox.style.cursor = 'not-allowed'; }
@@ -889,9 +984,11 @@
             checkSaveBtnState();
         }
 
+        // Validates that at least one checkbox is checked across the whole survey
         function checkSaveBtnState() {
             const anyChecked = Object.values(surveyData).some(d => d.heard || d.used || d.current);
             const saveBtn = document.getElementById('survey-save-btn');
+            
             if (surveyCompleted) {
                 saveBtn.disabled = false;
                 saveBtn.textContent = anyChecked ? 'Update Survey' : 'Unsubmit & Lock';
@@ -928,6 +1025,7 @@
             }
         }
 
+        // Enables interactive elements in the tournament view
         function unlockVotingCards() {
             const gate = document.getElementById('survey-gate');
             const btn  = document.getElementById('survey-btn');
@@ -943,6 +1041,7 @@
             document.getElementById('btn-skip').classList.remove('locked-vote');
         }
 
+        // Disables interactive elements in the tournament view
         function lockVotingCards() {
             const gate = document.getElementById('survey-gate');
             const btn  = document.getElementById('survey-btn');
@@ -962,8 +1061,8 @@
         // 6. Firestore & Stat Tracking
         // ══════════════════════════════════════════════════════════════
 
-        // Returns the voter-context key for a browser, e.g. "chrome_current" or "brave_none".
-        // Used to track which browsers the voter knows when recording match outcomes.
+        // Returns the voter-context string key for a browser, e.g., "chrome_current".
+        // Used to record how user familiarity impacts win rates globally.
         function getSurveyStateKey(browserId) {
             const data = surveyData[browserId];
             if (data?.current) return `${browserId}_current`;
@@ -972,6 +1071,7 @@
             return `${browserId}_none`;
         }
 
+        // Pre-populates the database if it doesn't exist yet
         async function initFirestoreData() {
             try {
                 const snapshot = await db.collection('browsers').limit(1).get();
@@ -989,6 +1089,7 @@
                         voterContext: {}
                     });
                 });
+                
                 await batch.commit();
                 logEvent("✅ Database initialised with " + masterBrowsers.length + " browsers.");
             } catch (err) {
@@ -996,6 +1097,7 @@
             }
         }
 
+        // Saves deep copy of the state at the beginning of a round
         function snapshotRoundStats() {
             roundStartStats = {};
             masterBrowsers.forEach(b => {
@@ -1009,6 +1111,8 @@
             });
         }
 
+        // Calculates differences since the round started and uploads changes to Firestore.
+        // Uses `FieldValue.increment` to prevent overwriting parallel database updates from other users.
         async function uploadRoundDeltas() {
             if (localStorage.getItem('hasFinishedBracketOnce') === 'true') {
                 logEvent("ℹ️ Replay mode active: Data not synced to global leaderboard.");
@@ -1028,13 +1132,13 @@
                     const matchesDelta = b.matches - start.matches;
                     const winsDelta    = (b.wins || 0) - start.wins;
 
-                    const updates = { name: b.name }; // ensures doc gets a name even if created fresh
+                    const updates = { name: b.name };
 
                     if (eloDelta     !== 0) updates.elo     = firebase.firestore.FieldValue.increment(eloDelta);
                     if (matchesDelta !== 0) updates.matches = firebase.firestore.FieldValue.increment(matchesDelta);
                     if (winsDelta    !== 0) updates.wins    = firebase.firestore.FieldValue.increment(winsDelta);
 
-                    // Head-to-head differentials
+                    // Upload Head-to-head increments
                     const currentH2H = b.headToHead || {};
                     const startH2H   = start.headToHead || {};
 
@@ -1052,7 +1156,7 @@
                         }
                     });
 
-                    // Voter-context differentials
+                    // Upload Voter-context increments
                     const currentVC = b.voterContext || {};
                     const startVC   = start.voterContext || {};
 
@@ -1086,20 +1190,24 @@
             }
         }
 
-        const K_FACTOR = 32;
+        const K_FACTOR = 32; // Elo sensitivity scalar
+        
+        // Adjusts Elo ratings based on the expected outcome vs actual outcome
         function updateRatings(winner, loser) {
-            // Elo calculation
+            // Predict win probabilities based on current ratings
             const expectedWinner = 1 / (1 + Math.pow(10, (loser.elo - winner.elo) / 400));
             const expectedLoser  = 1 / (1 + Math.pow(10, (winner.elo - loser.elo) / 400));
+            
+            // Adjust ratings
             winner.elo = winner.elo + K_FACTOR * (1 - expectedWinner);
             loser.elo  = loser.elo  + K_FACTOR * (0 - expectedLoser);
 
-            // Overall win/match counts
+            // Increment simple win/match counts
             winner.matches++;
             loser.matches++;
             winner.wins = (winner.wins || 0) + 1;
 
-            // Head-to-head tracker
+            // Track direct opponent stats
             if (!winner.headToHead) winner.headToHead = {};
             if (!loser.headToHead)  loser.headToHead  = {};
 
@@ -1110,8 +1218,7 @@
             winner.headToHead[loser.id].wins++;
             loser.headToHead[winner.id].matches++;
 
-            // Voter-context tracker — records the voter's familiarity with every browser
-            // at the time of each vote, so results can be segmented by voter background later
+            // Track how voter familiarity impacted this outcome
             if (!winner.voterContext) winner.voterContext = {};
             if (!loser.voterContext)  loser.voterContext  = {};
 
@@ -1138,6 +1245,7 @@
             feed.insertBefore(entry, feed.firstChild);
         }
 
+        // Attempts to load browser logos handling various extensions elegantly
         function loadImageWithFallback(imgElementId, browserId) {
             const imgElement = document.getElementById(imgElementId);
             const extensions = ['svg', 'png', 'webp', 'jpg'];
@@ -1155,6 +1263,7 @@
             imgElement.src = `images/${browserId}.${extensions[0]}`;
         }
 
+        // Fisher-Yates array shuffle for randomized matchups
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -1185,6 +1294,7 @@
 
             shuffleArray(activePool);
 
+            // Handle odd number of competitors by assigning a "bye" to advance automatically
             if (activePool.length % 2 !== 0) {
                 const byeBrowser = activePool.pop();
                 nextRoundPool.push(byeBrowser);
@@ -1210,6 +1320,7 @@
             loadImageWithFallback('logoB', currentPair[1].id);
         }
 
+        // Captures application state before a vote to enable undoing mistakes
         function saveState() {
             historyStack.push({
                 activePoolIds:      activePool.map(b => b.id),
@@ -1228,6 +1339,7 @@
             document.getElementById('btn-undo').disabled = false;
         }
 
+        // Reverts state to the previous match in the stack
         function undoMatchup() {
             if (historyStack.length === 0) return;
 
@@ -1255,7 +1367,9 @@
             roundNumber       = state.roundNumber;
             document.getElementById('log-feed').innerHTML = state.logHTML;
 
-            if (historyStack.length === 0) document.getElementById('btn-undo').disabled = true;
+            if (historyStack.length === 0) {
+                document.getElementById('btn-undo').disabled = true;
+            }
             updateUI();
         }
 
@@ -1274,6 +1388,8 @@
             advanceBracket();
         }
 
+        // Bypasses the match, attributing match experience but no wins to both contenders.
+        // Drops both from the active pool.
         function skipMatchup() {
             if (!surveyCompleted) return;
 
@@ -1282,14 +1398,15 @@
             const browserA = currentPair[0];
             const browserB = currentPair[1];
 
-            // Increment match counts for both without awarding a win to either
             browserA.matches++;
             browserB.matches++;
 
             if (!browserA.headToHead) browserA.headToHead = {};
             if (!browserB.headToHead) browserB.headToHead = {};
+            
             if (!browserA.headToHead[browserB.id]) browserA.headToHead[browserB.id] = { wins: 0, matches: 0 };
             if (!browserB.headToHead[browserA.id]) browserB.headToHead[browserA.id] = { wins: 0, matches: 0 };
+            
             browserA.headToHead[browserB.id].matches++;
             browserB.headToHead[browserA.id].matches++;
 
@@ -1310,6 +1427,7 @@
             advanceBracket();
         }
 
+        // Resolves the match logic and proceeds to the next phase (next pair, next round, or ending)
         async function advanceBracket() {
             currentMatchIndex++;
 
@@ -1319,9 +1437,9 @@
                 activePool = [...nextRoundPool];
 
                 if (activePool.length === 0) {
-                    showWinnerAndLeaderboard(null);
+                    showWinnerAndLeaderboard(null); // Tie / Both skipped at end
                 } else if (activePool.length === 1) {
-                    showWinnerAndLeaderboard(activePool[0]);
+                    showWinnerAndLeaderboard(activePool[0]); // Winner found
                 } else {
                     roundNumber++;
                     logEvent(`🚀 Moving into Round ${roundNumber} with ${activePool.length} contenders.`);
@@ -1373,7 +1491,7 @@
         }
 
         // ══════════════════════════════════════════════════════════════
-        // 9. Results Feed Toggle
+        // 9. Results Feed & Ranking Render
         // ══════════════════════════════════════════════════════════════
         function toggleResultsFeed() {
             const tableWrap   = document.getElementById('leaderboard-table-wrap');
@@ -1384,15 +1502,18 @@
             if (resultsViewMode === 'leaderboard') {
                 resultsViewMode = 'feed';
                 tableWrap.style.display = 'none';
+                
                 const logHTML = document.getElementById('log-feed').innerHTML.trim();
                 feedContent.innerHTML = logHTML || '<div class="log-entry">No feed available for this session.</div>';
                 feedContent.style.display = 'block';
+                
                 btn.textContent   = 'Results';
                 title.textContent = 'Tournament Feed';
             } else {
                 resultsViewMode = 'leaderboard';
                 tableWrap.style.display = '';
                 feedContent.style.display = 'none';
+                
                 btn.textContent   = 'Feed';
                 title.textContent = 'Global Leaderboard';
             }
@@ -1411,7 +1532,8 @@
                 logEvent("⚠️ Could not load global rankings — showing local results.");
             }
 
-            // Merge local state with Firestore data, preferring remote values where available
+            // Merge local state with remote Firestore data, preferring remote if available.
+            // Sorts the final array descending by Elo rating.
             const sortedBrowsers = masterBrowsers.map(b => {
                 const remote = dbData[b.id] || {};
                 return {
@@ -1428,7 +1550,9 @@
             sortedBrowsers.forEach((b, index) => {
                 const winRate = b.matches > 0 ? ((b.wins || 0) / b.matches) * 100 : 0;
 
-                // Find the closest rival: the opponent with a win rate nearest to 50%
+                // Algorithm: Find the "closest rival" 
+                // Checks head-to-head match stats to find the opponent where the win rate is closest to 50%.
+                // A rate near 50% indicates the fiercest/most evenly matched competition.
                 let topRival = null;
                 let closestDiff = Infinity;
                 let rivalWinRate = 0;
@@ -1438,7 +1562,9 @@
                     const stats = b.headToHead[oppId];
                     if (stats.matches > 0) {
                         const rate = stats.wins / stats.matches;
-                        const diff = Math.abs(rate - 0.5);
+                        const diff = Math.abs(rate - 0.5); // difference from exactly 50%
+                        
+                        // If it's a closer match, OR a tiebreaker but with more match data
                         if (diff < closestDiff || (diff === closestDiff && stats.matches > rivalMatches)) {
                             closestDiff  = diff;
                             topRival     = masterBrowsers.find(x => x.id === oppId);
