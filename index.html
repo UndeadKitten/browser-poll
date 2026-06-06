@@ -5,11 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browser Bracket & Global Leaderboard</title>
-    
-    <!-- Firebase Libraries -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    
+
+    <!-- Firebase v9 ES module imports are handled inside the <script type="module"> block below.
+         No script tags are needed here. -->
+
     <style>
         /* ── Global Variables & Theming ─────────────────────────── */
         :root {
@@ -631,7 +630,7 @@
 
 <body>
     <!-- ── Utility / Debug Overlays ─────────────────────────────────── -->
-    <div class="version-badge">v74</div>
+    <div class="version-badge">v75</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -671,6 +670,8 @@
     </div>
 
     <!-- ── Survey Gate Header ───────────────────────────────────────── -->
+    <!-- Intentionally overlaps the title/vote cards so users see the greyed-out
+         voting UI and are motivated to complete the survey before they can interact. -->
     <div class="survey-gate-area" id="survey-gate">
         <div class="survey-hint" id="survey-hint">Complete the survey to unlock voting.</div>
         <button class="btn-survey" id="survey-btn" onclick="openSurveyModal()">📋 Take Survey</button>
@@ -750,7 +751,28 @@
 
     </div>
 
-    <script>
+    <script type="module">
+        // ── Firebase v9 Modular SDK Imports ──────────────────────────────────────
+        // Tree-shakeable: only the specific functions called are downloaded (~60–80 KB),
+        // versus the v8 compat SDK which loaded the entire library (~250 KB).
+        // Free-tier Spark plan quotas (50k reads/day, 20k writes/day, 1 GB storage)
+        // are identical between SDK versions — this is purely a bundle-size improvement.
+        //
+        // Note: <script type="module"> runs in its own scope. Functions used by inline
+        // HTML event handlers (onclick, onchange) must be exported to window explicitly.
+        // See the Window Exports section at the bottom of this script.
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import {
+            getFirestore,
+            collection,
+            doc,
+            getDocs,
+            writeBatch,
+            increment,
+            query,
+            limit
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
         // ══════════════════════════════════════════════════════════════
         // 0. Firebase Setup
         // ══════════════════════════════════════════════════════════════
@@ -764,15 +786,17 @@
             messagingSenderId: "309916905891",
             appId: "1:309916905891:web:e712ec567af24a7e3f6a16"
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        const app = initializeApp(firebaseConfig);
+        const db  = getFirestore(app);
 
         // ══════════════════════════════════════════════════════════════
         // 1. Master Browser Pool
         // ══════════════════════════════════════════════════════════════
         // This is the source of truth for the local bracket.
-        // `headToHead`: Tracks wins/matches against specific opponents.
-        // `voterContext`: Tracks outcomes based on the user's survey responses.
+        // `headToHead`:  Tracks wins/matches against specific opponents.
+        // `voterContext`: Tracks outcomes keyed by the voter's survey-reported
+        //   familiarity with each browser. Intentionally covers every browser in
+        //   the pool per match — see the voterContext note in updateRatings.
         let masterBrowsers = [
             // ── Chromium Forks ───────────────────────────────────────
             { id: "chrome",             name: "Google Chrome",      elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {} },
@@ -832,7 +856,7 @@
         let nextRoundPool     = [];    // Browsers that advanced to the next round
         let currentMatchups   = [];    // Array of browser pairs for the current round
         let currentMatchIndex = 0;     // Which pair we are currently voting on
-        let roundNumber       = 1;         
+        let roundNumber       = 1;
         let totalRounds       = 1;
         let historyStack      = [];    // Stores previous states to enable the Undo feature
         let roundStartStats   = {};    // Snapshot to calculate deltas for Firestore sync
@@ -872,8 +896,8 @@
 
         function loadSurveyState() {
             const storedCompleted = localStorage.getItem('surveyCompleted');
-            const storedData = localStorage.getItem('surveyData');
-            
+            const storedData      = localStorage.getItem('surveyData');
+
             if (storedCompleted === 'true' && storedData) {
                 surveyCompleted = true;
                 surveyData = JSON.parse(storedData);
@@ -954,7 +978,7 @@
 
             // Cascade rules: "currently using" automatically checks and locks "used before" and "heard of".
             if (field === 'current' && value) {
-                surveyData[id].used = true;
+                surveyData[id].used  = true;
                 surveyData[id].heard = true;
             } else if (field === 'used' && value) {
                 surveyData[id].heard = true;
@@ -974,10 +998,10 @@
                 if (usedBox)  { usedBox.disabled  = true;  usedBox.style.opacity  = '0.35'; usedBox.style.cursor  = 'not-allowed'; }
                 if (heardBox) { heardBox.disabled = true;  heardBox.style.opacity = '0.35'; heardBox.style.cursor = 'not-allowed'; }
             } else if (surveyData[id].used) {
-                if (usedBox)  { usedBox.disabled  = false; usedBox.style.opacity  = '';      usedBox.style.cursor  = ''; }
+                if (usedBox)  { usedBox.disabled  = false; usedBox.style.opacity  = '';     usedBox.style.cursor  = ''; }
                 if (heardBox) { heardBox.disabled = true;  heardBox.style.opacity = '0.35'; heardBox.style.cursor = 'not-allowed'; }
             } else {
-                if (usedBox)  { usedBox.disabled  = false; usedBox.style.opacity  = ''; usedBox.style.cursor  = ''; }
+                if (usedBox)  { usedBox.disabled  = false; usedBox.style.opacity  = ''; usedBox.style.cursor = ''; }
                 if (heardBox) { heardBox.disabled = false; heardBox.style.opacity = ''; heardBox.style.cursor = ''; }
             }
 
@@ -988,12 +1012,12 @@
         function checkSaveBtnState() {
             const anyChecked = Object.values(surveyData).some(d => d.heard || d.used || d.current);
             const saveBtn = document.getElementById('survey-save-btn');
-            
+
             if (surveyCompleted) {
-                saveBtn.disabled = false;
+                saveBtn.disabled    = false;
                 saveBtn.textContent = anyChecked ? 'Update Survey' : 'Unsubmit & Lock';
             } else {
-                saveBtn.disabled = !anyChecked;
+                saveBtn.disabled    = !anyChecked;
                 saveBtn.textContent = 'Save & Unlock';
             }
         }
@@ -1074,22 +1098,23 @@
         // Pre-populates the database if it doesn't exist yet
         async function initFirestoreData() {
             try {
-                const snapshot = await db.collection('browsers').limit(1).get();
+                const q        = query(collection(db, 'browsers'), limit(1));
+                const snapshot = await getDocs(q);
                 if (!snapshot.empty) return;
 
                 logEvent("🗄️ First run — initialising database...");
-                const batch = db.batch();
+                const batch = writeBatch(db);
                 masterBrowsers.forEach(b => {
-                    batch.set(db.collection('browsers').doc(b.id), {
-                        name: b.name,
-                        elo: 1200,
-                        matches: 0,
-                        wins: 0,
-                        headToHead: {},
+                    batch.set(doc(db, 'browsers', b.id), {
+                        name:         b.name,
+                        elo:          1200,
+                        matches:      0,
+                        wins:         0,
+                        headToHead:   {},
                         voterContext: {}
                     });
                 });
-                
+
                 await batch.commit();
                 logEvent("✅ Database initialised with " + masterBrowsers.length + " browsers.");
             } catch (err) {
@@ -1097,22 +1122,23 @@
             }
         }
 
-        // Saves deep copy of the state at the beginning of a round
+        // Saves a deep copy of the state at the beginning of a round
         function snapshotRoundStats() {
             roundStartStats = {};
             masterBrowsers.forEach(b => {
                 roundStartStats[b.id] = {
-                    elo: b.elo,
-                    matches: b.matches,
-                    wins: b.wins || 0,
-                    headToHead: JSON.parse(JSON.stringify(b.headToHead || {})),
-                    voterContext: JSON.parse(JSON.stringify(b.voterContext || {}))
+                    elo:          b.elo,
+                    matches:      b.matches,
+                    wins:         b.wins || 0,
+                    headToHead:   JSON.parse(JSON.stringify(b.headToHead   || {})),
+                    voterContext: JSON.parse(JSON.stringify(b.voterContext  || {}))
                 };
             });
         }
 
         // Calculates differences since the round started and uploads changes to Firestore.
-        // Uses `FieldValue.increment` to prevent overwriting parallel database updates from other users.
+        // Uses `increment` (v9 equivalent of FieldValue.increment) to prevent overwriting
+        // parallel database updates from other users running simultaneously.
         async function uploadRoundDeltas() {
             if (localStorage.getItem('hasFinishedBracketOnce') === 'true') {
                 logEvent("ℹ️ Replay mode active: Data not synced to global leaderboard.");
@@ -1121,22 +1147,22 @@
 
             try {
                 logEvent("☁️ Syncing round results to database...");
-                const batch = db.batch();
+                const batch = writeBatch(db);
                 let hasChanges = false;
 
                 masterBrowsers.forEach(b => {
                     const start = roundStartStats[b.id];
                     if (!start) return;
 
-                    const eloDelta     = b.elo - start.elo;
-                    const matchesDelta = b.matches - start.matches;
+                    const eloDelta     = b.elo     - start.elo;
+                    const matchesDelta = b.matches  - start.matches;
                     const winsDelta    = (b.wins || 0) - start.wins;
 
                     const updates = { name: b.name };
 
-                    if (eloDelta     !== 0) updates.elo     = firebase.firestore.FieldValue.increment(eloDelta);
-                    if (matchesDelta !== 0) updates.matches = firebase.firestore.FieldValue.increment(matchesDelta);
-                    if (winsDelta    !== 0) updates.wins    = firebase.firestore.FieldValue.increment(winsDelta);
+                    if (eloDelta     !== 0) updates.elo     = increment(eloDelta);
+                    if (matchesDelta !== 0) updates.matches = increment(matchesDelta);
+                    if (winsDelta    !== 0) updates.wins    = increment(winsDelta);
 
                     // Upload Head-to-head increments
                     const currentH2H = b.headToHead || {};
@@ -1149,10 +1175,10 @@
                         const mDiff = curr.matches - prev.matches;
 
                         if (wDiff !== 0 || mDiff !== 0) {
-                            if (!updates.headToHead)        updates.headToHead = {};
-                            if (!updates.headToHead[oppId]) updates.headToHead[oppId] = {};
-                            if (wDiff !== 0) updates.headToHead[oppId].wins    = firebase.firestore.FieldValue.increment(wDiff);
-                            if (mDiff !== 0) updates.headToHead[oppId].matches = firebase.firestore.FieldValue.increment(mDiff);
+                            if (!updates.headToHead)        updates.headToHead         = {};
+                            if (!updates.headToHead[oppId]) updates.headToHead[oppId]  = {};
+                            if (wDiff !== 0) updates.headToHead[oppId].wins    = increment(wDiff);
+                            if (mDiff !== 0) updates.headToHead[oppId].matches = increment(mDiff);
                         }
                     });
 
@@ -1167,15 +1193,15 @@
                         const mDiff = curr.matches - prev.matches;
 
                         if (wDiff !== 0 || mDiff !== 0) {
-                            if (!updates.voterContext)      updates.voterContext = {};
-                            if (!updates.voterContext[key]) updates.voterContext[key] = {};
-                            if (wDiff !== 0) updates.voterContext[key].wins    = firebase.firestore.FieldValue.increment(wDiff);
-                            if (mDiff !== 0) updates.voterContext[key].matches = firebase.firestore.FieldValue.increment(mDiff);
+                            if (!updates.voterContext)      updates.voterContext       = {};
+                            if (!updates.voterContext[key]) updates.voterContext[key]  = {};
+                            if (wDiff !== 0) updates.voterContext[key].wins    = increment(wDiff);
+                            if (mDiff !== 0) updates.voterContext[key].matches = increment(mDiff);
                         }
                     });
 
                     if (Object.keys(updates).length > 1) {
-                        batch.set(db.collection('browsers').doc(b.id), updates, { merge: true });
+                        batch.set(doc(db, 'browsers', b.id), updates, { merge: true });
                         hasChanges = true;
                     }
                 });
@@ -1190,24 +1216,35 @@
             }
         }
 
-        const K_FACTOR = 32; // Elo sensitivity scalar
-        
-        // Adjusts Elo ratings based on the expected outcome vs actual outcome
+        const K_FACTOR = 32; // Elo sensitivity scalar — max points exchangeable per match
+
+        // Adjusts Elo ratings based on the expected outcome vs actual outcome.
+        //
+        // DIMINISHING RETURNS — no explicit floor or ceiling is needed:
+        //   • A high-rated browser beating a low-rated one earns almost nothing (expected).
+        //   • A low-rated browser upsetting a high-rated one earns a large bonus.
+        // This creates a natural soft cap at the top (little gain from expected wins) and a
+        // natural soft floor at the bottom (little loss from expected losses). K_FACTOR = 32
+        // is the maximum exchangeable per match, approached only when both ratings are equal.
+        //
+        // VOTER CONTEXT — the masterBrowsers loop below is intentional:
+        //   voterContext iterates ALL browsers in the pool, not just the two participants.
+        //   Each key encodes the voter's survey-reported familiarity with a specific browser
+        //   (e.g. "chrome_current"), applied to every match outcome globally. This lets the
+        //   dataset answer cross-browser questions like "do Chrome users tend to favour
+        //   privacy-focused browsers?". Key count per Firestore document scales with pool
+        //   size — expected and by design.
         function updateRatings(winner, loser) {
-            // Predict win probabilities based on current ratings
-            const expectedWinner = 1 / (1 + Math.pow(10, (loser.elo - winner.elo) / 400));
-            const expectedLoser  = 1 / (1 + Math.pow(10, (winner.elo - loser.elo) / 400));
-            
-            // Adjust ratings
+            const expectedWinner = 1 / (1 + Math.pow(10, (loser.elo  - winner.elo) / 400));
+            const expectedLoser  = 1 / (1 + Math.pow(10, (winner.elo - loser.elo)  / 400));
+
             winner.elo = winner.elo + K_FACTOR * (1 - expectedWinner);
             loser.elo  = loser.elo  + K_FACTOR * (0 - expectedLoser);
 
-            // Increment simple win/match counts
             winner.matches++;
             loser.matches++;
             winner.wins = (winner.wins || 0) + 1;
 
-            // Track direct opponent stats
             if (!winner.headToHead) winner.headToHead = {};
             if (!loser.headToHead)  loser.headToHead  = {};
 
@@ -1218,10 +1255,10 @@
             winner.headToHead[loser.id].wins++;
             loser.headToHead[winner.id].matches++;
 
-            // Track how voter familiarity impacted this outcome
             if (!winner.voterContext) winner.voterContext = {};
             if (!loser.voterContext)  loser.voterContext  = {};
 
+            // Intentionally all browsers — see voterContext note above.
             masterBrowsers.forEach(b => {
                 const key = getSurveyStateKey(b.id);
 
@@ -1274,7 +1311,10 @@
         function initTournament() {
             document.getElementById('log-feed').innerHTML = '';
             roundNumber = 1;
-            totalRounds = Math.max(1, Math.ceil(Math.log2(activePool.length)));
+            // totalRounds is now computed each round inside generateRoundMatchups.
+            // It was moved there because skipMatchup() eliminates both browsers,
+            // shrinking the pool faster than a standard bracket — making a one-time
+            // estimate here stale.
             historyStack = [];
             document.getElementById('btn-undo').disabled = true;
             logEvent(`⚔️ Tournament started with ${activePool.length} browsers.`);
@@ -1288,9 +1328,15 @@
         }
 
         function generateRoundMatchups() {
-            currentMatchups = [];
+            currentMatchups   = [];
             currentMatchIndex = 0;
-            nextRoundPool = [];
+            nextRoundPool     = [];
+
+            // Recalculated here on every round rather than once at init, because
+            // skipMatchup() eliminates both browsers at once, shrinking the pool faster
+            // than a standard winner-advances bracket would. This keeps the
+            // "Round X of Y" counter accurate as the pool size changes.
+            totalRounds = Math.max(1, Math.ceil(Math.log2(activePool.length)));
 
             shuffleArray(activePool);
 
@@ -1309,7 +1355,7 @@
         }
 
         function updateUI() {
-            document.getElementById('round-title').innerText   = `Round ${roundNumber} of ${totalRounds}`;
+            document.getElementById('round-title').innerText    = `Round ${roundNumber} of ${totalRounds}`;
             document.getElementById('match-progress').innerText = `Match ${currentMatchIndex + 1} of ${currentMatchups.length}`;
 
             const currentPair = currentMatchups[currentMatchIndex];
@@ -1330,7 +1376,7 @@
                 roundNumber,
                 masterStats: JSON.parse(JSON.stringify(masterBrowsers.map(b => ({
                     id: b.id, elo: b.elo, matches: b.matches,
-                    wins: b.wins || 0,
+                    wins:         b.wins         || 0,
                     headToHead:   b.headToHead   || {},
                     voterContext: b.voterContext  || {}
                 })))),
@@ -1356,8 +1402,8 @@
                 }
             });
 
-            activePool      = state.activePoolIds.map(id => masterBrowsers.find(b => b.id === id));
-            nextRoundPool   = state.nextRoundPoolIds.map(id => masterBrowsers.find(b => b.id === id));
+            activePool      = state.activePoolIds.map(id      => masterBrowsers.find(b => b.id === id));
+            nextRoundPool   = state.nextRoundPoolIds.map(id   => masterBrowsers.find(b => b.id === id));
             currentMatchups = state.currentMatchupsIds.map(pair => [
                 masterBrowsers.find(b => b.id === pair[0]),
                 masterBrowsers.find(b => b.id === pair[1])
@@ -1388,31 +1434,33 @@
             advanceBracket();
         }
 
-        // Bypasses the match, attributing match experience but no wins to both contenders.
-        // Drops both from the active pool.
+        // Bypasses the match, recording it without awarding wins to either browser.
+        // Drops both from the active pool. See voterContext note in updateRatings —
+        // the masterBrowsers loop here is also intentional.
         function skipMatchup() {
             if (!surveyCompleted) return;
 
             saveState();
             const currentPair = currentMatchups[currentMatchIndex];
-            const browserA = currentPair[0];
-            const browserB = currentPair[1];
+            const browserA    = currentPair[0];
+            const browserB    = currentPair[1];
 
             browserA.matches++;
             browserB.matches++;
 
             if (!browserA.headToHead) browserA.headToHead = {};
             if (!browserB.headToHead) browserB.headToHead = {};
-            
+
             if (!browserA.headToHead[browserB.id]) browserA.headToHead[browserB.id] = { wins: 0, matches: 0 };
             if (!browserB.headToHead[browserA.id]) browserB.headToHead[browserA.id] = { wins: 0, matches: 0 };
-            
+
             browserA.headToHead[browserB.id].matches++;
             browserB.headToHead[browserA.id].matches++;
 
             if (!browserA.voterContext) browserA.voterContext = {};
             if (!browserB.voterContext) browserB.voterContext = {};
 
+            // Intentionally all browsers — see voterContext note in updateRatings.
             masterBrowsers.forEach(b => {
                 const key = getSurveyStateKey(b.id);
 
@@ -1437,7 +1485,7 @@
                 activePool = [...nextRoundPool];
 
                 if (activePool.length === 0) {
-                    showWinnerAndLeaderboard(null); // Tie / Both skipped at end
+                    showWinnerAndLeaderboard(null);      // Tie / Both skipped at end
                 } else if (activePool.length === 1) {
                     showWinnerAndLeaderboard(activePool[0]); // Winner found
                 } else {
@@ -1482,6 +1530,11 @@
         function skipToResults() {
             if (!confirm("Skip voting and jump straight to the global results?\n\nThis counts as completing the poll — your votes won't be submitted, and you won't be able to go back and have them count.")) return;
 
+            // hasFinishedBracketOnce is set here (before any voting) deliberately.
+            // The confirm dialog already warns the user that skipping forfeits submission.
+            // Setting the flag up-front closes the loophole where someone could skip to
+            // preview results for strategic influence, then replay a full bracket to submit
+            // real votes as if they hadn't seen the standings first.
             localStorage.setItem('bracketCompleted', 'true');
             localStorage.setItem('hasFinishedBracketOnce', 'true');
             showResultsPage();
@@ -1502,18 +1555,18 @@
             if (resultsViewMode === 'leaderboard') {
                 resultsViewMode = 'feed';
                 tableWrap.style.display = 'none';
-                
+
                 const logHTML = document.getElementById('log-feed').innerHTML.trim();
-                feedContent.innerHTML = logHTML || '<div class="log-entry">No feed available for this session.</div>';
+                feedContent.innerHTML  = logHTML || '<div class="log-entry">No feed available for this session.</div>';
                 feedContent.style.display = 'block';
-                
+
                 btn.textContent   = 'Results';
                 title.textContent = 'Tournament Feed';
             } else {
                 resultsViewMode = 'leaderboard';
-                tableWrap.style.display = '';
+                tableWrap.style.display   = '';
                 feedContent.style.display = 'none';
-                
+
                 btn.textContent   = 'Feed';
                 title.textContent = 'Global Leaderboard';
             }
@@ -1523,10 +1576,13 @@
             const tbody = document.getElementById('leaderboard-body');
             tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">Loading global rankings...</td></tr>';
 
+            // Always fetches fresh from Firestore — other users may have voted since this
+            // session started, so the data can change between calls within the same session.
             let dbData = {};
             try {
-                const snapshot = await db.collection('browsers').get();
-                snapshot.forEach(doc => { dbData[doc.id] = doc.data(); });
+                const snapshot = await getDocs(collection(db, 'browsers'));
+                // Renamed from `doc` to `docSnap` to avoid shadowing the imported `doc` function.
+                snapshot.forEach(docSnap => { dbData[docSnap.id] = docSnap.data(); });
             } catch (err) {
                 console.error("Firestore read error:", err);
                 logEvent("⚠️ Could not load global rankings — showing local results.");
@@ -1550,21 +1606,21 @@
             sortedBrowsers.forEach((b, index) => {
                 const winRate = b.matches > 0 ? ((b.wins || 0) / b.matches) * 100 : 0;
 
-                // Algorithm: Find the "closest rival" 
-                // Checks head-to-head match stats to find the opponent where the win rate is closest to 50%.
-                // A rate near 50% indicates the fiercest/most evenly matched competition.
-                let topRival = null;
+                // Algorithm: Find the "closest rival"
+                // Scans head-to-head stats for the opponent whose win rate is closest to 50%.
+                // A rate near 50% indicates the most evenly matched, fiercest competition.
+                let topRival    = null;
                 let closestDiff = Infinity;
-                let rivalWinRate = 0;
-                let rivalMatches = 0;
+                let rivalWinRate  = 0;
+                let rivalMatches  = 0;
 
                 Object.keys(b.headToHead || {}).forEach(oppId => {
                     const stats = b.headToHead[oppId];
                     if (stats.matches > 0) {
                         const rate = stats.wins / stats.matches;
-                        const diff = Math.abs(rate - 0.5); // difference from exactly 50%
-                        
-                        // If it's a closer match, OR a tiebreaker but with more match data
+                        const diff = Math.abs(rate - 0.5); // distance from exactly 50%
+
+                        // Prefer the closer match; break ties in favour of more data
                         if (diff < closestDiff || (diff === closestDiff && stats.matches > rivalMatches)) {
                             closestDiff  = diff;
                             topRival     = masterBrowsers.find(x => x.id === oppId);
@@ -1590,6 +1646,27 @@
                 tbody.appendChild(tr);
             });
         }
+
+        // ══════════════════════════════════════════════════════════════
+        // 10. Window Exports
+        // ══════════════════════════════════════════════════════════════
+        // <script type="module"> runs in its own isolated scope. Inline HTML event
+        // handlers (onclick, onchange) can only call functions on the global window
+        // object. These assignments expose the necessary functions without polluting
+        // the rest of the module or refactoring every handler in the markup.
+        window.devResetPoll      = devResetPoll;
+        window.devResetSurvey    = devResetSurvey;
+        window.openSurveyModal   = openSurveyModal;
+        window.closeSurveyModal  = closeSurveyModal;
+        window.onSurveyChange    = onSurveyChange;
+        window.saveSurvey        = saveSurvey;
+        window.castVote          = castVote;
+        window.undoMatchup       = undoMatchup;
+        window.skipMatchup       = skipMatchup;
+        window.skipToResults     = skipToResults;
+        window.toggleResultsFeed = toggleResultsFeed;
+        window.restartBracket    = restartBracket;
+        window.closeWinnerModal  = closeWinnerModal;
     </script>
 </body>
 
