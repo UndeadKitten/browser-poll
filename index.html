@@ -630,7 +630,7 @@
 
 <body>
     <!-- ── Utility / Debug Overlays ─────────────────────────────────── -->
-    <div class="version-badge">v75</div>
+    <div class="version-badge">v77</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -762,11 +762,13 @@
         // HTML event handlers (onclick, onchange) must be exported to window explicitly.
         // See the Window Exports section at the bottom of this script.
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { initializeAppCheck, ReCaptchaV3Provider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app-check.js';
         import {
             getFirestore,
             collection,
             doc,
             getDocs,
+            setDoc,
             writeBatch,
             increment,
             query,
@@ -788,6 +790,26 @@
         };
         const app = initializeApp(firebaseConfig);
         const db  = getFirestore(app);
+
+        // ── Firebase App Check ───────────────────────────────────────────────────────
+        // Attaches a reCAPTCHA v3 token to every Firestore request, blocking scripts
+        // that hit the Firestore REST API directly using the public firebaseConfig.
+        // Without this, anyone who reads the config out of page source can write to
+        // the database regardless of domain restrictions in the Firebase console.
+        //
+        // Setup (one-time):
+        //   1. Register your site at https://www.google.com/recaptcha/admin/create
+        //      — choose reCAPTCHA v3, add your GitHub Pages domain + localhost.
+        //   2. Copy the Site Key (not the Secret Key) and paste it below.
+        //   3. In Firebase Console → App Check → Apps → register with reCAPTCHA v3
+        //      and paste the same Site Key.
+        //   4. Once tested and working, click Enforce in the App Check dashboard
+        //      for the Firestore service. Do NOT enforce before testing or all
+        //      Firestore reads/writes will fail until App Check is properly wired up.
+        initializeAppCheck(app, {
+            provider: new ReCaptchaV3Provider('6Lf3UhEtAAAAAPHiQ8evX7ymaBpU0OUlBgAsQkws'),
+            isTokenAutoRefreshEnabled: true
+        });
 
         // ══════════════════════════════════════════════════════════════
         // 1. Master Browser Pool
@@ -841,6 +863,7 @@
                 ids: [
                     "brave", "vivaldi", "arc-browser", "opera-gx",
                     "chromium", "thorium", "cromite",
+                    "attestation", // Survey engagement checkpoint — see buildSurveyModal
                     "librewolf", "zen-browser", "waterfox", "floorp", "mullvad", "tor-browser",
                     "duckduckgo-browser", "qutebrowser", "orion", "helium", "mercury"
                 ]
@@ -861,6 +884,7 @@
         let historyStack      = [];    // Stores previous states to enable the Undo feature
         let roundStartStats   = {};    // Snapshot to calculate deltas for Firestore sync
         let resultsViewMode   = 'leaderboard'; // Toggle between table and feed on results page
+        let isVoting          = false;         // Click guard — prevents double-firing castVote/skipMatchup on fast clicks
 
         // ══════════════════════════════════════════════════════════════
         // 4. Initialization & LocalStorage Boot
@@ -935,6 +959,29 @@
                 body.appendChild(catLabel);
 
                 cat.ids.forEach(id => {
+                    // Attestation checkpoint — renders as a confirmation row, not a browser entry.
+                    // Sits in the middle of the survey list so users encounter it while reading through.
+                    // Checked state is stored in surveyData.attestation and used as a hidden upload
+                    // eligibility requirement in uploadRoundDeltas (see that function for details).
+                    if (id === 'attestation') {
+                        if (!surveyData.attestation) surveyData.attestation = { confirmed: false };
+                        const attRow = document.createElement('div');
+                        attRow.className = 'survey-row';
+                        attRow.style.cssText = 'border-top: 1px solid var(--accent); margin-top: 8px; padding-top: 12px;';
+                        attRow.innerHTML = `
+                            <span class="survey-browser-name" style="color:var(--text-muted); font-style:italic;">
+                                I have reviewed the full list above
+                            </span>
+                            <div class="survey-check-cell" style="grid-column: 2 / -1; justify-content: flex-start; padding-left: 8px;">
+                                <input type="checkbox" id="sv-attest"
+                                    ${surveyData.attestation.confirmed ? 'checked' : ''}
+                                    onchange="onSurveyChange('attestation', 'confirmed', this.checked)">
+                            </div>
+                        `;
+                        body.appendChild(attRow);
+                        return;
+                    }
+
                     const browser = masterBrowsers.find(b => b.id === id);
                     if (!browser) return;
 
@@ -973,6 +1020,13 @@
 
         // Handles checkbox interaction and cascading logic
         function onSurveyChange(id, field, value) {
+            // Attestation checkbox has no cascade logic — just record and re-check save state.
+            if (id === 'attestation') {
+                surveyData.attestation = { confirmed: value };
+                checkSaveBtnState();
+                return;
+            }
+
             if (!surveyData[id]) surveyData[id] = { heard: false, used: false, current: false };
             surveyData[id][field] = value;
 
@@ -1097,6 +1151,11 @@
 
         // Pre-populates the database if it doesn't exist yet
         async function initFirestoreData() {
+            // Skip entirely on replays. The DB is guaranteed to exist after the first
+            // play-through, and renderLeaderboard() already fetches fresh Firestore data
+            // whenever the results page loads — this check would be a wasted read.
+            if (localStorage.getItem('hasFinishedBracketOnce') === 'true') return;
+
             try {
                 const q        = query(collection(db, 'browsers'), limit(1));
                 const snapshot = await getDocs(q);
@@ -1144,6 +1203,18 @@
                 logEvent("ℹ️ Replay mode active: Data not synced to global leaderboard.");
                 return;
             }
+
+            // Hidden eligibility check — silently skip the upload if either condition fails:
+            //   1. Attestation: the user checked "I have reviewed the full list above" in the survey.
+            //   2. Engagement: at least one browser was marked as currently used or used before.
+            // No message is shown so the requirements aren't telegraphed.
+            // The attestation entry is excluded from the engagement check since it's not a browser.
+            const hasAttestation = surveyData.attestation?.confirmed === true;
+            const hasEngagement  = Object.entries(surveyData)
+                .filter(([id]) => id !== 'attestation')
+                .some(([, d]) => d.current || d.used);
+
+            if (!hasAttestation || !hasEngagement) return;
 
             try {
                 logEvent("☁️ Syncing round results to database...");
@@ -1209,6 +1280,19 @@
                 if (hasChanges) {
                     await batch.commit();
                     logEvent("✅ Round data synced.");
+
+                    // Increment the global unique participant counter.
+                    // Written separately from the browser batch so a missing or failing
+                    // meta/stats Firestore rule doesn't roll back the browser stats above.
+                    // Requires a 'meta/stats' rule in Firestore — see README / comments.
+                    try {
+                        await setDoc(doc(db, 'meta', 'stats'),
+                            { totalParticipants: increment(1) },
+                            { merge: true }
+                        );
+                    } catch {
+                        // Non-critical — browser stats already committed.
+                    }
                 }
             } catch (err) {
                 console.error("Firestore upload failed:", err);
@@ -1355,6 +1439,16 @@
         }
 
         function updateUI() {
+            // Reset click guard and restore card interactivity for the next match.
+            // Only removes locked-vote if the survey is complete — the class may have
+            // been applied by the survey gate, not just the vote guard.
+            isVoting = false;
+            if (surveyCompleted) {
+                document.getElementById('cardA').classList.remove('locked-vote');
+                document.getElementById('cardB').classList.remove('locked-vote');
+                document.getElementById('btn-skip').classList.remove('locked-vote');
+            }
+
             document.getElementById('round-title').innerText    = `Round ${roundNumber} of ${totalRounds}`;
             document.getElementById('match-progress').innerText = `Match ${currentMatchIndex + 1} of ${currentMatchups.length}`;
 
@@ -1420,7 +1514,14 @@
         }
 
         function castVote(selectedIndex) {
-            if (!surveyCompleted) return;
+            if (!surveyCompleted || isVoting) return;
+
+            // Lock immediately so a second click before the UI re-renders has no effect.
+            // updateUI() resets isVoting and removes locked-vote for the next match.
+            isVoting = true;
+            document.getElementById('cardA').classList.add('locked-vote');
+            document.getElementById('cardB').classList.add('locked-vote');
+            document.getElementById('btn-skip').classList.add('locked-vote');
 
             saveState();
             const currentPair = currentMatchups[currentMatchIndex];
@@ -1438,7 +1539,13 @@
         // Drops both from the active pool. See voterContext note in updateRatings —
         // the masterBrowsers loop here is also intentional.
         function skipMatchup() {
-            if (!surveyCompleted) return;
+            if (!surveyCompleted || isVoting) return;
+
+            // Same guard as castVote — prevents double-firing on fast clicks.
+            isVoting = true;
+            document.getElementById('cardA').classList.add('locked-vote');
+            document.getElementById('cardB').classList.add('locked-vote');
+            document.getElementById('btn-skip').classList.add('locked-vote');
 
             saveState();
             const currentPair = currentMatchups[currentMatchIndex];
@@ -1527,7 +1634,7 @@
             await renderLeaderboard();
         }
 
-        function skipToResults() {
+        async function skipToResults() {
             if (!confirm("Skip voting and jump straight to the global results?\n\nThis counts as completing the poll — your votes won't be submitted, and you won't be able to go back and have them count.")) return;
 
             // hasFinishedBracketOnce is set here (before any voting) deliberately.
@@ -1540,7 +1647,7 @@
             showResultsPage();
 
             logEvent("👀 Skipped to results — votes not submitted.");
-            renderLeaderboard();
+            await renderLeaderboard();
         }
 
         // ══════════════════════════════════════════════════════════════
