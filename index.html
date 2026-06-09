@@ -630,7 +630,7 @@
 
 <body>
     <!-- ── Utility / Debug Overlays ─────────────────────────────────── -->
-    <div class="version-badge">v78</div>
+    <div class="version-badge">v79</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -865,12 +865,19 @@
         let roundStartStats   = {};    // Snapshot to calculate deltas for Firestore sync
         let resultsViewMode   = 'leaderboard'; // Toggle between table and feed on results page
         let isVoting          = false;         // Click guard — prevents double-firing castVote/skipMatchup on fast clicks
+        let cachedFirestoreData = {};            // Browser data fetched once on page load — used for Elo init and leaderboard display
 
         // ══════════════════════════════════════════════════════════════
         // 4. Initialization & LocalStorage Boot
         // ══════════════════════════════════════════════════════════════
         window.addEventListener('DOMContentLoaded', async () => {
             loadSurveyState();
+
+            // Single Firestore read for the entire session — fetches all browser data,
+            // initializes masterBrowsers Elo from real global values, and caches the
+            // data for leaderboard display. Falls back to 1200 if a browser has no
+            // Firestore entry or if the database is unreachable.
+            await loadFirestoreData();
 
             // Skip straight to results if user already completed the bracket locally
             if (localStorage.getItem('bracketCompleted') === 'true') {
@@ -880,7 +887,6 @@
                 document.getElementById('tournament-view').style.display = 'flex';
                 document.getElementById('feed-container').style.display = 'flex';
                 activePool = [...masterBrowsers];
-                initFirestoreData();
                 initTournament();
             }
         });
@@ -1129,35 +1135,53 @@
             return `${browserId}_none`;
         }
 
-        // Pre-populates the database if it doesn't exist yet
-        async function initFirestoreData() {
-            // Skip entirely on replays. The DB is guaranteed to exist after the first
-            // play-through, and renderLeaderboard() already fetches fresh Firestore data
-            // whenever the results page loads — this check would be a wasted read.
-            if (localStorage.getItem('hasFinishedBracketOnce') === 'true') return;
-
+        // Fetches all browser documents from Firestore once on page load.
+        // Serves two purposes:
+        //   1. Syncs masterBrowsers Elo from real global values so Elo math uses
+        //      actual standings rather than the hardcoded 1200 local default.
+        //      Browsers with no Firestore entry default to 1200.
+        //   2. Caches all data for renderLeaderboard so no second read is needed.
+        // Also handles first-run DB initialization if the collection is empty.
+        // Falls back silently to 1200 defaults if Firestore is unreachable.
+        async function loadFirestoreData() {
             try {
-                const q        = query(collection(db, 'browsers'), limit(1));
-                const snapshot = await getDocs(q);
-                if (!snapshot.empty) return;
+                const snapshot = await getDocs(collection(db, 'browsers'));
 
-                logEvent("🗄️ First run — initialising database...");
-                const batch = writeBatch(db);
-                masterBrowsers.forEach(b => {
-                    batch.set(doc(db, 'browsers', b.id), {
-                        name:         b.name,
-                        elo:          1200,
-                        matches:      0,
-                        wins:         0,
-                        headToHead:   {},
-                        voterContext: {}
+                if (snapshot.empty) {
+                    // First run — initialize the database then return.
+                    // masterBrowsers stays at 1200 since that's what we're writing.
+                    logEvent("🗄️ First run — initialising database...");
+                    const batch = writeBatch(db);
+                    masterBrowsers.forEach(b => {
+                        batch.set(doc(db, 'browsers', b.id), {
+                            name:         b.name,
+                            elo:          1200,
+                            matches:      0,
+                            wins:         0,
+                            headToHead:   {},
+                            voterContext: {}
+                        });
                     });
+                    await batch.commit();
+                    logEvent("✅ Database initialised with " + masterBrowsers.length + " browsers.");
+                    return;
+                }
+
+                // Populate cache
+                snapshot.forEach(docSnap => {
+                    cachedFirestoreData[docSnap.id] = docSnap.data();
                 });
 
-                await batch.commit();
-                logEvent("✅ Database initialised with " + masterBrowsers.length + " browsers.");
+                // Sync Elo into masterBrowsers. Browsers missing from Firestore
+                // (e.g. newly added to the pool) fall back to their local 1200 default.
+                masterBrowsers.forEach(b => {
+                    b.elo = cachedFirestoreData[b.id]?.elo ?? 1200;
+                });
+
             } catch (err) {
-                console.error("Firestore init error:", err);
+                console.error("Failed to load Firestore data:", err);
+                logEvent("⚠️ Could not reach database — Elo initialised from defaults.");
+                // masterBrowsers retains its 1200 defaults — tournament can still run locally
             }
         }
 
@@ -1663,25 +1687,16 @@
             const tbody = document.getElementById('leaderboard-body');
             tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">Loading global rankings...</td></tr>';
 
-            // Always fetches fresh from Firestore — other users may have voted since this
-            // session started, so the data can change between calls within the same session.
-            let dbData = {};
-            try {
-                const snapshot = await getDocs(collection(db, 'browsers'));
-                // Renamed from `doc` to `docSnap` to avoid shadowing the imported `doc` function.
-                snapshot.forEach(docSnap => { dbData[docSnap.id] = docSnap.data(); });
-            } catch (err) {
-                console.error("Firestore read error:", err);
-                logEvent("⚠️ Could not load global rankings — showing local results.");
-            }
-
-            // Merge local state with remote Firestore data, preferring remote if available.
-            // Sorts the final array descending by Elo rating.
+            // Uses data fetched on page load — no additional Firestore read.
+            // b.elo is already Firestore-initialized + any local tournament delta,
+            // so it's the most accurate per-browser Elo estimate available.
+            // Global aggregate fields (matches, wins, headToHead, voterContext) come
+            // from the cache; browsers missing from Firestore default to local values.
             const sortedBrowsers = masterBrowsers.map(b => {
-                const remote = dbData[b.id] || {};
+                const remote = cachedFirestoreData[b.id] || {};
                 return {
                     ...b,
-                    elo:          remote.elo          ?? b.elo,
+                    elo:          b.elo,
                     matches:      remote.matches       ?? b.matches,
                     wins:         remote.wins          ?? b.wins          ?? 0,
                     headToHead:   remote.headToHead    ?? b.headToHead    ?? {},
