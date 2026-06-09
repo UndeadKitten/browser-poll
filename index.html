@@ -630,7 +630,7 @@
 
 <body>
     <!-- ── Utility / Debug Overlays ─────────────────────────────────── -->
-    <div class="version-badge">v77</div>
+    <div class="version-badge">v78</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -762,7 +762,6 @@
         // HTML event handlers (onclick, onchange) must be exported to window explicitly.
         // See the Window Exports section at the bottom of this script.
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { initializeAppCheck, ReCaptchaV3Provider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app-check.js';
         import {
             getFirestore,
             collection,
@@ -791,25 +790,6 @@
         const app = initializeApp(firebaseConfig);
         const db  = getFirestore(app);
 
-        // ── Firebase App Check ───────────────────────────────────────────────────────
-        // Attaches a reCAPTCHA v3 token to every Firestore request, blocking scripts
-        // that hit the Firestore REST API directly using the public firebaseConfig.
-        // Without this, anyone who reads the config out of page source can write to
-        // the database regardless of domain restrictions in the Firebase console.
-        //
-        // Setup (one-time):
-        //   1. Register your site at https://www.google.com/recaptcha/admin/create
-        //      — choose reCAPTCHA v3, add your GitHub Pages domain + localhost.
-        //   2. Copy the Site Key (not the Secret Key) and paste it below.
-        //   3. In Firebase Console → App Check → Apps → register with reCAPTCHA v3
-        //      and paste the same Site Key.
-        //   4. Once tested and working, click Enforce in the App Check dashboard
-        //      for the Firestore service. Do NOT enforce before testing or all
-        //      Firestore reads/writes will fail until App Check is properly wired up.
-        initializeAppCheck(app, {
-            provider: new ReCaptchaV3Provider('6Lf3UhEtAAAAAPHiQ8evX7ymaBpU0OUlBgAsQkws'),
-            isTokenAutoRefreshEnabled: true
-        });
 
         // ══════════════════════════════════════════════════════════════
         // 1. Master Browser Pool
