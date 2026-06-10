@@ -673,7 +673,7 @@
 
 <body>
     <!-- ── Utility / Debug Overlays ─────────────────────────────────── -->
-    <div class="version-badge">v82</div>
+    <div class="version-badge">v83</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -851,33 +851,33 @@
         //   the pool per match — see the voterContext note in updateRatings.
         let masterBrowsers = [
             // ── Chromium Forks ───────────────────────────────────────
-            { id: "chrome",             name: "Google Chrome",      elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "edge",               name: "Microsoft Edge",     elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "brave",              name: "Brave",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "opera",              name: "Opera",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "vivaldi",            name: "Vivaldi",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "arc-browser",        name: "Arc",                elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "opera-gx",           name: "Opera GX",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "duckduckgo-browser", name: "DuckDuckGo Browser", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "chromium",           name: "Ungoogled Chromium", elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "thorium",            name: "Thorium",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "cromite",            name: "Cromite",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "helium",             name: "Helium",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "qutebrowser",        name: "qutebrowser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "chrome",             name: "Google Chrome",      elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "edge",               name: "Microsoft Edge",     elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "brave",              name: "Brave",              elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "opera",              name: "Opera",              elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "vivaldi",            name: "Vivaldi",            elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "arc-browser",        name: "Arc",                elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "opera-gx",           name: "Opera GX",           elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "duckduckgo-browser", name: "DuckDuckGo Browser", elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "chromium",           name: "Ungoogled Chromium", elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "thorium",            name: "Thorium",            elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "cromite",            name: "Cromite",            elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "helium",             name: "Helium",             elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "qutebrowser",        name: "qutebrowser",        elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
 
             // ── Firefox Forks ────────────────────────────────────────
-            { id: "firefox",            name: "Mozilla Firefox",    elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "tor-browser",        name: "Tor Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "librewolf",          name: "Librewolf",          elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "zen-browser",        name: "Zen Browser",        elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "waterfox",           name: "Waterfox",           elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "floorp",             name: "Floorp",             elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "mullvad",            name: "Mullvad Browser",    elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "mercury",            name: "Mercury",            elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "firefox",            name: "Mozilla Firefox",    elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "tor-browser",        name: "Tor Browser",        elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "librewolf",          name: "Librewolf",          elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "zen-browser",        name: "Zen Browser",        elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "waterfox",           name: "Waterfox",           elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "floorp",             name: "Floorp",             elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "mullvad",            name: "Mullvad Browser",    elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "mercury",            name: "Mercury",            elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
 
             // ── Other ────────────────────────────────────────────────
-            { id: "safari",             name: "Apple Safari",       elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
-            { id: "orion",              name: "Orion",              elo: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "safari",             name: "Apple Safari",       elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
+            { id: "orion",              name: "Orion",              elo: 1200, eloHeard: 1200, eloUsed: 1200, eloCurrent: 1200, matches: 0, wins: 0, headToHead: {}, voterContext: {}, pairHeard: { wins: 0, matches: 0 }, pairUsed: { wins: 0, matches: 0 }, pairCurrent: { wins: 0, matches: 0 } },
         ];
 
         // ══════════════════════════════════════════════════════════════
@@ -1239,7 +1239,11 @@
                 // Sync Elo into masterBrowsers. Browsers missing from Firestore
                 // (e.g. newly added to the pool) fall back to their local 1200 default.
                 masterBrowsers.forEach(b => {
-                    b.elo = cachedFirestoreData[b.id]?.elo ?? 1200;
+                    const remote = cachedFirestoreData[b.id];
+                    b.elo        = remote?.elo        ?? 1200;
+                    b.eloHeard   = remote?.eloHeard   ?? 1200;
+                    b.eloUsed    = remote?.eloUsed    ?? 1200;
+                    b.eloCurrent = remote?.eloCurrent ?? 1200;
                 });
 
             } catch (err) {
@@ -1255,6 +1259,9 @@
             masterBrowsers.forEach(b => {
                 roundStartStats[b.id] = {
                     elo:          b.elo,
+                    eloHeard:     b.eloHeard   ?? 1200,
+                    eloUsed:      b.eloUsed    ?? 1200,
+                    eloCurrent:   b.eloCurrent ?? 1200,
                     matches:      b.matches,
                     wins:         b.wins || 0,
                     headToHead:   JSON.parse(JSON.stringify(b.headToHead   || {})),
@@ -1296,15 +1303,21 @@
                     const start = roundStartStats[b.id];
                     if (!start) return;
 
-                    const eloDelta     = b.elo     - start.elo;
-                    const matchesDelta = b.matches  - start.matches;
-                    const winsDelta    = (b.wins || 0) - start.wins;
+                    const eloDelta        = b.elo                       - start.elo;
+                    const eloHeardDelta   = (b.eloHeard   ?? 1200) - (start.eloHeard   ?? 1200);
+                    const eloUsedDelta    = (b.eloUsed    ?? 1200) - (start.eloUsed    ?? 1200);
+                    const eloCurrentDelta = (b.eloCurrent ?? 1200) - (start.eloCurrent ?? 1200);
+                    const matchesDelta    = b.matches               - start.matches;
+                    const winsDelta       = (b.wins || 0)           - start.wins;
 
                     const updates = { name: b.name };
 
-                    if (eloDelta     !== 0) updates.elo     = increment(eloDelta);
-                    if (matchesDelta !== 0) updates.matches = increment(matchesDelta);
-                    if (winsDelta    !== 0) updates.wins    = increment(winsDelta);
+                    if (eloDelta        !== 0) updates.elo        = increment(eloDelta);
+                    if (eloHeardDelta   !== 0) updates.eloHeard   = increment(eloHeardDelta);
+                    if (eloUsedDelta    !== 0) updates.eloUsed    = increment(eloUsedDelta);
+                    if (eloCurrentDelta !== 0) updates.eloCurrent = increment(eloCurrentDelta);
+                    if (matchesDelta    !== 0) updates.matches    = increment(matchesDelta);
+                    if (winsDelta       !== 0) updates.wins       = increment(winsDelta);
 
                     // Upload Head-to-head increments
                     const currentH2H = b.headToHead || {};
@@ -1442,21 +1455,36 @@
             // Record pair familiarity stats — tracks wins/matches for matchups where both
             // browsers met the given tier threshold. Drives the leaderboard familiarity filter.
             // A matchup at tier X cascades down: it also counts toward all less restrictive tiers.
+            // Update filtered Elo and pair stats for each tier this matchup qualifies for.
+            // Each tier tracks its own independent Elo system initialized from Firestore,
+            // so filtered rankings reflect real accumulated standing, not just win rate.
             const minRank = Math.min(TIER_RANK[getBrowserTier(winner.id)], TIER_RANK[getBrowserTier(loser.id)]);
 
             if (minRank >= TIER_RANK['heard']) {
+                const expWH = 1 / (1 + Math.pow(10, ((loser.eloHeard  ?? 1200) - (winner.eloHeard ?? 1200)) / 400));
+                const expLH = 1 / (1 + Math.pow(10, ((winner.eloHeard ?? 1200) - (loser.eloHeard  ?? 1200)) / 400));
+                winner.eloHeard = (winner.eloHeard ?? 1200) + K_FACTOR * (1 - expWH);
+                loser.eloHeard  = (loser.eloHeard  ?? 1200) + K_FACTOR * (0 - expLH);
                 if (!winner.pairHeard) winner.pairHeard = { wins: 0, matches: 0 };
                 if (!loser.pairHeard)  loser.pairHeard  = { wins: 0, matches: 0 };
                 winner.pairHeard.matches++; winner.pairHeard.wins++;
                 loser.pairHeard.matches++;
             }
             if (minRank >= TIER_RANK['used']) {
+                const expWU = 1 / (1 + Math.pow(10, ((loser.eloUsed   ?? 1200) - (winner.eloUsed  ?? 1200)) / 400));
+                const expLU = 1 / (1 + Math.pow(10, ((winner.eloUsed  ?? 1200) - (loser.eloUsed   ?? 1200)) / 400));
+                winner.eloUsed  = (winner.eloUsed  ?? 1200) + K_FACTOR * (1 - expWU);
+                loser.eloUsed   = (loser.eloUsed   ?? 1200) + K_FACTOR * (0 - expLU);
                 if (!winner.pairUsed) winner.pairUsed = { wins: 0, matches: 0 };
                 if (!loser.pairUsed)  loser.pairUsed  = { wins: 0, matches: 0 };
                 winner.pairUsed.matches++; winner.pairUsed.wins++;
                 loser.pairUsed.matches++;
             }
             if (minRank >= TIER_RANK['current']) {
+                const expWC = 1 / (1 + Math.pow(10, ((loser.eloCurrent  ?? 1200) - (winner.eloCurrent ?? 1200)) / 400));
+                const expLC = 1 / (1 + Math.pow(10, ((winner.eloCurrent ?? 1200) - (loser.eloCurrent  ?? 1200)) / 400));
+                winner.eloCurrent = (winner.eloCurrent ?? 1200) + K_FACTOR * (1 - expWC);
+                loser.eloCurrent  = (loser.eloCurrent  ?? 1200) + K_FACTOR * (0 - expLC);
                 if (!winner.pairCurrent) winner.pairCurrent = { wins: 0, matches: 0 };
                 if (!loser.pairCurrent)  loser.pairCurrent  = { wins: 0, matches: 0 };
                 winner.pairCurrent.matches++; winner.pairCurrent.wins++;
@@ -1580,6 +1608,9 @@
                 totalRounds,
                 masterStats: JSON.parse(JSON.stringify(masterBrowsers.map(b => ({
                     id: b.id, elo: b.elo, matches: b.matches,
+                    eloHeard:     b.eloHeard    ?? 1200,
+                    eloUsed:      b.eloUsed     ?? 1200,
+                    eloCurrent:   b.eloCurrent  ?? 1200,
                     wins:         b.wins         || 0,
                     headToHead:   b.headToHead   || {},
                     voterContext: b.voterContext  || {},
@@ -1602,6 +1633,9 @@
                 const browser = masterBrowsers.find(b => b.id === savedStat.id);
                 if (browser) {
                     browser.elo          = savedStat.elo;
+                    browser.eloHeard     = savedStat.eloHeard;
+                    browser.eloUsed      = savedStat.eloUsed;
+                    browser.eloCurrent   = savedStat.eloCurrent;
                     browser.matches      = savedStat.matches;
                     browser.wins         = savedStat.wins;
                     browser.headToHead   = savedStat.headToHead;
@@ -1824,16 +1858,20 @@
             const thead     = document.querySelector('#leaderboard-table thead tr');
             const filterKey = leaderboardFilter === 'all' ? null
                 : `pair${leaderboardFilter.charAt(0).toUpperCase() + leaderboardFilter.slice(1)}`;
+            // Corresponding independent Elo field for the active filter tier
+            const eloKey    = leaderboardFilter === 'all' ? null
+                : `elo${leaderboardFilter.charAt(0).toUpperCase() + leaderboardFilter.slice(1)}`;
 
             // Update table headers and loading state based on active filter
             if (filterKey) {
                 thead.innerHTML = `
                     <th class="rank">#</th>
                     <th>Browser</th>
-                    <th>Win Rate</th>
+                    <th>Elo</th>
                     <th class="col-matches">Matches</th>
+                    <th>Win Rate</th>
                 `;
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:20px;">Loading rankings...</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:20px;">Loading rankings...</td></tr>';
             } else {
                 thead.innerHTML = `
                     <th class="rank">#</th>
@@ -1862,6 +1900,10 @@
                     pairHeard:    remote.pairHeard    ?? b.pairHeard    ?? { wins: 0, matches: 0 },
                     pairUsed:     remote.pairUsed     ?? b.pairUsed     ?? { wins: 0, matches: 0 },
                     pairCurrent:  remote.pairCurrent  ?? b.pairCurrent  ?? { wins: 0, matches: 0 },
+                    // Filtered Elos are already Firestore-initialized + local delta in masterBrowsers
+                    eloHeard:     b.eloHeard   ?? 1200,
+                    eloUsed:      b.eloUsed    ?? 1200,
+                    eloCurrent:   b.eloCurrent ?? 1200,
                 };
             });
 
@@ -1869,12 +1911,16 @@
             if (filterKey) {
                 // Filtered view: rank by win rate within the selected familiarity tier.
                 // Browsers with no data in that tier (no qualifying matchups yet) sort to the bottom.
+                // Sort by filtered Elo descending; browsers with no qualifying
+                // matchups yet (still at 1200) sort to the bottom by match count.
                 sortedBrowsers = [...browsers].sort((a, b) => {
-                    const sA = a[filterKey] || { wins: 0, matches: 0 };
-                    const sB = b[filterKey] || { wins: 0, matches: 0 };
-                    const rA = sA.matches > 0 ? sA.wins / sA.matches : -1;
-                    const rB = sB.matches > 0 ? sB.wins / sB.matches : -1;
-                    return rB - rA;
+                    const eA = a[eloKey] ?? 1200;
+                    const eB = b[eloKey] ?? 1200;
+                    if (eA !== eB) return eB - eA;
+                    // Tiebreak: more filtered matches ranks higher
+                    const mA = (a[filterKey] || { matches: 0 }).matches;
+                    const mB = (b[filterKey] || { matches: 0 }).matches;
+                    return mB - mA;
                 });
             } else {
                 sortedBrowsers = [...browsers].sort((a, b) => b.elo - a.elo);
@@ -1885,17 +1931,20 @@
                 const tr = document.createElement('tr');
 
                 if (filterKey) {
-                    // Filtered view: show win rate and match count for the selected tier.
-                    // Browsers with no qualifying matchups show — instead of a rate.
+                    // Filtered view: same structure as unfiltered but using the tier-specific
+                    // Elo and pair stats. Browsers with no qualifying matchups show Elo 1200
+                    // and — for win rate, and sort to the bottom.
                     const pairStats    = b[filterKey] || { wins: 0, matches: 0 };
+                    const filteredElo  = Math.round(b[eloKey] ?? 1200);
                     const filteredRate = pairStats.matches > 0
                         ? (pairStats.wins / pairStats.matches * 100).toFixed(1) + '%'
                         : '—';
                     tr.innerHTML = `
                         <td class="rank">${index + 1}</td>
                         <td style="font-weight: 500;">${b.name}</td>
-                        <td class="stat-column" style="color: var(--success);">${filteredRate}</td>
+                        <td class="elo-score">${filteredElo}</td>
                         <td class="stat-column col-matches">${pairStats.matches}</td>
+                        <td class="stat-column" style="color: var(--success);">${filteredRate}</td>
                     `;
                 } else {
                     // Unfiltered view: show Elo, win rate, and top rival
