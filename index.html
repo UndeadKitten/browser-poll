@@ -673,7 +673,7 @@
 
 <body>
     <!-- ── Utility / Debug Overlays ─────────────────────────────────── -->
-    <div class="version-badge">v83</div>
+    <div class="version-badge">v84</div>
     <div class="dev-btn-group">
         <button class="dev-reset-btn" onclick="devResetPoll()">🛠 Reset Poll</button>
         <button class="dev-reset-btn" onclick="devResetSurvey()">📋 Reset Survey</button>
@@ -1870,8 +1870,9 @@
                     <th>Elo</th>
                     <th class="col-matches">Matches</th>
                     <th>Win Rate</th>
+                    <th class="col-rival">Top Rival</th>
                 `;
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:20px;">Loading rankings...</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">Loading rankings...</td></tr>';
             } else {
                 thead.innerHTML = `
                     <th class="rank">#</th>
@@ -1945,6 +1946,7 @@
                         <td class="elo-score">${filteredElo}</td>
                         <td class="stat-column col-matches">${pairStats.matches}</td>
                         <td class="stat-column" style="color: var(--success);">${filteredRate}</td>
+                        <td class="rival-cell col-rival" style="color: var(--text-muted);">—</td>
                     `;
                 } else {
                     // Unfiltered view: show Elo, win rate, and top rival
